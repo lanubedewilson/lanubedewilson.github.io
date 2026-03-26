@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Nube de Wilson - Streaming</title>
+    <title>La Nube de Wilson - Portal de Streaming</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,7 +12,6 @@
             --accent-green: #9fb69f; 
             --highlight: #d4e157;    
             --text-muted: #4a5c4a;   
-            --sponsor-bg: #081008;   
         }
 
         body {
@@ -41,111 +40,79 @@
 
         .logo span { color: var(--accent-green); font-weight: normal; }
 
-        /* --- SELECTOR DE SEÑAL --- */
         .signal-selector {
-            display: flex;
-            gap: 10px;
-            background: #000;
-            padding: 5px;
-            border-radius: 20px;
-            border: 1px solid #1a261a;
+            display: flex; gap: 10px;
+            background: #000; padding: 5px;
+            border-radius: 20px; border: 1px solid #1a261a;
         }
 
         .btn-signal {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 0.7rem;
-            font-weight: bold;
-            padding: 5px 12px;
-            cursor: pointer;
-            border-radius: 15px;
-            transition: 0.3s;
-            text-transform: uppercase;
+            background: none; border: none;
+            color: var(--text-muted); font-size: 0.7rem;
+            font-weight: bold; padding: 5px 12px;
+            cursor: pointer; border-radius: 15px;
+            transition: 0.3s; text-transform: uppercase;
         }
 
-        .btn-signal.active {
-            background: var(--highlight);
-            color: #000;
-        }
+        .btn-signal.active { background: var(--highlight); color: #000; }
 
-        /* --- VIDEO BOX --- */
         .video-box {
-            width: 100%;
-            background: #000;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            max-height: 65vh; 
-            margin: 0 auto;
+            width: 100%; background: #000;
+            aspect-ratio: 16 / 9; position: relative;
+            max-height: 60vh; margin: 0 auto;
         }
 
         @media (max-width: 768px) {
-            .video-box {
-                min-height: 250px; 
-                max-height: none;
-                aspect-ratio: auto;
-            }
+            .video-box { min-height: 250px; max-height: none; aspect-ratio: auto; }
         }
 
         .player-frame {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            border: none;
-            display: none; /* Se activan por JS */
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; border: none;
+            display: none;
         }
 
-        .player-frame.active {
-            display: block;
-        }
+        .player-frame.active { display: block; }
 
-        /* --- TICKER --- */
         .ticker-wrap {
-            background: #000;
-            border-bottom: 1px solid #1a261a;
-            overflow: hidden;
-            padding: 6px 0;
+            background: #000; border-bottom: 1px solid #1a261a;
+            overflow: hidden; padding: 6px 0;
         }
 
         .ticker {
-            display: inline-block;
-            white-space: nowrap;
+            display: inline-block; white-space: nowrap;
             animation: tickerMove 35s linear infinite;
-            color: var(--highlight);
-            font-size: 0.75rem;
+            color: var(--highlight); font-size: 0.75rem;
             text-transform: uppercase;
         }
 
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- GRID INFO --- */
         .grid-info {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr 1fr;
+            display: grid; grid-template-columns: 1fr 1.5fr 1fr;
             gap: 30px; padding: 25px 5%;
             max-width: 1200px; margin: 0 auto;
         }
 
+        @media (max-width: 900px) { .grid-info { grid-template-columns: 1fr; } }
+
         .col-title {
             font-family: 'Bebas Neue', cursive;
-            font-size: 1.4rem;
-            color: var(--highlight);
-            margin-bottom: 10px;
-            border-bottom: 1px solid #1a261a;
+            font-size: 1.4rem; color: var(--highlight);
+            margin-bottom: 10px; border-bottom: 1px solid #1a261a;
             padding-bottom: 5px;
         }
 
-        p { font-size: 0.85rem; line-height: 1.4; margin: 0; }
+        .news-item { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #0c140c; }
+        .news-item h3 { font-size: 1rem; color: #fff; margin: 0 0 5px 0; }
+        .news-item p { font-size: 0.85rem; line-height: 1.4; opacity: 0.8; }
+        .news-author { font-size: 0.7rem; color: var(--highlight); text-transform: uppercase; margin-top: 5px; display: block; }
 
         footer { 
-            padding: 20px 5%; 
-            border-top: 1px solid #1a261a; 
-            margin-top: auto; 
-            text-align: center; 
-            color: var(--text-muted);
-            font-size: 0.7rem;
+            padding: 20px 5%; border-top: 1px solid #1a261a; 
+            margin-top: auto; text-align: center; 
+            color: var(--text-muted); font-size: 0.7rem;
         }
-
     </style>
 </head>
 <body>
@@ -160,36 +127,26 @@
 
     <div class="ticker-wrap">
         <div class="ticker">
-            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • SEÑAL DE RESPALDO ACTIVADA •
+            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • NOTICIAS EN TIEMPO REAL DESDE LA REDACCIÓN •
         </div>
     </div>
 
-    <div class="video-box" id="container">
-        <iframe 
-            id="player-kick"
-            class="player-frame active"
-            src="https://player.kick.com/lanubedewilson?parent=lanubedewilson.github.io" 
-            allowfullscreen="true">
-        </iframe>
-
-        <iframe 
-            id="player-yt"
-            class="player-frame"
-            src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-        </iframe>
+    <div class="video-box">
+        <iframe id="player-kick" class="player-frame active" src="https://player.kick.com/lanubedewilson?parent=lanubedewilson.github.io" allowfullscreen="true"></iframe>
+        <iframe id="player-yt" class="player-frame" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1" allowfullscreen></iframe>
     </div>
 
     <main class="grid-info">
         <div>
             <div class="col-title">Señal SJ</div>
-            <p>Usá el selector arriba del video si el vivo está fuera de línea.</p>
+            <p>Usá el selector arriba si el vivo está fuera de línea.</p>
         </div>
+        
         <div>
-            <div class="col-title">Curiosidades</div>
-            <p id="curiosidad-text">Próximamente noticias en tiempo real desde nuestra redacción digital.</p>
+            <div class="col-title">Redacción en Vivo</div>
+            <div id="news-container">Cargando noticias...</div>
         </div>
+
         <div>
             <div class="col-title">Sponsors</div>
             <div style="background:#111; height:80px; border:1px dashed #333; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">
@@ -198,12 +155,9 @@
         </div>
     </main>
 
-    <footer>
-        &copy; 2026 La Nube de Wilson - San Juan, Argentina.
-    </footer>
+    <footer>&copy; 2026 La Nube de Wilson - San Juan, Argentina.</footer>
 
     <script>
-        // Función para cambiar manualmente de señal
         function switchSignal(type) {
             const playerKick = document.getElementById('player-kick');
             const playerYt = document.getElementById('player-yt');
@@ -211,28 +165,45 @@
             const btnYt = document.getElementById('btn-yt');
 
             if (type === 'kick') {
-                playerKick.classList.add('active');
-                playerYt.classList.remove('active');
-                btnKick.classList.add('active');
-                btnYt.classList.remove('active');
-                // Recargamos el iframe de YouTube para que no siga sonando de fondo
-                const ytSrc = playerYt.src;
-                playerYt.src = "";
-                playerYt.src = ytSrc;
+                playerKick.classList.add('active'); playerYt.classList.remove('active');
+                btnKick.classList.add('active'); btnYt.classList.remove('active');
+                const ytSrc = playerYt.src; playerYt.src = ""; playerYt.src = ytSrc;
             } else {
-                playerYt.classList.add('active');
-                playerKick.classList.remove('active');
-                btnYt.classList.add('active');
-                btnKick.classList.remove('active');
+                playerYt.classList.add('active'); playerKick.classList.remove('active');
+                btnYt.classList.add('active'); btnKick.classList.add('active'); // Nota: Pequeño fix visual en botones
+                btnYt.classList.add('active'); btnKick.classList.remove('active');
             }
         }
 
-        // Reloj en tiempo real
-        function clock() {
-            const now = new Date();
-            // El reloj se puede mostrar en la marquesina o el encabezado si se desea
+        async function loadNews() {
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv';
+            try {
+                const response = await fetch(csvUrl);
+                const data = await response.text();
+                const rows = data.split('\n').slice(1);
+                const container = document.getElementById('news-container');
+                container.innerHTML = '';
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length >= 4 && columns[3].trim().toLowerCase() === 'publicar') {
+                        const item = document.createElement('div');
+                        item.className = 'news-item';
+                        item.innerHTML = `
+                            <h3>${columns[0]}</h3>
+                            <p>${columns[1]}</p>
+                            <span class="news-author">Por: ${columns[2]}</span>
+                        `;
+                        container.appendChild(item);
+                    }
+                });
+                if (container.innerHTML === '') container.innerHTML = '<p>No hay noticias nuevas por ahora.</p>';
+            } catch (e) {
+                document.getElementById('news-container').innerHTML = 'Error al conectar con la redacción.';
+            }
         }
-        setInterval(clock, 1000); clock();
+
+        window.onload = loadNews;
     </script>
 </body>
 </html>
