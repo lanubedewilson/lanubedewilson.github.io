@@ -26,14 +26,14 @@
 
         header {
             background-color: var(--header-bg);
-            padding: 20px 5%;
+            padding: 15px 5%;
             display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid #1a261a;
         }
 
         .logo {
             font-family: 'Bebas Neue', cursive;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             letter-spacing: 2px;
             margin: 0;
             color: var(--highlight);
@@ -44,31 +44,35 @@
         .live-indicator {
             display: flex; align-items: center; gap: 10px;
             font-weight: bold; color: var(--highlight);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .dot {
-            height: 10px; width: 10px;
+            height: 8px; width: 8px;
             background-color: var(--highlight);
             border-radius: 50%;
-            box-shadow: 0 0 12px var(--highlight);
+            box-shadow: 0 0 10px var(--highlight);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* --- VIDEO BOX (CORRECCIÓN CELULAR) --- */
+        /* --- VIDEO BOX (AJUSTE PC + MÓVIL) --- */
         .video-box {
             width: 100%;
             background: #000;
             aspect-ratio: 16 / 9;
             position: relative;
+            /* Limitamos la altura en PC para que no ocupe toda la pantalla */
+            max-height: 65vh; 
+            margin: 0 auto;
         }
 
         @media (max-width: 768px) {
             .video-box {
-                /* Altura mínima para que aparezca el botón de sonido en celulares */
-                min-height: 260px; 
+                /* Altura mínima necesaria para que Kick muestre el botón de sonido en el celu */
+                min-height: 250px; 
+                max-height: none;
                 aspect-ratio: auto;
             }
         }
@@ -80,12 +84,12 @@
             border: none;
         }
 
-        /* --- RESTO DEL DISEÑO --- */
+        /* --- CONTENIDO INFERIOR --- */
         .ticker-wrap {
             background: #000;
             border-bottom: 1px solid #1a261a;
             overflow: hidden;
-            padding: 8px 0;
+            padding: 6px 0;
         }
 
         .ticker {
@@ -93,7 +97,7 @@
             white-space: nowrap;
             animation: tickerMove 35s linear infinite;
             color: var(--highlight);
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
         }
 
@@ -102,26 +106,28 @@
         .grid-info {
             display: grid;
             grid-template-columns: 1fr 1.2fr 1fr;
-            gap: 30px; padding: 30px 5%;
-            max-width: 1400px; margin: 0 auto;
+            gap: 30px; padding: 25px 5%;
+            max-width: 1200px; margin: 0 auto;
         }
 
         .col-title {
             font-family: 'Bebas Neue', cursive;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             color: var(--highlight);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             border-bottom: 1px solid #1a261a;
             padding-bottom: 5px;
         }
 
+        p { font-size: 0.85rem; line-height: 1.4; margin: 0; }
+
         footer { 
-            padding: 30px 5%; 
+            padding: 20px 5%; 
             border-top: 1px solid #1a261a; 
             margin-top: auto; 
             text-align: center; 
             color: var(--text-muted);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
         }
 
     </style>
@@ -153,17 +159,15 @@
     <main class="grid-info">
         <div>
             <div class="col-title">Señal SJ</div>
-            <p style="font-size: 0.9rem;">Prueba técnica de streaming activa. 1080p 60fps.</p>
+            <p>Señal activa 24hs. Próximamente programación local.</p>
         </div>
         <div>
             <div class="col-title">Curiosidades</div>
-            <p style="font-size: 0.9rem;">Mañana activaremos el sistema de redacción automática.</p>
+            <p>Mañana conectaremos la redacción en vivo.</p>
         </div>
         <div>
             <div class="col-title">Sponsors</div>
-            <div style="background:#111; height:80px; border:1px dashed #333; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">
-                Espacio Publicitario
-            </div>
+            <p>Espacio publicitario disponible.</p>
         </div>
     </main>
 
