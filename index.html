@@ -56,6 +56,7 @@
 
         .btn-signal.active { background: var(--highlight); color: #000; }
 
+        /* --- VIDEO BOX --- */
         .video-box {
             width: 100%; background: #000;
             aspect-ratio: 16 / 9; position: relative;
@@ -74,6 +75,7 @@
 
         .player-frame.active { display: block; }
 
+        /* --- MARQUESINA --- */
         .ticker-wrap {
             background: #000; border-bottom: 1px solid #1a261a;
             overflow: hidden; padding: 6px 0;
@@ -88,6 +90,7 @@
 
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
+        /* --- REDACCIÓN --- */
         .grid-info {
             display: grid; grid-template-columns: 1fr 1.5fr 1fr;
             gap: 30px; padding: 25px 5%;
@@ -99,17 +102,23 @@
         .col-title {
             font-family: 'Bebas Neue', cursive;
             font-size: 1.4rem; color: var(--highlight);
-            margin-bottom: 10px; border-bottom: 1px solid #1a261a;
+            margin-bottom: 15px; border-bottom: 1px solid #1a261a;
             padding-bottom: 5px;
         }
 
-        .news-item { margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #0c140c; }
-        .news-item h3 { font-size: 1rem; color: #fff; margin: 0 0 5px 0; }
-        .news-item p { font-size: 0.85rem; line-height: 1.4; opacity: 0.8; }
-        .news-author { font-size: 0.7rem; color: var(--highlight); text-transform: uppercase; margin-top: 5px; display: block; }
+        .news-item { 
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 15px; 
+            padding: 15px; 
+            border-radius: 8px;
+            border-left: 3px solid var(--highlight);
+        }
+        .news-item h3 { font-size: 1.1rem; color: #fff; margin: 0 0 8px 0; }
+        .news-item p { font-size: 0.9rem; line-height: 1.5; opacity: 0.8; margin-bottom: 10px; }
+        .news-author { font-size: 0.7rem; color: var(--highlight); text-transform: uppercase; font-weight: bold; }
 
         footer { 
-            padding: 20px 5%; border-top: 1px solid #1a261a; 
+            padding: 30px 5%; border-top: 1px solid #1a261a; 
             margin-top: auto; text-align: center; 
             color: var(--text-muted); font-size: 0.7rem;
         }
@@ -127,7 +136,7 @@
 
     <div class="ticker-wrap">
         <div class="ticker">
-            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • NOTICIAS EN TIEMPO REAL DESDE LA REDACCIÓN •
+            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • NOTICIAS EN TIEMPO REAL DESDE NUESTRO EXCEL •
         </div>
     </div>
 
@@ -140,17 +149,18 @@
         <div>
             <div class="col-title">Señal SJ</div>
             <p>Usá el selector arriba si el vivo está fuera de línea.</p>
+            <p id="real-clock" style="margin-top:10px; font-weight:bold; color:var(--highlight);"></p>
         </div>
         
         <div>
             <div class="col-title">Redacción en Vivo</div>
-            <div id="news-container">Cargando noticias...</div>
+            <div id="news-container">Sincronizando con la redacción...</div>
         </div>
 
         <div>
             <div class="col-title">Sponsors</div>
-            <div style="background:#111; height:80px; border:1px dashed #333; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">
-                Espacio Publicitario
+            <div style="background:#111; height:80px; border:1px dashed #333; display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:#444;">
+                ESPACIO PUBLICITARIO
             </div>
         </div>
     </main>
@@ -158,6 +168,7 @@
     <footer>&copy; 2026 La Nube de Wilson - San Juan, Argentina.</footer>
 
     <script>
+        // Función para cambiar de señal
         function switchSignal(type) {
             const playerKick = document.getElementById('player-kick');
             const playerYt = document.getElementById('player-yt');
@@ -170,40 +181,70 @@
                 const ytSrc = playerYt.src; playerYt.src = ""; playerYt.src = ytSrc;
             } else {
                 playerYt.classList.add('active'); playerKick.classList.remove('active');
-                btnYt.classList.add('active'); btnKick.classList.add('active'); // Nota: Pequeño fix visual en botones
                 btnYt.classList.add('active'); btnKick.classList.remove('active');
             }
         }
 
+        // Lector de noticias avanzado
         async function loadNews() {
-            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv';
+            // El link de tu Google Sheets (CSV)
+            const csvUrlBase = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv';
+            
+            // Agregamos un número al azar al final para que Google no nos mande información vieja
+            const cacheBuster = "&t=" + new Date().getTime();
+            const csvUrl = csvUrlBase + cacheBuster;
+
             try {
                 const response = await fetch(csvUrl);
                 const data = await response.text();
-                const rows = data.split('\n').slice(1);
+                
+                // Dividimos el texto en filas y las invertimos (lo nuevo arriba)
+                const rows = data.split('\n').slice(1).reverse(); 
+                
                 const container = document.getElementById('news-container');
                 container.innerHTML = '';
 
                 rows.forEach(row => {
-                    const columns = row.split(',');
+                    // Este código separa las columnas aunque uses comas dentro del texto
+                    const columns = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    
                     if (columns.length >= 4 && columns[3].trim().toLowerCase() === 'publicar') {
                         const item = document.createElement('div');
                         item.className = 'news-item';
+                        // Limpiamos las comillas que a veces pone Google
+                        const titulo = columns[0].replace(/^"|"$/g, '');
+                        const contenido = columns[1].replace(/^"|"$/g, '');
+                        const autor = columns[2].replace(/^"|"$/g, '');
+
                         item.innerHTML = `
-                            <h3>${columns[0]}</h3>
-                            <p>${columns[1]}</p>
-                            <span class="news-author">Por: ${columns[2]}</span>
+                            <h3>${titulo}</h3>
+                            <p>${contenido}</p>
+                            <span class="news-author">Por: ${autor}</span>
                         `;
                         container.appendChild(item);
                     }
                 });
-                if (container.innerHTML === '') container.innerHTML = '<p>No hay noticias nuevas por ahora.</p>';
+                
+                if (container.innerHTML === '') container.innerHTML = '<p>No hay noticias publicadas en este momento.</p>';
             } catch (e) {
-                document.getElementById('news-container').innerHTML = 'Error al conectar con la redacción.';
+                console.error("Error cargando noticias:", e);
+                document.getElementById('news-container').innerHTML = 'Error de conexión con la redacción.';
             }
         }
 
-        window.onload = loadNews;
+        // Reloj y carga inicial
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('real-clock').innerText = "HORA LOCAL: " + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        }
+
+        window.onload = () => {
+            loadNews();
+            updateClock();
+            setInterval(updateClock, 1000);
+            // Actualiza las noticias automáticamente cada 2 minutos
+            setInterval(loadNews, 120000);
+        };
     </script>
 </body>
 </html>
