@@ -41,50 +41,65 @@
 
         .logo span { color: var(--accent-green); font-weight: normal; }
 
-        .live-indicator {
-            display: flex; align-items: center; gap: 10px;
-            font-weight: bold; color: var(--highlight);
-            font-size: 0.8rem;
+        /* --- SELECTOR DE SEÑAL --- */
+        .signal-selector {
+            display: flex;
+            gap: 10px;
+            background: #000;
+            padding: 5px;
+            border-radius: 20px;
+            border: 1px solid #1a261a;
         }
 
-        .dot {
-            height: 8px; width: 8px;
-            background-color: var(--highlight);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--highlight);
-            animation: pulse 2s infinite;
+        .btn-signal {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 5px 12px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: 0.3s;
+            text-transform: uppercase;
         }
 
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .btn-signal.active {
+            background: var(--highlight);
+            color: #000;
+        }
 
-        /* --- VIDEO BOX (AJUSTE PC + MÓVIL) --- */
+        /* --- VIDEO BOX --- */
         .video-box {
             width: 100%;
             background: #000;
             aspect-ratio: 16 / 9;
             position: relative;
-            /* Limitamos la altura en PC para que no ocupe toda la pantalla */
             max-height: 65vh; 
             margin: 0 auto;
         }
 
         @media (max-width: 768px) {
             .video-box {
-                /* Altura mínima necesaria para que Kick muestre el botón de sonido en el celu */
                 min-height: 250px; 
                 max-height: none;
                 aspect-ratio: auto;
             }
         }
 
-        iframe {
+        .player-frame {
             position: absolute;
             top: 0; left: 0;
             width: 100%; height: 100%;
             border: none;
+            display: none; /* Se activan por JS */
         }
 
-        /* --- CONTENIDO INFERIOR --- */
+        .player-frame.active {
+            display: block;
+        }
+
+        /* --- TICKER --- */
         .ticker-wrap {
             background: #000;
             border-bottom: 1px solid #1a261a;
@@ -103,6 +118,7 @@
 
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
+        /* --- GRID INFO --- */
         .grid-info {
             display: grid;
             grid-template-columns: 1fr 1.2fr 1fr;
@@ -136,38 +152,49 @@
 
     <header>
         <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
-        <div class="live-indicator">
-            <span id="real-clock">00:00</span>
-            <div class="dot"></div>
-            <span>EN VIVO</span>
+        <div class="signal-selector">
+            <button id="btn-kick" class="btn-signal active" onclick="switchSignal('kick')">● VIVO</button>
+            <button id="btn-yt" class="btn-signal" onclick="switchSignal('yt')">RADIO 24/7</button>
         </div>
     </header>
 
     <div class="ticker-wrap">
         <div class="ticker">
-            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • BIENVENIDOS A LA NUEVA EXPERIENCIA DIGITAL •
+            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • SEÑAL DE RESPALDO ACTIVADA •
         </div>
     </div>
 
-    <div class="video-box">
+    <div class="video-box" id="container">
         <iframe 
+            id="player-kick"
+            class="player-frame active"
             src="https://player.kick.com/lanubedewilson?parent=lanubedewilson.github.io" 
             allowfullscreen="true">
+        </iframe>
+
+        <iframe 
+            id="player-yt"
+            class="player-frame"
+            src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
         </iframe>
     </div>
 
     <main class="grid-info">
         <div>
             <div class="col-title">Señal SJ</div>
-            <p>Señal activa 24hs. Próximamente programación local.</p>
+            <p>Usá el selector arriba del video si el vivo está fuera de línea.</p>
         </div>
         <div>
             <div class="col-title">Curiosidades</div>
-            <p>Mañana conectaremos la redacción en vivo.</p>
+            <p id="curiosidad-text">Próximamente noticias en tiempo real desde nuestra redacción digital.</p>
         </div>
         <div>
             <div class="col-title">Sponsors</div>
-            <p>Espacio publicitario disponible.</p>
+            <div style="background:#111; height:80px; border:1px dashed #333; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">
+                Espacio Publicitario
+            </div>
         </div>
     </main>
 
@@ -176,9 +203,34 @@
     </footer>
 
     <script>
+        // Función para cambiar manualmente de señal
+        function switchSignal(type) {
+            const playerKick = document.getElementById('player-kick');
+            const playerYt = document.getElementById('player-yt');
+            const btnKick = document.getElementById('btn-kick');
+            const btnYt = document.getElementById('btn-yt');
+
+            if (type === 'kick') {
+                playerKick.classList.add('active');
+                playerYt.classList.remove('active');
+                btnKick.classList.add('active');
+                btnYt.classList.remove('active');
+                // Recargamos el iframe de YouTube para que no siga sonando de fondo
+                const ytSrc = playerYt.src;
+                playerYt.src = "";
+                playerYt.src = ytSrc;
+            } else {
+                playerYt.classList.add('active');
+                playerKick.classList.remove('active');
+                btnYt.classList.add('active');
+                btnKick.classList.remove('active');
+            }
+        }
+
+        // Reloj en tiempo real
         function clock() {
             const now = new Date();
-            document.getElementById('real-clock').innerText = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            // El reloj se puede mostrar en la marquesina o el encabezado si se desea
         }
         setInterval(clock, 1000); clock();
     </script>
