@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Nube de Wilson - Prueba Local</title>
+    <title>La Nube de Wilson - Streaming</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,38 +19,32 @@
             background-color: var(--bg-dark);
             color: var(--accent-green);
             font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column;
             min-height: 100vh;
         }
 
         header {
             background-color: var(--header-bg);
             padding: 20px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             border-bottom: 2px solid #1a261a;
         }
 
         .logo {
             font-family: 'Bebas Neue', cursive;
-            font-size: 3rem;
-            letter-spacing: 3px;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
             margin: 0;
-            color: var(--accent-green);
+            color: var(--highlight);
         }
 
-        .logo span { color: var(--text-muted); }
+        .logo span { color: var(--accent-green); font-weight: normal; }
 
         .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: bold;
-            color: var(--highlight);
+            display: flex; align-items: center; gap: 10px;
+            font-weight: bold; color: var(--highlight);
+            font-size: 0.9rem;
         }
 
         .dot {
@@ -63,7 +57,30 @@
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* --- MARQUESINA --- */
+        /* --- VIDEO BOX (CORRECCIÓN CELULAR) --- */
+        .video-box {
+            width: 100%;
+            background: #000;
+            aspect-ratio: 16 / 9;
+            position: relative;
+        }
+
+        @media (max-width: 768px) {
+            .video-box {
+                /* Altura mínima para que aparezca el botón de sonido en celulares */
+                min-height: 260px; 
+                aspect-ratio: auto;
+            }
+        }
+
+        iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
+
+        /* --- RESTO DEL DISEÑO --- */
         .ticker-wrap {
             background: #000;
             border-bottom: 1px solid #1a261a;
@@ -82,109 +99,39 @@
 
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- VIDEO LOCAL --- */
-        .video-box {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            background: #000;
-            max-height: 70vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .video-box video {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Para que veas el video entero sin recortes */
-        }
-
-        /* --- GRID 3 COLUMNAS --- */
         .grid-info {
             display: grid;
             grid-template-columns: 1fr 1.2fr 1fr;
-            gap: 40px;
-            padding: 40px 5%;
-            max-width: 1600px;
-            margin: 0 auto;
-            flex-grow: 1;
+            gap: 30px; padding: 30px 5%;
+            max-width: 1400px; margin: 0 auto;
         }
 
         .col-title {
             font-family: 'Bebas Neue', cursive;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             color: var(--highlight);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #1a261a;
-            padding-bottom: 8px;
+            padding-bottom: 5px;
         }
 
-        .trend { display: flex; gap: 12px; margin-bottom: 15px; font-size: 0.9rem; align-items: center;}
-        .num { color: var(--text-muted); font-weight: bold; font-size: 1.1rem; min-width: 20px; text-align: right;}
-
-        .curiosity { margin-bottom: 25px; }
-        .curiosity h3 { font-size: 1.1rem; margin: 0 0 6px 0; color: #fff; font-weight: 600;}
-        .curiosity p { font-size: 0.85rem; color: var(--accent-green); opacity: 0.8; line-height: 1.5; margin: 0;}
-
-        .sponsors-viewport {
-            width: 100%;
-            aspect-ratio: 16 / 9;
-            border: 1px solid #1a261a;
-            overflow: hidden;
-            background: var(--sponsor-bg);
-            position: relative;
+        footer { 
+            padding: 30px 5%; 
+            border-top: 1px solid #1a261a; 
+            margin-top: auto; 
+            text-align: center; 
+            color: var(--text-muted);
+            font-size: 0.8rem;
         }
-
-        .sponsors-slide {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            height: 100%;
-            animation: slideSponsors 20s cubic-bezier(0.85, 0, 0.15, 1) infinite;
-        }
-
-        @keyframes slideSponsors {
-            0%, 20% { transform: translateY(0%); }      
-            25%, 45% { transform: translateY(-100%); }  
-            50%, 70% { transform: translateY(-200%); }  
-            75%, 95% { transform: translateY(-300%); }  
-            100% { transform: translateY(0%); }         
-        }
-
-        .sponsor-card {
-            width: 100%; height: 100%;
-            flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            padding: 20px; box-sizing: border-box;
-        }
-
-        .logo-placeholder {
-            width: 90%; aspect-ratio: 16 / 9;
-            background: #1a261a;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; color: var(--text-muted);
-            border-radius: 4px; text-transform: uppercase; border: 1px dashed var(--text-muted);
-        }
-
-        footer { padding: 0 5% 40px; margin-top: auto; }
-        .nav-bottom { display: flex; gap: 15px; border-top: 1px solid #1a261a; padding-top: 30px;}
-        .btn-nav {
-            background: none; border: 1px solid var(--text-muted);
-            color: var(--text-muted); padding: 10px 25px;
-            cursor: pointer; text-transform: uppercase;
-            font-size: 0.75rem; transition: 0.3s;
-        }
-        .btn-nav:hover { border-color: var(--highlight); color: var(--highlight); }
 
     </style>
 </head>
 <body>
 
     <header>
-        <h1 class="logo">La Nube de <span>Wilson</span></h1>
+        <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
         <div class="live-indicator">
             <span id="real-clock">00:00</span>
-            <span style="color: var(--text-muted)">|</span>
             <div class="dot"></div>
             <span>EN VIVO</span>
         </div>
@@ -192,55 +139,37 @@
 
     <div class="ticker-wrap">
         <div class="ticker">
-            • PRUEBA DE VIDEO LOCAL • LA NUBE DE WILSON: STREAMING RADIO/TV • 
+            • TRANSMITIENDO DESDE SAN JUAN • LA NUBE DE WILSON: STREAMING RADIO/TV • BIENVENIDOS A LA NUEVA EXPERIENCIA DIGITAL •
         </div>
     </div>
 
-<div class="video-box" id="main-video">
+    <div class="video-box">
         <iframe 
             src="https://player.kick.com/lanubedewilson?parent=lanubedewilson.github.io" 
-            height="100%" 
-            width="100%" 
-            frameborder="0" 
-            scrolling="no" 
             allowfullscreen="true">
         </iframe>
     </div>
 
     <main class="grid-info">
         <div>
-            <div class="col-title">Tendencias de X</div>
-            <div class="col-content">
-                <div class="trend"><span class="num">1</span> #SanJuanNoticias</div>
-                <div class="trend"><span class="num">2</span> #La Nube de Wilson</div>
-                <div class="trend"><span class="num">3</span> #Streaming2026</div>
-                <div class="trend"><span class="num">4</span> Elon Musk</div>
-                <div class="trend"><span class="num">5</span> IA en Medios</div>
-                <div class="trend"><span class="num">6</span> #CiclismoSJ</div>
-            </div>
+            <div class="col-title">Señal SJ</div>
+            <p style="font-size: 0.9rem;">Prueba técnica de streaming activa. 1080p 60fps.</p>
         </div>
         <div>
             <div class="col-title">Curiosidades</div>
-            <div class="col-content">
-                <div class="curiosity">
-                    <h3>El primer operador</h3>
-                    <p>¿Sabías que la radio comenzó con señales de morse antes que con voces?</p>
-                </div>
-                <div class="curiosity">
-                    <h3>Voz de Estadio</h3>
-                    <p>La acústica de un estadio es uno de los mayores retos para un ingeniero de audio.</p>
-                </div>
-            </div>
+            <p style="font-size: 0.9rem;">Mañana activaremos el sistema de redacción automática.</p>
         </div>
-        <div class="sponsors-column">
+        <div>
             <div class="col-title">Sponsors</div>
-            <div class="sponsors-viewport">
-                <div class="sponsors-slide">
-                    <div class="sponsor-card"><div class="logo-placeholder">Sponsor 1 (16:9)</div></div>
-                </div>
+            <div style="background:#111; height:80px; border:1px dashed #333; display:flex; align-items:center; justify-content:center; font-size:0.7rem;">
+                Espacio Publicitario
             </div>
         </div>
     </main>
+
+    <footer>
+        &copy; 2026 La Nube de Wilson - San Juan, Argentina.
+    </footer>
 
     <script>
         function clock() {
