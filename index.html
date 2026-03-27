@@ -20,7 +20,6 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* --- HEADER --- */
         header {
             background-color: var(--header-bg); padding: 15px 5%;
             display: flex; justify-content: space-between; align-items: center;
@@ -29,15 +28,15 @@
         .logo { font-family: 'Bebas Neue', cursive; font-size: 2.5rem; letter-spacing: 2px; margin: 0; color: var(--highlight); }
         .logo span { color: var(--accent-green); font-weight: normal; }
 
-        /* --- SELECTOR NOTORIO --- */
+        /* SELECTOR NOTORIO */
         .signal-selector { 
             display: flex; gap: 5px; background: #000; padding: 6px; 
             border-radius: 10px; border: 2px solid var(--highlight);
-            box-shadow: 0 0 10px rgba(212, 225, 87, 0.2);
+            box-shadow: 0 0 10px rgba(212, 225, 87, 0.3);
         }
         .btn-signal { 
             background: none; border: none; color: var(--text-muted); 
-            font-size: 0.8rem; font-weight: bold; padding: 8px 15px; 
+            font-size: 0.8rem; font-weight: bold; padding: 8px 18px; 
             cursor: pointer; border-radius: 6px; text-transform: uppercase; 
             transition: 0.3s;
         }
@@ -45,9 +44,9 @@
 
         .info-panel { display: flex; align-items: center; gap: 15px; }
         .weather-box { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; border-left: 2px solid var(--highlight); min-width: 130px; }
-        .clock-box { font-weight: bold; color: var(--highlight); font-size: 1.1rem; min-width: 80px; }
+        .clock-box { font-weight: bold; color: var(--highlight); font-size: 1.1rem; }
 
-        /* --- VIDEO & TICKER --- */
+        /* VIDEO */
         .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 50vh; margin: 0 auto; }
         .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .player-frame.active { display: block; }
@@ -56,23 +55,24 @@
         .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 45s linear infinite; color: var(--highlight); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- GRID 5 COLUMNAS --- */
+        /* GRID 5 COL */
         .grid-info { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 25px 3%; max-width: 1600px; margin: 0 auto; }
         @media (max-width: 1400px) { .grid-info { grid-template-columns: repeat(3, 1fr); } }
-        @media (max-width: 768px) { .grid-info { grid-template-columns: 1fr; } header { flex-direction: column; text-align: center; } }
+        @media (max-width: 768px) { .grid-info { grid-template-columns: 1fr; } }
 
         .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.4rem; color: var(--highlight); margin-bottom: 12px; border-bottom: 1px solid #1a261a; padding-bottom: 5px; }
 
         .news-item { background: rgba(255,255,255,0.02); margin-bottom: 12px; padding: 12px; border-radius: 6px; border-left: 3px solid var(--highlight); }
-        .news-item h3 { font-size: 1rem; color: #fff; margin: 0 0 6px 0; }
-        .news-item p { font-size: 0.85rem; line-height: 1.4; opacity: 0.8; height: 3em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .btn-read { background: none; border: 1px solid var(--highlight); color: var(--highlight); font-size: 0.65rem; padding: 4px 8px; cursor: pointer; margin-top: 8px; border-radius: 4px; }
 
-        /* --- SPONSOR BOX --- */
-        .sponsor-display { width: 100%; min-height: 100px; display: flex; flex-direction: column; gap: 10px; }
-        .sponsor-item img, .sponsor-item video { width: 100%; border-radius: 8px; border: 1px solid #333; }
+        /* SPONSOR ROTATION */
+        .sponsor-container { width: 100%; min-height: 150px; position: relative; overflow: hidden; border-radius: 8px; background: #111; display: flex; align-items: center; justify-content: center; border: 1px dashed #333; }
+        .sponsor-slide { display: none; width: 100%; text-align: center; animation: fadeIn 0.5s; }
+        .sponsor-slide.active { display: block; }
+        .sponsor-slide img, .sponsor-slide video { width: 100%; height: auto; border-radius: 6px; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- MODAL --- */
+        /* MODAL */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
         .modal-content { background: var(--header-bg); margin: 5% auto; padding: 25px; border: 1px solid var(--highlight); width: 85%; max-width: 650px; border-radius: 10px; max-height: 80vh; overflow-y: auto; color: #fff; }
         .close-modal { color: var(--highlight); float: right; font-size: 2rem; cursor: pointer; }
@@ -91,12 +91,12 @@
         </div>
 
         <div class="info-panel">
-            <div class="weather-box" id="weather-display">Sincronizando...</div>
+            <div class="weather-box" id="weather-display">Cargando...</div>
             <div class="clock-box" id="real-clock">00:00:00</div>
         </div>
     </header>
 
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO CON MERCADOS... • LA NUBE DE WILSON • SAN JUAN •</div></div>
+    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO... • LA NUBE DE WILSON • SAN JUAN •</div></div>
 
     <div class="video-box">
         <iframe id="player-kick" class="player-frame active" src="https://player.kick.com/lanubedewilson?parent=lanubedewilson.github.io" allowfullscreen="true"></iframe>
@@ -106,29 +106,24 @@
     <main class="grid-info">
         <div>
             <div class="col-title">Música</div>
-            <iframe style="border-radius:12px; margin-bottom:15px;" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbMDoHDw32BYs?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <iframe style="border-radius:12px; margin-bottom:15px;" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbMDoHDm3pkuz?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             <div id="container-musica"></div>
         </div>
 
-        <div>
-            <div class="col-title">Cápsulas</div>
-            <div id="container-capsula"></div>
-        </div>
+        <div><div class="col-title">Cápsulas</div><div id="container-capsula"></div></div>
         
-        <div>
-            <div class="col-title">+ Data</div>
-            <div id="container-data"></div>
-        </div>
+        <div><div class="col-title">+ Data</div><div id="container-data"></div></div>
 
         <div>
             <div class="col-title">Señal SJ</div>
-            <p style="font-size:0.8rem;">Estás en el centro de medios de La Nube de Wilson. Transmitiendo desde San Juan, Argentina.</p>
+            <p style="font-size:0.8rem;">Transmitiendo cultura y noticias desde el corazón de San Juan.</p>
         </div>
 
         <div>
             <div class="col-title">Gracias a...</div>
-            <div id="container-sponsor" class="sponsor-display">
-                </div>
+            <div id="container-sponsor" class="sponsor-container">
+                <p style="font-size:0.6rem; color:#444;">Buscando sponsors...</p>
+            </div>
         </div>
     </main>
 
@@ -137,6 +132,9 @@
     <footer>© 2026 La Nube de Wilson - San Juan, Argentina.</footer>
 
     <script>
+        let sponsorIndex = 0;
+        let sponsors = [];
+
         function switchSignal(type) {
             const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
             const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
@@ -160,7 +158,8 @@
                 const rows = data.split('\n').slice(1).reverse(); 
                 
                 const cMus = document.getElementById('container-musica'), cCap = document.getElementById('container-capsula'), cDat = document.getElementById('container-data'), cSpo = document.getElementById('container-sponsor');
-                cMus.innerHTML = ''; cCap.innerHTML = ''; cDat.innerHTML = ''; cSpo.innerHTML = '';
+                cMus.innerHTML = ''; cCap.innerHTML = ''; cDat.innerHTML = '';
+                sponsors = []; // Limpiamos la lista de sponsors para recargar
 
                 rows.forEach(row => {
                     const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -168,24 +167,44 @@
                         const t = col[0].replace(/^"|"$/g, ''), c = col[1].replace(/^"|"$/g, ''), a = col[2].replace(/^"|"$/g, ''), cat = col[4].trim().toLowerCase();
                         
                         if (cat === 'sponsor') {
-                            const div = document.createElement('div'); div.className = 'sponsor-item';
-                            // Detectar si es video o imagen
-                            if(c.includes('mp4')) { div.innerHTML = `<video src="${c}" autoplay muted loop></video>`; }
-                            else { div.innerHTML = `<img src="${c}" alt="Sponsor">`; }
-                            cSpo.appendChild(div);
+                            sponsors.push({type: c.includes('mp4') ? 'video' : 'img', url: c});
                         } else {
                             const item = document.createElement('div'); item.className = 'news-item';
-                            item.innerHTML = `<h3>${t}</h3><p>${c}</p><button class="btn-read" onclick="openModal('${t}', \`${c}\`, '${a}')">LEER MÁS</button>`;
+                            item.innerHTML = `<h3>${t}</h3><p style="font-size:0.85rem; height:2.8em; overflow:hidden; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${c}</p><button class="btn-read" onclick="openModal('${t}', \`${c}\`, '${a}')">LEER MÁS</button>`;
                             if (cat === 'musica') cMus.appendChild(item);
                             else if (cat === 'capsula') cCap.appendChild(item);
                             else if (cat === 'data') cDat.appendChild(item);
                         }
                     }
                 });
+                if(sponsors.length > 0) renderSponsors();
             } catch (e) {}
         }
 
-        function openModal(t, c, a) { document.getElementById('modal-body').innerHTML = `<h2>${t}</h2><p>${c}</p><hr style="border:0;border-top:1px solid #333;margin:20px 0;"><small>Por: ${a}</small>`; document.getElementById('newsModal').style.display = "block"; }
+        function renderSponsors() {
+            const container = document.getElementById('container-sponsor');
+            container.innerHTML = '';
+            sponsors.forEach((s, i) => {
+                const div = document.createElement('div');
+                div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
+                if(s.type === 'video') div.innerHTML = `<video src="${s.url}" autoplay muted loop></video>`;
+                else div.innerHTML = `<img src="${s.url}" alt="Sponsor">`;
+                container.appendChild(div);
+            });
+            if(sponsors.length > 1) {
+                clearInterval(window.sponsorTimer);
+                window.sponsorTimer = setInterval(rotateSponsors, 7000); // 7 SEGUNDOS
+            }
+        }
+
+        function rotateSponsors() {
+            const slides = document.querySelectorAll('.sponsor-slide');
+            slides[sponsorIndex].classList.remove('active');
+            sponsorIndex = (sponsorIndex + 1) % slides.length;
+            slides[sponsorIndex].classList.add('active');
+        }
+
+        function openModal(t, c, a) { document.getElementById('modal-body').innerHTML = `<h2>${t}</h2><p style="line-height:1.6; font-size:1.1rem; white-space:pre-line;">${c}</p><hr style="border:0;border-top:1px solid #333;margin:20px 0;"><small>Por: ${a}</small>`; document.getElementById('newsModal').style.display = "block"; }
         function closeModal() { document.getElementById('newsModal').style.display = "none"; }
         window.onclick = e => { if (e.target.id == 'newsModal') closeModal(); }
 
