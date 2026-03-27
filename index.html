@@ -28,7 +28,6 @@
         .logo { font-family: 'Bebas Neue', cursive; font-size: 2.5rem; letter-spacing: 2px; margin: 0; color: var(--highlight); }
         .logo span { color: var(--accent-green); font-weight: normal; }
 
-        /* SELECTOR NOTORIO */
         .signal-selector { 
             display: flex; gap: 5px; background: #000; padding: 6px; 
             border-radius: 10px; border: 2px solid var(--highlight);
@@ -46,7 +45,6 @@
         .weather-box { background: rgba(255,255,255,0.05); padding: 5px 12px; border-radius: 5px; font-size: 0.8rem; border-left: 2px solid var(--highlight); min-width: 130px; }
         .clock-box { font-weight: bold; color: var(--highlight); font-size: 1.1rem; }
 
-        /* VIDEO */
         .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 50vh; margin: 0 auto; }
         .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .player-frame.active { display: block; }
@@ -55,7 +53,6 @@
         .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 45s linear infinite; color: var(--highlight); font-size: 0.75rem; font-weight: bold; text-transform: uppercase; }
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* GRID 5 COL */
         .grid-info { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; padding: 25px 3%; max-width: 1600px; margin: 0 auto; }
         @media (max-width: 1400px) { .grid-info { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .grid-info { grid-template-columns: 1fr; } }
@@ -65,14 +62,13 @@
         .news-item { background: rgba(255,255,255,0.02); margin-bottom: 12px; padding: 12px; border-radius: 6px; border-left: 3px solid var(--highlight); }
         .btn-read { background: none; border: 1px solid var(--highlight); color: var(--highlight); font-size: 0.65rem; padding: 4px 8px; cursor: pointer; margin-top: 8px; border-radius: 4px; }
 
-        /* SPONSOR ROTATION */
-        .sponsor-container { width: 100%; min-height: 150px; position: relative; overflow: hidden; border-radius: 8px; background: #111; display: flex; align-items: center; justify-content: center; border: 1px dashed #333; }
-        .sponsor-slide { display: none; width: 100%; text-align: center; animation: fadeIn 0.5s; }
-        .sponsor-slide.active { display: block; }
-        .sponsor-slide img, .sponsor-slide video { width: 100%; height: auto; border-radius: 6px; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* CARRUSEL DE SPONSORS */
+        .sponsor-container { width: 100%; min-height: 180px; position: relative; overflow: hidden; border-radius: 8px; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #1a261a; }
+        .sponsor-slide { display: none; width: 100%; height: 100%; text-align: center; animation: fadeEffect 0.8s; }
+        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; }
+        .sponsor-slide img, .sponsor-slide video { max-width: 100%; max-height: 180px; border-radius: 4px; }
+        @keyframes fadeEffect { from { opacity: 0; } to { opacity: 1; } }
 
-        /* MODAL */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
         .modal-content { background: var(--header-bg); margin: 5% auto; padding: 25px; border: 1px solid var(--highlight); width: 85%; max-width: 650px; border-radius: 10px; max-height: 80vh; overflow-y: auto; color: #fff; }
         .close-modal { color: var(--highlight); float: right; font-size: 2rem; cursor: pointer; }
@@ -91,12 +87,12 @@
         </div>
 
         <div class="info-panel">
-            <div class="weather-box" id="weather-display">Cargando...</div>
+            <div class="weather-box" id="weather-display">Cargando clima...</div>
             <div class="clock-box" id="real-clock">00:00:00</div>
         </div>
     </header>
 
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO... • LA NUBE DE WILSON • SAN JUAN •</div></div>
+    <div class="ticker-wrap"><div class="ticker" id="main-ticker">SINCRONIZANDO MERCADOS... • LA NUBE DE WILSON • SAN JUAN •</div></div>
 
     <div class="video-box">
         <iframe id="player-kick" class="player-frame active" src="https://player.kick.com/lanubedewilson?parent=lanubedewilson.github.io" allowfullscreen="true"></iframe>
@@ -106,7 +102,7 @@
     <main class="grid-info">
         <div>
             <div class="col-title">Música</div>
-            <iframe style="border-radius:12px; margin-bottom:15px;" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbMDoHDm3pkuz?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <iframe style="border-radius:12px; margin-bottom:15px;" src="https://open.spotify.com/embed/playlist/37i9dQZEXR0A9dQZEXR0A9?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
             <div id="container-musica"></div>
         </div>
 
@@ -116,13 +112,13 @@
 
         <div>
             <div class="col-title">Señal SJ</div>
-            <p style="font-size:0.8rem;">Transmitiendo cultura y noticias desde el corazón de San Juan.</p>
+            <p style="font-size:0.8rem;">Transmitiendo desde San Juan, Argentina. Alta fidelidad en streaming 24/7.</p>
         </div>
 
         <div>
             <div class="col-title">Gracias a...</div>
             <div id="container-sponsor" class="sponsor-container">
-                <p style="font-size:0.6rem; color:#444;">Buscando sponsors...</p>
+                <p style="font-size:0.6rem; color:#333;">Espacio Publicitario</p>
             </div>
         </div>
     </main>
@@ -146,7 +142,7 @@
             try {
                 const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
                 const d = await res.json();
-                document.getElementById('main-ticker').innerHTML = `USD BLUE: $${d.blue.value_sell} • USD OFICIAL: $${d.oficial.value_sell} • EURO BLUE: $${d.blue_euro.value_sell} • LA NUBE DE WILSON • SAN JUAN •`;
+                document.getElementById('main-ticker').innerHTML = `USD BLUE: $${d.blue.value_sell} • USD OFICIAL: $${d.oficial.value_sell} • EURO BLUE: $${d.blue_euro.value_sell} • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
             } catch (e) {}
         }
 
@@ -157,9 +153,9 @@
                 const data = await res.text();
                 const rows = data.split('\n').slice(1).reverse(); 
                 
-                const cMus = document.getElementById('container-musica'), cCap = document.getElementById('container-capsula'), cDat = document.getElementById('container-data'), cSpo = document.getElementById('container-sponsor');
+                const cMus = document.getElementById('container-musica'), cCap = document.getElementById('container-capsula'), cDat = document.getElementById('container-data');
                 cMus.innerHTML = ''; cCap.innerHTML = ''; cDat.innerHTML = '';
-                sponsors = []; // Limpiamos la lista de sponsors para recargar
+                const newSponsors = [];
 
                 rows.forEach(row => {
                     const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -167,7 +163,7 @@
                         const t = col[0].replace(/^"|"$/g, ''), c = col[1].replace(/^"|"$/g, ''), a = col[2].replace(/^"|"$/g, ''), cat = col[4].trim().toLowerCase();
                         
                         if (cat === 'sponsor') {
-                            sponsors.push({type: c.includes('mp4') ? 'video' : 'img', url: c});
+                            newSponsors.push({type: c.toLowerCase().includes('mp4') ? 'video' : 'img', url: c});
                         } else {
                             const item = document.createElement('div'); item.className = 'news-item';
                             item.innerHTML = `<h3>${t}</h3><p style="font-size:0.85rem; height:2.8em; overflow:hidden; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${c}</p><button class="btn-read" onclick="openModal('${t}', \`${c}\`, '${a}')">LEER MÁS</button>`;
@@ -177,6 +173,7 @@
                         }
                     }
                 });
+                sponsors = newSponsors;
                 if(sponsors.length > 0) renderSponsors();
             } catch (e) {}
         }
@@ -187,18 +184,19 @@
             sponsors.forEach((s, i) => {
                 const div = document.createElement('div');
                 div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
-                if(s.type === 'video') div.innerHTML = `<video src="${s.url}" autoplay muted loop></video>`;
-                else div.innerHTML = `<img src="${s.url}" alt="Sponsor">`;
+                if(s.type === 'video') div.innerHTML = `<video src="${s.url}" autoplay muted loop playsinline></video>`;
+                else div.innerHTML = `<img src="${s.url}" alt="Sponsor" onerror="this.parentElement.style.display='none'">`;
                 container.appendChild(div);
             });
             if(sponsors.length > 1) {
                 clearInterval(window.sponsorTimer);
-                window.sponsorTimer = setInterval(rotateSponsors, 7000); // 7 SEGUNDOS
+                window.sponsorTimer = setInterval(rotateSponsors, 7000);
             }
         }
 
         function rotateSponsors() {
             const slides = document.querySelectorAll('.sponsor-slide');
+            if (slides.length < 2) return;
             slides[sponsorIndex].classList.remove('active');
             sponsorIndex = (sponsorIndex + 1) % slides.length;
             slides[sponsorIndex].classList.add('active');
