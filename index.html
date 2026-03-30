@@ -166,29 +166,25 @@
 
         function closeModal() { document.getElementById('feedModal').style.display = "none"; document.body.style.overflow = "auto"; }
 
-        function renderSponsors(rows) {
+    function renderSponsors(rows) {
     const container = document.getElementById('container-sponsor');
     container.innerHTML = '';
     if(sponsorInterval) clearInterval(sponsorInterval);
 
     rows.forEach((col, i) => {
-        // Probamos primero la Columna C (índice 2), si está vacía usamos la A (índice 0)
-        let url = (col[2] || col[0] || '').trim().replace(/^"|"$/g, '');
+        // LEEMOS LA COLUMNA C (ÍNDICE 2) QUE ES DONDE ESTÁ TU FÓRMULA
+        let url = (col[2] || '').trim().replace(/^"|"$/g, '');
         const tipo = (col[1] || 'imagen').trim().toLowerCase();
 
-        if(!url || url === 'URL' || url === 'LINK_DIRECTO.') return;
+        // Evitamos que intente cargar los títulos de las columnas
+        if(!url || url.includes('LINK_DIRECTO')) return;
 
         const div = document.createElement('div');
         div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
         
-        // Si el link es de Drive y no tiene el formato directo, lo arreglamos al vuelo
-        if (url.includes('drive.google.com') && !url.includes('uc?')) {
-            url = url.replace('/file/d/', '/uc?export=view&id=').replace('/view?usp=sharing', '').replace('/view?usp=drive_link', '');
-        }
-
         div.innerHTML = tipo === 'video' ? 
             `<video src="${url}" autoplay muted loop style="width:100%; height:100%; object-fit: contain;"></video>` : 
-            `<img src="${url}" style="width:100%; height:100%; object-fit: contain;" onerror="this.src='https://via.placeholder.com/180x100?text=Publicidad+Wilson'">`;
+            `<img src="${url}" style="width:100%; height:100%; object-fit: contain;">`;
         
         container.appendChild(div);
     });
@@ -205,7 +201,6 @@
         }, 7000); 
     }
 }
-
         window.onload = () => { loadData(); updateTicker(); setInterval(loadData, 300000); setInterval(updateTicker, 60000); };
     </script>
 </body>
