@@ -166,37 +166,42 @@
 
         function closeModal() { document.getElementById('feedModal').style.display = "none"; document.body.style.overflow = "auto"; }
 
-    function renderSponsors(rows) {
+function renderSponsors(rows) {
     const container = document.getElementById('container-sponsor');
     container.innerHTML = '';
     if(sponsorInterval) clearInterval(sponsorInterval);
 
     rows.forEach((col, i) => {
-        // LEEMOS LA COLUMNA C (ÍNDICE 2) QUE ES DONDE ESTÁ TU FÓRMULA
-        let url = (col[2] || '').trim().replace(/^"|"$/g, '');
+        // Esta línea es mágica: busca el link en la Columna C (índice 2) 
+        // o en la A (índice 0) si la C está vacía.
+        let url = (col[2] || col[0] || '').trim().replace(/^"|"$/g, '');
         const tipo = (col[1] || 'imagen').trim().toLowerCase();
 
-        // Evitamos que intente cargar los títulos de las columnas
-        if(!url || url.includes('LINK_DIRECTO')) return;
+        if(!url || url.includes('LINK_DIRECTO') || url === 'URL') return;
 
         const div = document.createElement('div');
         div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
         
+        // Si pegaste el link de Drive sin la fórmula, este código lo arregla solo:
+        if (url.includes('drive.google.com') && !url.includes('uc?')) {
+            url = url.replace('/file/d/', '/uc?export=view&id=').split('/view')[0];
+        }
+
         div.innerHTML = tipo === 'video' ? 
             `<video src="${url}" autoplay muted loop style="width:100%; height:100%; object-fit: contain;"></video>` : 
-            `<img src="${url}" style="width:100%; height:100%; object-fit: contain;">`;
+            `<img src="${url}" style="width:100%; height:100%; object-fit: contain;" onerror="this.parentElement.style.display='none'">`;
         
         container.appendChild(div);
     });
 
     if(rows.length > 1) { 
-        sponsorIndex = 0;
+        let currentIndex = 0;
         sponsorInterval = setInterval(() => { 
             const slides = document.querySelectorAll('.sponsor-slide'); 
             if(slides.length > 0){
-                slides[sponsorIndex].classList.remove('active'); 
-                sponsorIndex = (sponsorIndex + 1) % slides.length; 
-                slides[sponsorIndex].classList.add('active'); 
+                slides[currentIndex].classList.remove('active'); 
+                currentIndex = (currentIndex + 1) % slides.length; 
+                slides[currentIndex].classList.add('active'); 
             }
         }, 7000); 
     }
