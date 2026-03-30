@@ -38,20 +38,12 @@
         .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .player-frame.active { display: block; }
 
-        /* TICKER RESTAURADO */
         .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 6px 0; height: 20px; }
         .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 45s linear infinite; color: var(--highlight); font-size: 0.8rem; font-weight: bold; }
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         /* GRILLA DISTRIBUIDA */
-        .grid-info { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px 5%; 
-            max-width: 100%; 
-            margin: 0 auto;
-        }
+        .grid-info { display: flex; justify-content: space-between; align-items: center; padding: 15px 5%; max-width: 100%; margin: 0 auto; box-sizing: border-box; }
 
         .col-card {
             background: rgba(255,255,255,0.03); padding: 4px 12px; border-radius: 4px;
@@ -65,15 +57,18 @@
         .side-title { font-family: 'Bebas Neue', cursive; font-size: 0.95rem; color: var(--highlight); margin-bottom: 4px; border-bottom: 1px solid #1a261a; width: 100%; }
         .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; border: 1px solid #1a261a; border-radius: 4px; overflow: hidden; position: relative; }
         .sponsor-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; }
+        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; animation: fade 0.8s; }
+        @keyframes fade { from {opacity: 0} to {opacity: 1} }
 
-        /* MODAL */
+        /* MODAL CON SOPORTE PARA IMÁGENES */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); backdrop-filter: blur(12px); }
-        .modal-content { background: var(--bg-dark); margin: 0 auto; padding: 60px 20px; width: 90%; max-width: 700px; height: 100vh; overflow-y: auto; }
-        .close-modal { position: fixed; right: 20px; top: 10px; color: var(--highlight); font-size: 3rem; cursor: pointer; }
-        .feed-item { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #1a261a; padding: 35px 0; }
-        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.2rem; color: var(--sj-gold); margin-bottom: 12px; }
-        .feed-item p { font-size: 1.1rem; line-height: 1.6; color: #ccc; }
+        .modal-content { background: var(--bg-dark); margin: 0 auto; padding: 60px 20px; width: 90%; max-width: 700px; height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; }
+        .close-modal { position: fixed; right: 20px; top: 10px; color: var(--highlight); font-size: 3rem; cursor: pointer; z-index: 2001; }
+        
+        .feed-item { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #1a261a; padding: 40px 0; scroll-snap-align: start; }
+        .feed-img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 8px; margin-bottom: 20px; border: 1px solid #1a261a; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.4rem; color: var(--sj-gold); margin-bottom: 12px; line-height: 1.1; }
+        .feed-item p { font-size: 1.15rem; line-height: 1.6; color: #ccc; }
     </style>
 </head>
 <body>
@@ -86,7 +81,7 @@
         </div>
     </header>
 
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CARGANDO MERCADOS...</div></div>
+    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO FRECUENCIA...</div></div>
 
     <div class="video-box">
         <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&playlist=36YnV9STBqc&loop=1&enablejsapi=1" allow="autoplay"></iframe>
@@ -94,22 +89,10 @@
     </div>
 
     <main class="grid-info">
-        <div class="col-card" onclick="openFeed('data')">
-            <div class="col-title">+ DATA</div>
-            <div class="col-subtitle"><i>Scrollear +Data</i></div>
-        </div>
-        <div class="col-card" onclick="openFeed('capsula')">
-            <div class="col-title">CÁPSULAS</div>
-            <div class="col-subtitle"><i>Scrollear Cápsulas</i></div>
-        </div>
-        <div class="col-card" onclick="openFeed('senalsj')">
-            <div class="col-title">SEÑAL SJ</div>
-            <div class="col-subtitle"><i>Scrollear Señal SJ</i></div>
-        </div>
-        <div class="col-card" onclick="openFeed('musica')">
-            <div class="col-title">MUSICA</div>
-            <div class="col-subtitle"><i>Rankings y Tendencias</i></div>
-        </div>
+        <div class="col-card" onclick="openFeed('data')"><div class="col-title">+ DATA</div><div class="col-subtitle"><i>Scrollear +Data</i></div></div>
+        <div class="col-card" onclick="openFeed('capsula')"><div class="col-title">CÁPSULAS</div><div class="col-subtitle"><i>Scrollear Cápsulas</i></div></div>
+        <div class="col-card" onclick="openFeed('senalsj')"><div class="col-title">SEÑAL SJ</div><div class="col-subtitle"><i>Scrollear Señal SJ</i></div></div>
+        <div class="col-card" onclick="openFeed('musica')"><div class="col-title">MUSICA</div><div class="col-subtitle"><i>Rankings y Tendencias</i></div></div>
         <div class="sponsor-container">
             <div class="side-title">GRACIAS A...</div>
             <div id="container-sponsor" class="sponsor-box"></div>
@@ -127,7 +110,6 @@
         let sponsorIndex = 0;
         let sponsorInterval = null;
 
-        // SOLUCIÓN QUIRÚRGICA AL BOTÓN STREAM
         function switchSignal(type) {
             const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
             const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
@@ -154,30 +136,41 @@
             } catch (e) { console.error(e); }
         }
 
-        // TICKER MULTIMONEDA RESTAURADO
         async function updateTicker() {
             try {
                 const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
                 const d = await res.json();
                 const tickerText = `DÓLAR BLUE: $${d.blue.value_sell} • DÓLAR OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • BITCOIN: US$ 69.800 • REAL: $218 • PESO CHILENO: $1.28 • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
                 document.getElementById('main-ticker').innerText = tickerText;
-            } catch (e) { console.log("Ticker Error"); }
+            } catch (e) { console.log("Ticker delay"); }
         }
 
+        // --- MEJORA: SOPORTE PARA IMAGEN DE PORTADA ---
         function openFeed(category) {
             const body = document.getElementById('modal-feed-body');
             body.innerHTML = '';
             allDataRows.forEach(row => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length >= 4 && col[3].trim().toLowerCase() === 'publicar') {
-                    const title = col[0].replace(/^"|"$/g, ''), content = col[1].replace(/^"|"$/g, ''), cat = (col[4] || 'data').trim().toLowerCase();
+                    const title = col[0].replace(/^"|"$/g, '');
+                    const content = col[1].replace(/^"|"$/g, '');
+                    const cat = (col[4] || 'data').trim().toLowerCase();
+                    const imgUrl = (col[5] || '').replace(/^"|"$/g, '').trim(); // Columna F
+
                     if (cat === category) {
-                        body.innerHTML += `<div class="feed-item"><h2>${cat === 'senalsj' ? '🌞 ' : ''}${title}</h2><p>${content}</p></div>`;
+                        let imgHtml = imgUrl ? `<img src="${imgUrl}" class="feed-img" onerror="this.style.display='none'">` : '';
+                        body.innerHTML += `
+                            <div class="feed-item">
+                                ${imgHtml}
+                                <h2>${cat === 'senalsj' ? '🌞 ' : ''}${title}</h2>
+                                <p>${content}</p>
+                            </div>`;
                     }
                 }
             });
             document.getElementById('feedModal').style.display = "block";
             document.body.style.overflow = "hidden";
+            body.scrollTop = 0;
         }
 
         function closeModal() { document.getElementById('feedModal').style.display = "none"; document.body.style.overflow = "auto"; }
@@ -186,27 +179,3 @@
             const container = document.getElementById('container-sponsor');
             container.innerHTML = '';
             if(sponsorInterval) clearInterval(sponsorInterval);
-            rows.forEach((row, i) => {
-                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                const url = col[0].replace(/^"|"$/g, '').trim();
-                const tipo = (col[1] || 'imagen').replace(/^"|"$/g, '').trim().toLowerCase();
-                if(!url) return;
-                const div = document.createElement('div');
-                div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
-                div.innerHTML = tipo === 'video' ? `<video src="${url}" autoplay muted loop style="width:100%; height:100%; object-fit: contain;"></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit: contain;">`;
-                container.appendChild(div);
-            });
-            if(rows.length > 1) {
-                sponsorInterval = setInterval(() => {
-                    const slides = document.querySelectorAll('.sponsor-slide');
-                    slides[sponsorIndex].classList.remove('active');
-                    sponsorIndex = (sponsorIndex + 1) % slides.length;
-                    slides[sponsorIndex].classList.add('active');
-                }, 7000);
-            }
-        }
-
-        window.onload = () => { loadData(); updateTicker(); setInterval(loadData, 300000); setInterval(updateTicker, 60000); };
-    </script>
-</body>
-</html>
