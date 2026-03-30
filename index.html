@@ -38,11 +38,12 @@
         .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .player-frame.active { display: block; }
 
-        .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 6px 0; }
+        /* TICKER RESTAURADO */
+        .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 6px 0; height: 20px; }
         .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 45s linear infinite; color: var(--highlight); font-size: 0.8rem; font-weight: bold; }
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* --- GRILLA REPARTIDA DE LADO A LADO --- */
+        /* GRILLA DISTRIBUIDA */
         .grid-info { 
             display: flex; 
             justify-content: space-between; 
@@ -50,32 +51,27 @@
             padding: 15px 5%; 
             max-width: 100%; 
             margin: 0 auto;
-            box-sizing: border-box;
         }
 
         .col-card {
             background: rgba(255,255,255,0.03); padding: 4px 12px; border-radius: 4px;
             border: 1px solid #1a261a; cursor: pointer; transition: 0.2s; width: fit-content;
-            display: flex; flex-direction: column; justify-content: center;
         }
         .col-card:hover { border-color: var(--highlight); background: rgba(212, 225, 87, 0.2); }
-        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.2rem; color: #fff; margin: 0; line-height: 1; transition: 0.3s; }
+        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.2rem; color: #fff; margin: 0; line-height: 1; }
         .col-subtitle { font-size: 0.65rem; color: var(--accent-green); font-style: italic; opacity: 0.7; margin-top: 2px; }
-        .col-card:hover .col-title { color: var(--highlight); }
 
-        /* SECCIÓN GRACIAS A... */
         .sponsor-container { display: flex; flex-direction: column; align-items: flex-start; width: 180px; }
         .side-title { font-family: 'Bebas Neue', cursive; font-size: 0.95rem; color: var(--highlight); margin-bottom: 4px; border-bottom: 1px solid #1a261a; width: 100%; }
-        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #1a261a; border-radius: 4px; overflow: hidden; position: relative; }
+        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; border: 1px solid #1a261a; border-radius: 4px; overflow: hidden; position: relative; }
         .sponsor-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; animation: fade 0.8s; }
-        @keyframes fade { from {opacity: 0} to {opacity: 1} }
+        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; }
 
         /* MODAL */
         .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.97); backdrop-filter: blur(12px); }
-        .modal-content { background: var(--bg-dark); margin: 0 auto; padding: 60px 20px; width: 90%; max-width: 700px; height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; }
-        .close-modal { position: fixed; right: 20px; top: 10px; color: var(--highlight); font-size: 3rem; cursor: pointer; z-index: 2001; }
-        .feed-item { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #1a261a; padding: 35px 0; scroll-snap-align: start; }
+        .modal-content { background: var(--bg-dark); margin: 0 auto; padding: 60px 20px; width: 90%; max-width: 700px; height: 100vh; overflow-y: auto; }
+        .close-modal { position: fixed; right: 20px; top: 10px; color: var(--highlight); font-size: 3rem; cursor: pointer; }
+        .feed-item { min-height: 55vh; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #1a261a; padding: 35px 0; }
         .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.2rem; color: var(--sj-gold); margin-bottom: 12px; }
         .feed-item p { font-size: 1.1rem; line-height: 1.6; color: #ccc; }
     </style>
@@ -90,7 +86,7 @@
         </div>
     </header>
 
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO A LA REDACCIÓN...</div></div>
+    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CARGANDO MERCADOS...</div></div>
 
     <div class="video-box">
         <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&playlist=36YnV9STBqc&loop=1&enablejsapi=1" allow="autoplay"></iframe>
@@ -102,27 +98,21 @@
             <div class="col-title">+ DATA</div>
             <div class="col-subtitle"><i>Scrollear +Data</i></div>
         </div>
-
         <div class="col-card" onclick="openFeed('capsula')">
             <div class="col-title">CÁPSULAS</div>
             <div class="col-subtitle"><i>Scrollear Cápsulas</i></div>
         </div>
-
         <div class="col-card" onclick="openFeed('senalsj')">
             <div class="col-title">SEÑAL SJ</div>
             <div class="col-subtitle"><i>Scrollear Señal SJ</i></div>
         </div>
-
         <div class="col-card" onclick="openFeed('musica')">
             <div class="col-title">MUSICA</div>
             <div class="col-subtitle"><i>Rankings y Tendencias</i></div>
         </div>
-
         <div class="sponsor-container">
             <div class="side-title">GRACIAS A...</div>
-            <div id="container-sponsor" class="sponsor-box">
-                <p style="color:#222; font-size:0.6rem;">Cargando...</p>
-            </div>
+            <div id="container-sponsor" class="sponsor-box"></div>
         </div>
     </main>
 
@@ -137,6 +127,7 @@
         let sponsorIndex = 0;
         let sponsorInterval = null;
 
+        // SOLUCIÓN QUIRÚRGICA AL BOTÓN STREAM
         function switchSignal(type) {
             const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
             const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
@@ -152,26 +143,25 @@
         async function loadData() {
             const newsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + new Date().getTime();
             const sponsorsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=' + new Date().getTime();
-
             try {
                 const resNews = await fetch(newsUrl);
                 const textNews = await resNews.text();
                 allDataRows = textNews.split('\n').filter(r => r.trim() !== '').slice(1).reverse();
-
                 const resSpo = await fetch(sponsorsUrl);
                 const textSpo = await resSpo.text();
                 sponsorRows = textSpo.split('\n').filter(r => r.trim() !== '').slice(1);
                 if(sponsorRows.length > 0) renderSponsors(sponsorRows);
-            } catch (e) { console.error("Error cargando datos", e); }
+            } catch (e) { console.error(e); }
         }
 
+        // TICKER MULTIMONEDA RESTAURADO
         async function updateTicker() {
             try {
                 const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
                 const d = await res.json();
-                const ticker = `DÓLAR BLUE: $${d.blue.value_sell} • DÓLAR OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • BITCOIN: US$ 69.450 • REAL: $218 • PESO CHILENO: $1.28 • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
-                document.getElementById('main-ticker').innerText = ticker;
-            } catch (e) { console.log("Ticker delay"); }
+                const tickerText = `DÓLAR BLUE: $${d.blue.value_sell} • DÓLAR OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • BITCOIN: US$ 69.800 • REAL: $218 • PESO CHILENO: $1.28 • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
+                document.getElementById('main-ticker').innerText = tickerText;
+            } catch (e) { console.log("Ticker Error"); }
         }
 
         function openFeed(category) {
@@ -188,7 +178,6 @@
             });
             document.getElementById('feedModal').style.display = "block";
             document.body.style.overflow = "hidden";
-            body.scrollTop = 0;
         }
 
         function closeModal() { document.getElementById('feedModal').style.display = "none"; document.body.style.overflow = "auto"; }
@@ -197,7 +186,6 @@
             const container = document.getElementById('container-sponsor');
             container.innerHTML = '';
             if(sponsorInterval) clearInterval(sponsorInterval);
-            
             rows.forEach((row, i) => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const url = col[0].replace(/^"|"$/g, '').trim();
@@ -208,10 +196,17 @@
                 div.innerHTML = tipo === 'video' ? `<video src="${url}" autoplay muted loop style="width:100%; height:100%; object-fit: contain;"></video>` : `<img src="${url}" style="width:100%; height:100%; object-fit: contain;">`;
                 container.appendChild(div);
             });
-
             if(rows.length > 1) {
                 sponsorInterval = setInterval(() => {
                     const slides = document.querySelectorAll('.sponsor-slide');
                     slides[sponsorIndex].classList.remove('active');
                     sponsorIndex = (sponsorIndex + 1) % slides.length;
                     slides[sponsorIndex].classList.add('active');
+                }, 7000);
+            }
+        }
+
+        window.onload = () => { loadData(); updateTicker(); setInterval(loadData, 300000); setInterval(updateTicker, 60000); };
+    </script>
+</body>
+</html>
