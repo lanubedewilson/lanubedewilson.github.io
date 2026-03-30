@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Nube de Wilson | Media Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #050a05;      
@@ -21,7 +21,6 @@
             background-color: var(--bg-dark); color: var(--accent-green);
             font-family: 'Inter', sans-serif; margin: 0; padding: 0;
             display: flex; flex-direction: column; min-height: 100vh;
-            overflow-x: hidden;
         }
 
         header {
@@ -44,8 +43,7 @@
         }
         .btn-signal.active { background: var(--highlight); color: #000; }
 
-        /* Video y Ticker */
-        .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 50vh; margin: 0 auto; }
+        .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 45vh; margin: 0 auto; }
         .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .player-frame.active { display: block; }
 
@@ -53,12 +51,12 @@
         .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 40s linear infinite; color: var(--highlight); font-size: 0.8rem; font-weight: bold; }
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* Grilla Principal Minimalista */
+        /* Grilla Rectangular Minimalista */
         .grid-info { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
-            gap: 20px; 
-            padding: 30px 3%; 
+            gap: 15px; 
+            padding: 20px 3%; 
             max-width: 1600px; 
             margin: 0 auto; 
         }
@@ -66,79 +64,50 @@
         @media (max-width: 768px) { .grid-info { grid-template-columns: 1fr; } }
 
         .col-card {
-            background: rgba(255,255,255,0.02);
-            padding: 20px;
-            border-radius: 12px;
+            background: rgba(255,255,255,0.03);
+            padding: 15px;
+            border-radius: 8px;
             border: 1px solid #1a261a;
-            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 150px;
+            justify-content: center;
         }
+        .col-card:hover { border-color: var(--highlight); background: rgba(255,255,255,0.06); }
 
-        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.8rem; color: var(--highlight); margin-bottom: 15px; letter-spacing: 1px; }
+        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.6rem; color: var(--highlight); margin: 0; line-height: 1; }
+        .col-subtitle { font-size: 0.85rem; color: var(--accent-green); margin-top: 5px; opacity: 0.8; font-style: italic; }
 
-        .btn-action { 
-            background: none; border: 2px solid var(--highlight); color: var(--highlight); 
-            font-size: 0.9rem; padding: 12px; cursor: pointer; border-radius: 8px; 
-            font-weight: bold; transition: 0.3s; text-transform: uppercase;
-        }
-        .btn-action:hover { background: var(--highlight); color: #000; }
-
-        /* MODAL DE SCROLL ADICTIVO */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(10px); }
-        .modal-content { 
-            background: var(--bg-dark); 
-            margin: 0 auto; 
-            padding: 60px 20px; 
-            width: 90%; 
-            max-width: 800px; 
-            height: 100vh; 
-            overflow-y: auto; 
-            scroll-snap-type: y mandatory;
-        }
-        .close-modal { position: fixed; right: 30px; top: 20px; color: var(--highlight); font-size: 3rem; cursor: pointer; z-index: 2001; }
-        
-        .feed-item { 
-            min-height: 60vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            border-bottom: 1px solid #1a261a; 
-            padding: 40px 0;
-            scroll-snap-align: start;
-        }
-        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.8rem; line-height: 1.1; margin-bottom: 20px; }
-        .feed-item p { font-size: 1.3rem; line-height: 1.6; color: #ccc; }
-
-        /* Colores dinámicos en el Feed */
-        .feed-data h2 { color: var(--data-blue); }
-        .feed-capsula h2 { color: var(--capsula-pink); }
-        .feed-senalsj h2 { color: var(--sj-gold); }
-        .feed-senalsj { background: rgba(255, 204, 0, 0.02); }
-
-        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #1a261a; border-radius: 8px; overflow: hidden; }
+        /* Estilo Sponsor y Música */
+        .side-title { font-family: 'Bebas Neue', cursive; font-size: 1.3rem; color: var(--highlight); margin-bottom: 8px; border-bottom: 1px solid #1a261a; width: 100%; }
+        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #1a261a; border-radius: 4px; overflow: hidden; }
         .sponsor-slide { display: none; width: 100%; height: 100%; }
-        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; animation: fade 0.8s; }
-        @keyframes fade { from {opacity: 0} to {opacity: 1} }
+        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; }
 
+        /* MODAL */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); }
+        .modal-content { background: var(--bg-dark); margin: 0 auto; padding: 60px 20px; width: 90%; max-width: 800px; height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; }
+        .close-modal { position: fixed; right: 30px; top: 20px; color: var(--highlight); font-size: 3rem; cursor: pointer; z-index: 2001; }
+        .feed-item { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid #1a261a; padding: 40px 0; scroll-snap-align: start; }
+        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.5rem; color: var(--highlight); margin-bottom: 15px; }
+        .feed-item p { font-size: 1.2rem; line-height: 1.6; color: #ccc; }
+        .feed-senalsj h2 { color: var(--sj-gold); }
     </style>
 </head>
 <body>
 
     <header>
         <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
-        
         <div class="signal-selector">
             <button id="btn-kick" class="btn-signal active" onclick="switchSignal('kick')">Stream</button>
             <button id="btn-yt" class="btn-signal" onclick="switchSignal('yt')">Musica 24/7</button>
         </div>
-
-        <div id="weather-box" style="font-size: 0.9rem; color: var(--highlight); font-weight: bold;">SAN JUAN: 24°C</div>
+        <div id="weather-box" style="font-size: 0.9rem; color: var(--highlight);">SAN JUAN: 24°C</div>
     </header>
 
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO CON MERCADOS... • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •</div></div>
+    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO... • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •</div></div>
 
     <div class="video-box">
         <iframe id="player-kick" class="player-frame active" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
@@ -146,27 +115,32 @@
     </div>
 
     <main class="grid-info">
-        <div class="col-card">
+        <div class="col-card" onclick="openFeed('data')">
             <div class="col-title">+ DATA</div>
-            <button class="btn-action" onclick="openFeed('data')">SCROLLEAR + DATA</button>
+            <div class="col-subtitle"><i>Scrollear +Data y ver más</i></div>
         </div>
 
-        <div class="col-card">
+        <div class="col-card" onclick="openFeed('capsula')">
             <div class="col-title">CÁPSULAS</div>
-            <button class="btn-action" onclick="openFeed('capsula')">SCROLLEAR CÁPSULAS</button>
+            <div class="col-subtitle"><i>Scrollear Cápsulas y ver más</i></div>
         </div>
 
-        <div class="col-card">
+        <div class="col-card" onclick="openFeed('senalsj')">
             <div class="col-title">SEÑAL SJ</div>
-            <button class="btn-action" onclick="openFeed('senalsj')">VER MÁS SEÑAL SJ</button>
+            <div class="col-subtitle"><i>Scrollear Señal SJ y ver más</i></div>
         </div>
 
-        <div class="col-card" style="justify-content: flex-start; gap: 15px;">
-            <div class="col-title">SONIDOS</div>
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM3M" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div style="width: 100%;">
+                <div class="side-title">MUSICA</div>
+                <iframe style="border-radius:8px" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM3M?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
             
-            <div id="container-sponsor" class="sponsor-box">
-                <p style="color:var(--text-muted); font-size:0.7rem;">ESPACIO PUBLICITARIO</p>
+            <div style="width: 100%;">
+                <div class="side-title">GRACIAS A...</div>
+                <div id="container-sponsor" class="sponsor-box">
+                    <p style="color:var(--text-muted); font-size:0.7rem;">CARGANDO SPONSORS...</p>
+                </div>
             </div>
         </div>
     </main>
@@ -188,66 +162,70 @@
         }
 
         async function loadData() {
-            // TU LINK DE GOOGLE SHEETS PUBLISHED AS CSV
             const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + new Date().getTime();
-            
             try {
                 const res = await fetch(csvUrl);
                 const text = await res.text();
-                // Limpiamos filas vacías y guardamos
                 allDataRows = text.split('\n').filter(row => row.trim() !== '').slice(1).reverse();
-                console.log("Nube cargada con éxito");
-            } catch (e) { 
-                console.error("Error cargando la Nube:", e); 
-            }
+                
+                // Cargar Sponsors si existen
+                let sponsors = [];
+                allDataRows.forEach(row => {
+                    const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    if (col.length >= 5 && col[4].trim().toLowerCase() === 'sponsor') {
+                        sponsors.push(col[1].replace(/^"|"$/g, ''));
+                    }
+                });
+                if(sponsors.length > 0) renderSponsors(sponsors);
+            } catch (e) { console.error("Error:", e); }
         }
 
         function openFeed(category) {
             const body = document.getElementById('modal-feed-body');
             body.innerHTML = '';
             let count = 0;
-
             allDataRows.forEach(row => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length >= 4 && col[3].trim().toLowerCase() === 'publicar') {
                     const title = col[0].replace(/^"|"$/g, '');
                     const content = col[1].replace(/^"|"$/g, '');
                     const cat = (col[4] || 'data').trim().toLowerCase();
-
                     if (cat === category) {
                         count++;
-                        let icon = "";
-                        if (cat === 'senalsj') icon = "🌞 ";
-
-                        body.innerHTML += `
-                            <div class="feed-item feed-${cat}">
-                                <h2>${icon}${title}</h2>
-                                <p>${content}</p>
-                            </div>`;
+                        body.innerHTML += `<div class="feed-item feed-${cat}"><h2>${cat === 'senalsj' ? '🌞 ' : ''}${title}</h2><p>${content}</p></div>`;
                     }
                 }
             });
-
-            if (count === 0) {
-                body.innerHTML = `<div class="feed-item"><h2>PRÓXIMAMENTE</h2><p>Estamos procesando nuevas señales para esta categoría...</p></div>`;
-            }
-
             document.getElementById('feedModal').style.display = "block";
             document.body.style.overflow = "hidden";
-            body.scrollTop = 0;
         }
 
-        function closeModal() {
-            document.getElementById('feedModal').style.display = "none";
-            document.body.style.overflow = "auto";
+        function closeModal() { document.getElementById('feedModal').style.display = "none"; document.body.style.overflow = "auto"; }
+
+        function renderSponsors(imgs) {
+            const container = document.getElementById('container-sponsor');
+            container.innerHTML = '';
+            imgs.forEach((url, i) => {
+                const div = document.createElement('div');
+                div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
+                div.innerHTML = `<img src="${url}" style="max-width:100%; max-height:100%; object-fit: contain;">`;
+                container.appendChild(div);
+            });
+            setInterval(() => {
+                const slides = document.querySelectorAll('.sponsor-slide');
+                if(slides.length > 1) {
+                    slides[sponsorIndex].classList.remove('active');
+                    sponsorIndex = (sponsorIndex + 1) % slides.length;
+                    slides[sponsorIndex].classList.add('active');
+                }
+            }, 5000);
         }
 
         window.onload = () => { 
             loadData(); 
-            // Ticker de mercados
             setInterval(() => {
                 fetch('https://api.bluelytics.com.ar/v2/latest').then(r => r.json()).then(d => {
-                    document.getElementById('main-ticker').innerText = `USD BLUE: $${d.blue.value_sell} • USD OFICIAL: $${d.oficial.value_sell} • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
+                    document.getElementById('main-ticker').innerText = `USD BLUE: $${d.blue.value_sell} • USD OFICIAL: $${d.oficial.value_sell} • LA NUBE DE WILSON • SAN JUAN •`;
                 }).catch(() => {});
             }, 60000); 
         };
