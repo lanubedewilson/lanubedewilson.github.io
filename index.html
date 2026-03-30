@@ -1,255 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Nube de Wilson | Media Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #050a05;      
-            --header-bg: #0c140c;
-            --accent-green: #9fb69f; 
-            --highlight: #d4e157;    
-            --text-muted: #4a5c4a;   
+rows.forEach(row => {
+    const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    if (col.length >= 4 && col[3].trim().toLowerCase() === 'publicar') {
+        const title = col[0].replace(/^"|"$/g, '');
+        const content = col[1].replace(/^"|"$/g, '');
+        const cat = col[4].trim().toLowerCase();
+
+        // --- MEJORA DE ESTILO SEGÚN CATEGORÍA ---
+        let borderStyle = "border-left: 3px solid var(--highlight);";
+        let icon = "";
+
+        if (cat === 'senalsj') {
+            borderStyle = "border-left: 5px solid #ffcc00; background: rgba(255, 204, 0, 0.05);";
+            icon = "🌞 "; // El toque de San Juan
+        } else if (cat === 'data') {
+            borderStyle = "border-left: 5px solid #00bcff; background: rgba(0, 188, 255, 0.05);";
+        } else if (cat === 'capsula') {
+            borderStyle = "border-left: 5px solid #f093fb; background: rgba(240, 147, 251, 0.05);";
         }
 
-        body {
-            background-color: var(--bg-dark); color: var(--accent-green);
-            font-family: 'Inter', sans-serif; margin: 0; padding: 0;
-            display: flex; flex-direction: column; min-height: 100vh;
-        }
+        const itemHtml = `
+            <div class="news-item" style="${borderStyle}">
+                <h3>${icon}${title}</h3>
+                <p style="font-size:0.8rem; color:#ccc;">${content.substring(0,120)}...</p>
+            </div>`;
 
-        header {
-            background-color: var(--header-bg); padding: 15px 5%;
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--highlight); flex-wrap: wrap; gap: 20px;
-        }
-        .logo { font-family: 'Bebas Neue', cursive; font-size: 2.5rem; letter-spacing: 2px; margin: 0; color: var(--highlight); }
-        .logo span { color: var(--accent-green); font-weight: normal; }
-
-        .signal-selector { 
-            display: flex; gap: 5px; background: #000; padding: 6px; 
-            border-radius: 10px; border: 2px solid var(--highlight);
-        }
-        .btn-signal { 
-            background: none; border: none; color: var(--text-muted); 
-            font-size: 0.8rem; font-weight: bold; padding: 8px 18px; 
-            cursor: pointer; border-radius: 6px; text-transform: uppercase; 
-            transition: 0.3s;
-        }
-        .btn-signal.active { background: var(--highlight); color: #000; }
-
-        /* Video y Ticker */
-        .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 55vh; margin: 0 auto; }
-        .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
-        .player-frame.active { display: block; }
-
-        .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 8px 0; }
-        .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 45s linear infinite; color: var(--highlight); font-size: 0.8rem; font-weight: bold; }
-        @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        /* Grilla Principal */
-        .grid-info { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 20px; 
-            padding: 25px 3%; 
-            max-width: 1600px; 
-            margin: 0 auto; 
-        }
-        @media (max-width: 1200px) { .grid-info { grid-template-columns: 1fr 1fr; } }
-        @media (max-width: 768px) { .grid-info { grid-template-columns: 1fr; } }
-
-        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.5rem; color: var(--highlight); margin-bottom: 15px; border-bottom: 1px solid var(--highlight); }
-
-        .news-item { background: rgba(255,255,255,0.03); margin-bottom: 15px; padding: 15px; border-radius: 4px; border-left: 3px solid var(--highlight); }
-        .news-item h3 { margin: 0 0 8px 0; font-size: 1.1rem; color: #fff; }
-        .btn-read { background: none; border: 1px solid var(--highlight); color: var(--highlight); font-size: 0.7rem; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; }
-
-        /* MODAL DE SCROLL ADICTIVO */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); }
-        .modal-content { 
-            background: var(--bg-dark); 
-            margin: 0 auto; 
-            padding: 40px 20px; 
-            width: 90%; 
-            max-width: 700px; 
-            height: 100vh; 
-            overflow-y: auto; 
-            border-left: 1px solid var(--highlight);
-            border-right: 1px solid var(--highlight);
-        }
-        .close-modal { position: fixed; right: 30px; top: 20px; color: var(--highlight); font-size: 3rem; cursor: pointer; z-index: 1001; }
-        
-        /* Estilo TikTok en Modal */
-        .feed-item { 
-            min-height: 40vh; 
-            display: flex; 
-            flex-direction: column; 
-            justify-content: center; 
-            border-bottom: 1px solid #1a261a; 
-            padding: 40px 0;
-            scroll-snap-align: start;
-        }
-        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.5rem; color: var(--highlight); margin-bottom: 20px; }
-        .feed-item p { font-size: 1.2rem; line-height: 1.6; color: #ccc; }
-
-        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; display: flex; align-items: center; justify-content: center; border: 1px solid #1a261a; overflow: hidden; border-radius: 8px; }
-        .sponsor-slide { display: none; width: 100%; height: 100%; text-align: center; }
-        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; animation: fade 0.8s; }
-        @keyframes fade { from {opacity: 0} to {opacity: 1} }
-
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
-        
-        <div class="signal-selector">
-            <button id="btn-kick" class="btn-signal active" onclick="switchSignal('kick')">Stream</button>
-            <button id="btn-yt" class="btn-signal" onclick="switchSignal('yt')">Musica 24/7</button>
-        </div>
-
-        <div id="weather-box" style="font-size: 0.8rem; color: var(--highlight);">SAN JUAN: 24°C</div>
-    </header>
-
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CARGANDO MERCADOS... • LA NUBE DE WILSON • SAN JUAN •</div></div>
-
-    <div class="video-box">
-        <iframe id="player-kick" class="player-frame active" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
-        <iframe id="player-yt" class="player-frame" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1" allowfullscreen></iframe>
-    </div>
-
-    <main class="grid-info">
-        <div>
-            <div class="col-title">+ DATA</div>
-            <div id="container-data"></div>
-            <button class="btn-read" style="width:100%" onclick="openFeed('data')">SCROLLEAR TODO + DATA</button>
-        </div>
-
-        <div>
-            <div class="col-title">CÁPSULAS</div>
-            <div id="container-capsula"></div>
-            <button class="btn-read" style="width:100%" onclick="openFeed('capsula')">SCROLLEAR CÁPSULAS</button>
-        </div>
-
-        <div>
-            <div class="col-title">SEÑAL SJ</div>
-            <div id="container-senalsj"></div>
-            <button class="btn-read" style="width:100%" onclick="openFeed('senalsj')">AGENDA COMPLETA SJ</button>
-        </div>
-
-        <div>
-            <div class="col-title">MÚSICA GLOBAL</div>
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZEVXbMDoHDw32BYs?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-            
-            <div class="col-title" style="margin-top:20px">GRACIAS A...</div>
-            <div id="container-sponsor" class="sponsor-box">
-                <p style="color:#222; font-size:0.7rem;">Espacio Publicitario</p>
-            </div>
-        </div>
-    </main>
-
-    <div id="feedModal" class="modal">
-        <span class="close-modal" onclick="closeModal()">×</span>
-        <div class="modal-content" id="modal-feed-body">
-            </div>
-    </div>
-
-    <script>
-        let allDataRows = [];
-        let sponsorIndex = 0;
-
-        function switchSignal(type) {
-            const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
-            const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
-            if (type === 'kick') { pk.classList.add('active'); py.classList.remove('active'); bk.classList.add('active'); by.classList.remove('active'); py.src = py.src; }
-            else { py.classList.add('active'); pk.classList.remove('active'); by.classList.add('active'); bk.classList.remove('active'); }
-        }
-
-        async function loadData() {
-            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + new Date().getTime();
-            try {
-                const res = await fetch(csvUrl);
-                const text = await res.text();
-                const rows = text.split('\n').slice(1).reverse();
-                allDataRows = rows;
-
-                const cData = document.getElementById('container-data');
-                const cCap = document.getElementById('container-capsula');
-                const cSJ = document.getElementById('container-senalsj');
-                const cSpo = document.getElementById('container-sponsor');
-                
-                cData.innerHTML = ''; cCap.innerHTML = ''; cSJ.innerHTML = ''; cSpo.innerHTML = '';
-
-                let sponsors = [];
-
-                rows.forEach(row => {
-                    const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                    if (col.length >= 5 && col[3].trim().toLowerCase() === 'publicar') {
-                        const title = col[0].replace(/^"|"$/g, '');
-                        const content = col[1].replace(/^"|"$/g, '');
-                        const cat = col[4].trim().toLowerCase();
-
-                        const itemHtml = `<div class="news-item"><h3>${title}</h3><p style="font-size:0.8rem; color:#888;">${content.substring(0,100)}...</p></div>`;
-
-                        if (cat === 'data') cData.innerHTML += itemHtml;
-                        else if (cat === 'capsula') cCap.innerHTML += itemHtml;
-                        else if (cat === 'senalsj') cSJ.innerHTML += itemHtml;
-                        else if (cat === 'sponsor') sponsors.push(content);
-                    }
-                });
-
-                if(sponsors.length > 0) renderSponsors(sponsors);
-
-            } catch (e) { console.error(e); }
-        }
-
-        function openFeed(category) {
-            const body = document.getElementById('modal-feed-body');
-            body.innerHTML = '';
-            
-            allDataRows.forEach(row => {
-                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (col.length >= 5 && col[4].trim().toLowerCase() === category) {
-                    const title = col[0].replace(/^"|"$/g, '');
-                    const content = col[1].replace(/^"|"$/g, '');
-                    body.innerHTML += `<div class="feed-item"><h2>${title}</h2><p>${content}</p></div>`;
-                }
-            });
-
-            document.getElementById('feedModal').style.display = "block";
-            document.body.style.overflow = "hidden"; // Bloquea el scroll de atras
-        }
-
-        function closeModal() {
-            document.getElementById('feedModal').style.display = "none";
-            document.body.style.overflow = "auto";
-        }
-
-        function renderSponsors(imgs) {
-            const container = document.getElementById('container-sponsor');
-            imgs.forEach((url, i) => {
-                const div = document.createElement('div');
-                div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
-                div.innerHTML = `<img src="${url}" style="max-width:100%; max-height:100%;">`;
-                container.appendChild(div);
-            });
-            setInterval(() => {
-                const slides = document.querySelectorAll('.sponsor-slide');
-                slides[sponsorIndex].classList.remove('active');
-                sponsorIndex = (sponsorIndex + 1) % slides.length;
-                slides[sponsorIndex].classList.add('active');
-            }, 5000);
-        }
-
-        window.onload = () => { loadData(); setInterval(() => {
-            fetch('https://api.bluelytics.com.ar/v2/latest').then(r => r.json()).then(d => {
-                document.getElementById('main-ticker').innerText = `USD BLUE: $${d.blue.value_sell} • USD OFICIAL: $${d.oficial.value_sell} • LA NUBE DE WILSON • SAN JUAN •`;
-            });
-        }, 60000); };
-    </script>
-</body>
-</html>
+        if (cat === 'data') cData.innerHTML += itemHtml;
+        else if (cat === 'capsula') cCap.innerHTML += itemHtml;
+        else if (cat === 'senalsj') cSJ.innerHTML += itemHtml;
+        else if (cat === 'sponsor') sponsors.push(content);
+    }
+});
