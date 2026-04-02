@@ -135,7 +135,7 @@
     </header>
 
     <div class="main-stage">
-        <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=0&enablejsapi=1" allow="autoplay"></iframe>
+        <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&enablejsapi=1" allow="autoplay"></iframe>
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
     </div>
 
@@ -216,6 +216,7 @@
                     card.className = `note-card cat-${cat}`;
                     card.id = noteId;
                     card.innerHTML = `
+                        <div style="color:var(--highlight); font-size:0.7rem; font-weight:bold; margin-bottom:5px; opacity:0.8;">[ ${cat.toUpperCase()} ]</div>
                         ${img ? `<img src="${img}" class="note-img">` : ''}
                         <h2 class="note-title">${title}</h2>
                         <div class="note-content">${content}</div>
