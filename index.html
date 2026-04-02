@@ -3,210 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Nube de Wilson | Media Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <title>La Nube de Wilson | Timeline en Vivo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-dark: #050a05; --header-bg: #0c140c; --accent-green: #9fb69f; --highlight: #d4e157; --sj-gold: #ffcc00; }
-        body { background-color: var(--bg-dark); color: var(--accent-green); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
-        
-        header { background-color: var(--header-bg); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--highlight); }
-        .logo { font-family: 'Bebas Neue', cursive; font-size: 2.5rem; color: var(--highlight); margin: 0; }
-        .logo span { color: var(--accent-green); font-weight: normal; }
+        :root {
+            --bg-dark: #050a05;
+            --accent-data: #2196F3;    /* Azul */
+            --accent-capsula: #4CAF50; /* Verde */
+            --accent-senalsj: #FFD700; /* Oro */
+            --accent-musica: #E91E63;  /* Rosa/Fucsia */
+            --highlight: #d4e157;
+        }
 
-        .signal-selector { display: flex; gap: 8px; background: #000; padding: 6px; border-radius: 8px; border: 1px solid var(--highlight); }
-        .btn-signal { background: none; border: none; color: #4a5c4a; font-size: 0.85rem; font-weight: bold; padding: 8px 15px; cursor: pointer; border-radius: 4px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
-        .btn-signal.active { background: var(--highlight); color: #000; }
-        .dot { width: 8px; height: 8px; background: #ff0000; border-radius: 50%; box-shadow: 0 0 5px #ff0000; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--bg-dark); color: #fff; font-family: 'Inter', sans-serif; overflow: hidden; }
 
-        .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 55vh; }
-        .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
+        /* VIDEO DE FONDO - SIEMPRE ACTIVO */
+        .video-background { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: #000; }
+        .player-frame { width: 100%; height: 100%; border: none; position: absolute; display: none; }
         .player-frame.active { display: block; }
 
-        .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 8px 0; height: 24px; }
-        .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 40s linear infinite; color: var(--highlight); font-size: 0.9rem; font-weight: bold; }
-        @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        .grid-info { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; max-width: 100%; margin: 0 auto; box-sizing: border-box; }
-        .col-card { background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 6px; border: 1px solid #1a261a; cursor: pointer; transition: 0.2s; width: fit-content; text-align: center; }
-        .col-card:hover { border-color: var(--highlight); background: rgba(212, 225, 87, 0.2); }
-        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.4rem; color: #fff; margin: 0; line-height: 1; }
-        .col-subtitle { font-size: 0.75rem; color: var(--accent-green); font-style: italic; opacity: 0.8; margin-top: 4px; }
-
-        .modal { 
-            display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; 
-            background: rgba(5, 10, 5, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        /* OVERLAY TRASLÚCIDO */
+        .app-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
-        .modal-content { 
-            background: rgba(12, 20, 12, 0.5); margin: 0 auto; padding: 60px 25px; 
-            width: 92%; max-width: 750px; height: 100vh; overflow-y: auto; scroll-snap-type: y mandatory; 
-        }
-        .close-modal { position: fixed; right: 25px; top: 15px; color: var(--highlight); font-size: 3.5rem; cursor: pointer; z-index: 2001; }
+
+        header { background: rgba(12, 20, 12, 0.8); padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212, 225, 87, 0.3); }
+        .logo { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: var(--highlight); margin: 0; }
+
+        /* FILTROS DE CATEGORÍA */
+        .filter-bar { display: flex; justify-content: center; gap: 10px; padding: 15px; background: rgba(0,0,0,0.5); }
+        .filter-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.3s; }
+        .filter-btn.active { background: var(--highlight); color: #000; border-color: var(--highlight); }
+
+        /* TIMELINE SCROLLABLE */
+        #timeline { flex: 1; overflow-y: auto; padding: 20px 5%; scroll-behavior: smooth; }
         
-        .feed-item { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; border-bottom: 1px solid rgba(212, 225, 87, 0.1); padding: 50px 0; scroll-snap-align: start; }
-        .feed-img { width: 100%; max-height: 380px; object-fit: cover; border-radius: 10px; margin-bottom: 20px; border: 1px solid #1a261a; }
-        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.6rem; color: var(--sj-gold); margin-bottom: 12px; line-height: 1; }
-        .feed-item p { font-size: 1.2rem; line-height: 1.6; color: #eee; white-space: pre-wrap; } /* white-space: pre-wrap mantiene los párrafos */
-        .author-tag { font-size: 0.75rem; color: var(--highlight); text-transform: uppercase; margin-bottom: 8px; font-weight: bold; opacity: 0.8; }
+        .news-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-left: 5px solid #ccc;
+            margin-bottom: 40px;
+            padding: 25px;
+            border-radius: 0 15px 15px 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.5s ease;
+        }
 
-        .sponsor-container { display: flex; flex-direction: column; align-items: flex-start; width: 180px; }
-        .side-title { font-family: 'Bebas Neue', cursive; font-size: 1rem; color: var(--highlight); margin-bottom: 6px; border-bottom: 1px solid #1a261a; width: 100%; }
-        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; border: 1px solid #1a261a; border-radius: 4px; overflow: hidden; position: relative; }
-        .sponsor-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; animation: fade 0.8s; }
-        @keyframes fade { from {opacity: 0} to {opacity: 1} }
+        .news-card.data { border-left-color: var(--accent-data); }
+        .news-card.capsula { border-left-color: var(--accent-capsula); }
+        .news-card.senalsj { border-left-color: var(--accent-senalsj); }
+        .news-card.musica { border-left-color: var(--accent-musica); }
+
+        .cat-tag { font-size: 0.7rem; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        .news-card h2 { font-family: 'Bebas Neue'; font-size: 2.5rem; margin: 10px 0; line-height: 1; }
+        .news-card p { font-size: 1.1rem; line-height: 1.6; opacity: 0.9; }
+        .news-img { width: 100%; border-radius: 10px; margin: 15px 0; border: 1px solid rgba(255,255,255,0.1); }
+
+        /* BOTÓN COMPARTIR */
+        .share-btn { background: none; border: 1px solid rgba(212, 225, 87, 0.5); color: var(--highlight); padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 0.8rem; margin-top: 15px; display: flex; align-items: center; gap: 8px; }
+        .share-btn:hover { background: var(--highlight); color: #000; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* FOOTER SPONSORS PEQUEÑO */
+        .mini-sponsor { position: fixed; bottom: 20px; right: 20px; width: 150px; height: 80px; background: rgba(0,0,0,0.8); border: 1px solid var(--highlight); border-radius: 8px; overflow: hidden; z-index: 100; }
+        
+        /* TICKER */
+        .ticker-wrap { background: #000; height: 30px; overflow: hidden; }
+        .ticker { white-space: nowrap; animation: ticker 30s linear infinite; padding-top: 5px; color: var(--highlight); font-size: 0.85rem; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
 <body>
-    <header>
-        <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
-        <div class="signal-selector">
-            <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')"><span class="dot"></span> STREAM</button>
-            <button id="btn-yt" class="btn-signal active" onclick="switchSignal('yt')">MUSICA 24/7</button>
-        </div>
-    </header>
-    
-    <div class="ticker-wrap"><div class="ticker" id="main-ticker">CONECTANDO CON LA REDACCIÓN...</div></div>
 
-    <div class="video-box">
-        <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&playlist=36YnV9STBqc&loop=1&enablejsapi=1" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allow="autoplay; fullscreen" allowfullscreen="true"></iframe>
+    <div class="video-background">
+        <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&playlist=36YnV9STBqc&loop=1&enablejsapi=1" allow="autoplay; fullscreen"></iframe>
+        <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allow="autoplay; fullscreen"></iframe>
     </div>
 
-    <main class="grid-info">
-        <div class="col-card" onclick="openFeed('data')"><div class="col-title">+ DATA</div><div class="col-subtitle">Scrollear</div></div>
-        <div class="col-card" onclick="openFeed('capsula')"><div class="col-title">CÁPSULAS</div><div class="col-subtitle">Scrollear</div></div>
-        <div class="col-card" onclick="openFeed('senalsj')"><div class="col-title">SEÑAL SJ</div><div class="col-subtitle">Scrollear</div></div>
-        <div class="col-card" onclick="openFeed('musica')"><div class="col-title">MUSICA</div><div class="col-subtitle">Scrollear</div></div>
-        <div class="sponsor-container"><div class="side-title">GRACIAS A...</div><div id="container-sponsor" class="sponsor-box"></div></div>
-    </main>
+    <div class="app-container">
+        <header>
+            <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="switchSource('yt')" id="btn-yt" style="background:var(--highlight); border:none; padding:5px 10px; cursor:pointer;">MÚSICA</button>
+                <button onclick="switchSource('kick')" id="btn-kick" style="background:#fff; border:none; padding:5px 10px; cursor:pointer;">LIVE</button>
+            </div>
+        </header>
 
-    <div id="feedModal" class="modal"><span class="close-modal" onclick="closeModal()">×</span><div class="modal-content" id="modal-feed-body"></div></div>
+        <div class="ticker-wrap"><div class="ticker" id="ticker-content">CARGANDO ÚLTIMAS NOTICIAS...</div></div>
 
-    <script>
-        let allParsedData = []; let sponsorRows = []; let sponsorIndex = 0; let sponsorInterval = null;
-
-        function switchSignal(type) {
-            const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
-            const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
-            if (type === 'kick') { 
-                pk.classList.add('active'); py.classList.remove('active'); bk.classList.add('active'); by.classList.remove('active');
-                py.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            } else { 
-                py.classList.add('active'); pk.classList.remove('active'); by.classList.add('active'); bk.classList.remove('active');
-                py.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }
-
-        // --- TRADUCTOR DE CSV ROBUSTO PARA PÁRRAFOS ---
-        function parseCSV(data) {
-            const rows = []; let currentRow = []; let currentField = ''; let inQuotes = false;
-            for (let i = 0; i < data.length; i++) {
-                const char = data[i]; const nextChar = data[i + 1];
-                if (char === '"' && inQuotes && nextChar === '"') { currentField += '"'; i++; }
-                else if (char === '"') { inQuotes = !inQuotes; }
-                else if (char === ',' && !inQuotes) { currentRow.push(currentField); currentField = ''; }
-                else if (char === '\n' && !inQuotes) { currentRow.push(currentField); rows.push(currentRow); currentRow = []; currentField = ''; }
-                else { currentField += char; }
-            }
-            if (currentField || currentRow.length > 0) { currentRow.push(currentField); rows.push(currentRow); }
-            return rows;
-        }
-
-        async function loadData() {
-            const newsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + new Date().getTime();
-            const sponsorsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=' + new Date().getTime();
-            try {
-                const resNews = await fetch(newsUrl); const textNews = await resNews.text();
-                allParsedData = parseCSV(textNews).slice(1).reverse(); // Saltamos cabecera y damos vuelta
-                
-                const resSpo = await fetch(sponsorsUrl); const textSpo = await resSpo.text();
-                sponsorRows = parseCSV(textSpo).slice(1);
-                if(sponsorRows.length > 0) renderSponsors(sponsorRows);
-            } catch (e) { console.log("Error de redacción."); }
-        }
-
-        async function updateTicker() {
-            try {
-                const res = await fetch('https://api.bluelytics.com.ar/v2/latest'); const d = await res.json();
-                document.getElementById('main-ticker').innerText = `DÓLAR BLUE: $${d.blue.value_sell} • DÓLAR OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • BITCOIN: US$ 69.800 • REAL: $218 • PESO CHILENO: $1.28 • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
-            } catch (e) { }
-        }
-
-        function openFeed(category) {
-            const body = document.getElementById('modal-feed-body'); body.innerHTML = '';
-            let hasNews = false;
-
-            allParsedData.forEach(col => {
-                // col[0]: Titulo, col[1]: Contenido, col[2]: Autor, col[3]: Estado, col[4]: Categoria, col[5]: Imagen
-                if (col.length >= 4 && col[3] && col[3].trim().toLowerCase() === 'publicar') {
-                    const cat = (col[4] || 'data').trim().toLowerCase();
-                    if (cat === category) {
-                        hasNews = true;
-                        const title = col[0], content = col[1], author = col[2] || 'LA NUBE', imgUrl = col[5] || '';
-                        let imgHtml = imgUrl.trim() ? `<img src="${imgUrl}" class="feed-img" onerror="this.style.display='none'">` : '';
-                        
-                        body.innerHTML += `
-                            <div class="feed-item">
-                                <div class="author-tag">Fuente: ${author}</div>
-                                ${imgHtml}
-                                <h2>${cat === 'senalsj' ? '🌞 ' : ''}${title}</h2>
-                                <p>${content}</p>
-                            </div>`;
-                    }
-                }
-            });
-
-            if(!hasNews) {
-                body.innerHTML = `<div class="feed-item"><h2>PRÓXIMAMENTE...</h2><p>Estamos procesando las últimas noticias de esta sección. Volvé en unos minutos.</p></div>`;
-            }
-
-            document.getElementById('feedModal').style.display = "block"; document.body.style.overflow = "hidden";
-        }
-
-        function closeModal() { document.getElementById('feedModal').style.display = "none"; document.body.style.overflow = "auto"; }
-
-function renderSponsors(rows) {
-    const container = document.getElementById('container-sponsor');
-    container.innerHTML = '';
-    if(sponsorInterval) clearInterval(sponsorInterval);
-
-    rows.forEach((col, i) => {
-        // Esta línea es mágica: busca el link en la Columna C (índice 2) 
-        // o en la A (índice 0) si la C está vacía.
-        let url = (col[2] || col[0] || '').trim().replace(/^"|"$/g, '');
-        const tipo = (col[1] || 'imagen').trim().toLowerCase();
-
-        if(!url || url.includes('LINK_DIRECTO') || url === 'URL') return;
-
-        const div = document.createElement('div');
-        div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
-        
-        // Si pegaste el link de Drive sin la fórmula, este código lo arregla solo:
-        if (url.includes('drive.google.com') && !url.includes('uc?')) {
-            url = url.replace('/file/d/', '/uc?export=view&id=').split('/view')[0];
-        }
-
-        div.innerHTML = tipo === 'video' ? 
-            `<video src="${url}" autoplay muted loop style="width:100%; height:100%; object-fit: contain;"></video>` : 
-            `<img src="${url}" style="width:100%; height:100%; object-fit: contain;" onerror="this.parentElement.style.display='none'">`;
-        
-        container.appendChild(div);
-    });
-
-    if(rows.length > 1) { 
-        let currentIndex = 0;
-        sponsorInterval = setInterval(() => { 
-            const slides = document.querySelectorAll('.sponsor-slide'); 
-            if(slides.length > 0){
-                slides[currentIndex].classList.remove('active'); 
-                currentIndex = (currentIndex + 1) % slides.length; 
-                slides[currentIndex].classList.add('active'); 
-            }
-        }, 7000); 
-    }
-}
-        window.onload = () => { loadData(); updateTicker(); setInterval(loadData, 300000); setInterval(updateTicker, 60000); };
-    </script>
-</body>
-</html>
+        <div class="filter-bar
