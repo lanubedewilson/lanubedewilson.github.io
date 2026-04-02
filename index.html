@@ -3,208 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Nube de Wilson | Media Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <title>La Nube de Wilson | v2.0 Timeline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-dark: #050a05; --header-bg: #0c140c; --accent-green: #9fb69f; --highlight: #d4e157; --sj-gold: #ffcc00; }
-        body { background-color: var(--bg-dark); color: var(--accent-green); font-family: 'Inter', sans-serif; margin: 0; overflow-x: hidden; }
-        
-        header { background-color: var(--header-bg); padding: 12px 5%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--highlight); position: relative; z-index: 10; }
-        .logo { font-family: 'Bebas Neue', cursive; font-size: 2.5rem; color: var(--highlight); margin: 0; }
+        :root {
+            --bg-dark: #050a05;
+            --highlight: #d4e157;
+            --accent-green: #9fb69f;
+            --sj-gold: #ffcc00;
+            --capsula-blue: #00d4ff;
+            --musica-pink: #ff007a;
+            --white-bone: #f5f5f5;
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            background-color: var(--bg-dark); 
+            color: var(--white-bone); 
+            font-family: 'Inter', sans-serif; 
+            margin: 0; 
+            overflow-x: hidden;
+            height: 100vh;
+        }
+
+        /* HEADER Y SEÑALES */
+        header { 
+            background-color: #000; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 2px solid var(--highlight);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-family: 'Bebas Neue', cursive; font-size: 2rem; color: var(--highlight); margin: 0; }
         .logo span { color: var(--accent-green); font-weight: normal; }
 
-        .signal-selector { display: flex; gap: 8px; background: #000; padding: 6px; border-radius: 8px; border: 1px solid var(--highlight); }
-        .btn-signal { background: none; border: none; color: #4a5c4a; font-size: 0.85rem; font-weight: bold; padding: 8px 15px; cursor: pointer; border-radius: 4px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+        .signal-selector { display: flex; gap: 5px; background: #111; padding: 5px; border-radius: 8px; }
+        .btn-signal { 
+            background: none; border: none; color: #555; font-size: 0.7rem; 
+            font-weight: bold; padding: 6px 12px; cursor: pointer; border-radius: 4px; 
+            text-transform: uppercase; transition: 0.3s;
+        }
         .btn-signal.active { background: var(--highlight); color: #000; }
-        .dot { width: 8px; height: 8px; background: #ff0000; border-radius: 50%; box-shadow: 0 0 5px #ff0000; animation: blink 1.5s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        .video-box { width: 100%; background: #000; aspect-ratio: 16 / 9; position: relative; max-height: 55vh; z-index: 1; }
+        /* VIDEO PLAYER PERSISTENTE */
+        .main-stage { position: relative; width: 100%; background: #000; aspect-ratio: 16/9; max-height: 50vh; }
         .player-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; display: none; }
         .player-frame.active { display: block; }
 
-        .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 8px 0; height: 24px; position: relative; z-index: 10; }
-        .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 40s linear infinite; color: var(--highlight); font-size: 0.9rem; font-weight: bold; }
+        /* TICKER */
+        .ticker-wrap { background: #000; border-bottom: 1px solid #1a261a; overflow: hidden; padding: 6px 0; }
+        .ticker { display: inline-block; white-space: nowrap; animation: tickerMove 30s linear infinite; color: var(--highlight); font-weight: bold; font-size: 0.85rem; }
         @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        .grid-info { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; max-width: 100%; margin: 0 auto; box-sizing: border-box; }
-        .col-card { background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 6px; border: 1px solid #1a261a; cursor: pointer; transition: 0.2s; width: fit-content; text-align: center; }
-        .col-card:hover { border-color: var(--highlight); background: rgba(212, 225, 87, 0.2); }
-        .col-title { font-family: 'Bebas Neue', cursive; font-size: 1.4rem; color: #fff; margin: 0; line-height: 1; }
-        .col-subtitle { font-size: 0.75rem; color: var(--accent-green); font-style: italic; opacity: 0.8; margin-top: 4px; }
+        /* GRID DE SECCIONES (FILTROS) */
+        .grid-filters { 
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 10px; padding: 20px 5%; background: linear-gradient(to bottom, #000, var(--bg-dark));
+        }
+        .filter-card { 
+            background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; 
+            border: 1px solid #222; cursor: pointer; text-align: center; transition: 0.3s;
+        }
+        .filter-card:hover { border-color: var(--highlight); background: rgba(212, 225, 87, 0.1); }
+        .filter-card h3 { font-family: 'Bebas Neue'; margin: 0; font-size: 1.2rem; letter-spacing: 1px; }
 
-        .sponsor-container { display: flex; flex-direction: column; align-items: flex-start; width: 180px; }
-        .side-title { font-family: 'Bebas Neue', cursive; font-size: 1rem; color: var(--highlight); margin-bottom: 6px; border-bottom: 1px solid #1a261a; width: 100%; }
-        .sponsor-box { width: 100%; aspect-ratio: 16/9; background: #000; border: 1px solid #1a261a; border-radius: 4px; overflow: hidden; position: relative; }
-        .sponsor-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
-        .sponsor-slide.active { display: flex; align-items: center; justify-content: center; animation: fade 0.8s; }
-        @keyframes fade { from {opacity: 0} to {opacity: 1} }
+        /* TIMELINE OVERLAY (EL CRISTAL) */
+        #timeline-overlay {
+            position: fixed; top: 0; right: -100%; width: 100%; height: 100%;
+            background: rgba(5, 10, 5, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 500; transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            overflow-y: auto; padding: 40px 5%;
+        }
+        #timeline-overlay.open { right: 0; }
 
-        /* MODAL TRANSPARENTE Y TIMELINE */
-        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(5, 10, 5, 0.85); backdrop-filter: blur(8px); overflow-y: auto; }
-        .modal-content { margin: 0 auto; padding: 80px 25px; width: 92%; max-width: 800px; position: relative; border-left: 2px solid var(--highlight); margin-left: 10%; }
-        .close-modal { position: fixed; right: 25px; top: 15px; color: var(--highlight); font-size: 3.5rem; cursor: pointer; z-index: 2001; text-shadow: 0 0 10px #000; }
+        .close-timeline { 
+            position: fixed; top: 20px; right: 20px; font-size: 2.5rem; 
+            color: var(--highlight); cursor: pointer; z-index: 600; 
+        }
+
+        /* ESTILO DE NOTAS EN EL TIMELINE */
+        .timeline-container { max-width: 700px; margin: 60px auto 0; border-left: 2px solid rgba(212, 225, 87, 0.3); padding-left: 30px; position: relative; }
         
-        .feed-item { position: relative; padding-bottom: 60px; padding-left: 30px; scroll-snap-align: start; }
-        /* El círculo de la línea de tiempo */
-        .feed-item::before { content: ''; position: absolute; left: -11px; top: 0; width: 20px; height: 20px; background: var(--highlight); border: 4px solid var(--bg-dark); border-radius: 50%; z-index: 2; box-shadow: 0 0 10px var(--highlight); }
+        .note-card { 
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 20px; 
+            margin-bottom: 40px; position: relative; border-left: 5px solid var(--highlight);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .note-card::before {
+            content: ''; position: absolute; left: -41px; top: 25px; 
+            width: 16px; height: 16px; background: var(--bg-dark); 
+            border: 3px solid var(--highlight); border-radius: 50%;
+        }
         
-        .feed-img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(212, 225, 87, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .feed-item h2 { font-family: 'Bebas Neue'; font-size: 2.8rem; color: var(--sj-gold); margin: 0 0 15px 0; line-height: 1; letter-spacing: 1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
-        .feed-item p { font-size: 1.2rem; line-height: 1.6; color: #fff; font-weight: 400; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; }
+        /* Colores por categoría */
+        .cat-data { border-left-color: var(--highlight); }
+        .cat-senalsj { border-left-color: var(--sj-gold); }
+        .cat-capsula { border-left-color: var(--capsula-blue); }
+        .cat-musica { border-left-color: var(--musica-pink); }
+
+        .note-img { width: 100%; border-radius: 8px; margin-bottom: 15px; display: block; }
+        .note-title { font-family: 'Bebas Neue'; font-size: 2rem; margin: 0 0 10px 0; color: #fff; line-height: 1; }
+        .note-content { font-size: 1rem; line-height: 1.6; color: var(--accent-green); font-weight: 300; }
+        
+        .share-bar { margin-top: 15px; display: flex; gap: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; }
+        .share-btn { background: none; border: none; color: var(--highlight); cursor: pointer; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; }
+
+        /* SPONSORS */
+        .sponsor-footer { padding: 20px; text-align: center; border-top: 1px solid #111; }
+        #sponsor-ad { max-width: 250px; height: 60px; margin: 0 auto; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
         @media (max-width: 768px) {
-            .modal-content { margin-left: 5%; width: 85%; }
-            .grid-info { flex-wrap: wrap; gap: 10px; justify-content: center; }
-            .sponsor-container { width: 100%; margin-top: 20px; }
+            .timeline-container { margin-left: 20px; }
+            .note-title { font-size: 1.6rem; }
         }
     </style>
 </head>
 <body>
+
     <header>
         <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
         <div class="signal-selector">
-            <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')"><span class="dot"></span> STREAM</button>
-            <button id="btn-yt" class="btn-signal active" onclick="switchSignal('yt')">MUSICA 24/7</button>
+            <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')">STREAM</button>
+            <button id="btn-yt" class="btn-signal active" onclick="switchSignal('yt')">MÚSICA 24/7</button>
         </div>
     </header>
 
-    <div class="ticker-wrap">
-        <div class="ticker" id="main-ticker">CONECTANDO CON LA REDACCIÓN CENTRAL...</div>
-    </div>
-
-    <div class="video-box">
-        <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=0&playlist=36YnV9STBqc&loop=1&enablejsapi=1" allow="autoplay"></iframe>
+    <div class="main-stage">
+        <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=0&enablejsapi=1" allow="autoplay"></iframe>
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
     </div>
 
-    <main class="grid-info">
-        <div class="col-card" onclick="openFeed('data')"><div class="col-title">+ DATA</div><div class="col-subtitle">Línea de tiempo</div></div>
-        <div class="col-card" onclick="openFeed('capsula')"><div class="col-title">CÁPSULAS</div><div class="col-subtitle">Línea de tiempo</div></div>
-        <div class="col-card" onclick="openFeed('senalsj')"><div class="col-title">SEÑAL SJ</div><div class="col-subtitle">Línea de tiempo</div></div>
-        <div class="col-card" onclick="openFeed('musica')"><div class="col-title">MUSICA</div><div class="col-subtitle">Línea de tiempo</div></div>
-        <div class="sponsor-container">
-            <div class="side-title">AUSPICIA</div>
-            <div id="container-sponsor" class="sponsor-box"></div>
-        </div>
+    <div class="ticker-wrap">
+        <div class="ticker" id="main-ticker">CONECTANDO CON LA NUBE...</div>
+    </div>
+
+    <main class="grid-filters">
+        <div class="filter-card" onclick="openTimeline('data')"><h3>+ DATA</h3></div>
+        <div class="filter-card" onclick="openTimeline('capsula')"><h3>CÁPSULAS</h3></div>
+        <div class="filter-card" onclick="openTimeline('senalsj')"><h3>SEÑAL SJ</h3></div>
+        <div class="filter-card" onclick="openTimeline('musica')"><h3>MÚSICA</h3></div>
+        <div class="filter-card" onclick="openTimeline('all')"><h3 style="color: var(--highlight);">TODO EL FEED</h3></div>
     </main>
 
-    <div id="feedModal" class="modal">
-        <span class="close-modal" onclick="closeModal()">×</span>
-        <div class="modal-content" id="modal-feed-body"></div>
+    <div class="sponsor-footer">
+        <div id="sponsor-ad">Cargando auspiciantes...</div>
+    </div>
+
+    <div id="timeline-overlay">
+        <span class="close-timeline" onclick="closeTimeline()">×</span>
+        <div class="timeline-container" id="timeline-content">
+            </div>
     </div>
 
     <script>
-        let allDataRows = []; 
-        let sponsorRows = []; 
-        let sponsorIndex = 0; 
-        let sponsorInterval = null;
+        let allNews = [];
+        let sponsors = [];
 
+        // Cambiar entre señales sin recargar página
         function switchSignal(type) {
             const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
             const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
-            if (type === 'kick') { 
+            if (type === 'kick') {
                 pk.classList.add('active'); py.classList.remove('active'); bk.classList.add('active'); by.classList.remove('active');
                 py.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            } else { 
+            } else {
                 py.classList.add('active'); pk.classList.remove('active'); by.classList.add('active'); bk.classList.remove('active');
                 py.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
             }
         }
 
-        async function loadData() {
-            const newsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + new Date().getTime();
-            const sponsorsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=' + new Date().getTime();
+        async function fetchData() {
+            const newsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + Date.now();
+            const sponsorsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=' + Date.now();
+            
             try {
-                const resNews = await fetch(newsUrl); const textNews = await resNews.text();
-                allDataRows = textNews.split('\n').filter(r => r.trim() !== '').slice(1).reverse();
-                const resSpo = await fetch(sponsorsUrl); const textSpo = await resSpo.text();
-                sponsorRows = textSpo.split('\n').filter(r => r.trim() !== '').slice(1);
-                if(sponsorRows.length > 0) renderSponsors(sponsorRows);
-            } catch (e) { console.error("Error cargando datos", e); }
+                const res = await fetch(newsUrl);
+                const text = await res.text();
+                allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
+                
+                const resSpo = await fetch(sponsorsUrl);
+                const textSpo = await resSpo.text();
+                sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
+                startSponsors();
+                
+                checkDeepLinking();
+            } catch (e) { console.log(e); }
+        }
+
+        function openTimeline(category) {
+            const container = document.getElementById('timeline-content');
+            container.innerHTML = '';
+            
+            allNews.forEach((row, index) => {
+                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                if (col.length < 4) return;
+                
+                const title = col[0].replace(/"/g, '');
+                const content = col[1].replace(/"/g, '');
+                const status = col[3].trim().toLowerCase();
+                const cat = (col[4] || 'data').trim().toLowerCase();
+                const img = (col[5] || '').trim().replace(/"/g, '');
+                const noteId = `nota-${allNews.length - index}`;
+
+                if (status === 'publicar' && (category === 'all' || cat === category)) {
+                    const card = document.createElement('div');
+                    card.className = `note-card cat-${cat}`;
+                    card.id = noteId;
+                    card.innerHTML = `
+                        ${img ? `<img src="${img}" class="note-img">` : ''}
+                        <h2 class="note-title">${title}</h2>
+                        <div class="note-content">${content}</div>
+                        <div class="share-bar">
+                            <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
+                            <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+
+            document.getElementById('timeline-overlay').classList.add('open');
+        }
+
+        function closeTimeline() {
+            document.getElementById('timeline-overlay').classList.remove('open');
+            window.history.pushState(null, null, ' ');
+        }
+
+        function shareNote(id, title) {
+            const url = `${window.location.origin}${window.location.pathname}#${id}`;
+            const text = `Visto en La Nube de Wilson: ${title}`;
+            if (navigator.share) {
+                navigator.share({ title: 'La Nube de Wilson', text: text, url: url });
+            } else {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + " " + url)}`);
+            }
+        }
+
+        function copyLink(id) {
+            const url = `${window.location.origin}${window.location.pathname}#${id}`;
+            navigator.clipboard.writeText(url);
+            alert("¡Link copiado para compartir!");
+        }
+
+        function checkDeepLinking() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#nota-')) {
+                openTimeline('all');
+                setTimeout(() => {
+                    const el = document.getElementById(hash.substring(1));
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 800);
+            }
         }
 
         async function updateTicker() {
             try {
-                const res = await fetch('https://api.bluelytics.com.ar/v2/latest'); const d = await res.json();
-                document.getElementById('main-ticker').innerText = `DÓLAR BLUE: $${d.blue.value_sell} • DÓLAR OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • BITCOIN: US$ 69.800 • REAL: $218 • PESO CHILENO: $1.28 • LA NUBE DE WILSON • SAN JUAN • ARGENTINA •`;
-            } catch (e) { }
+                const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
+                const d = await res.json();
+                document.getElementById('main-ticker').innerText = `DÓLAR BLUE: $${d.blue.value_sell} • OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • SAN JUAN - ARGENTINA • LA NUBE DE WILSON • `;
+            } catch (e) {}
         }
 
-        function openFeed(category) {
-            const body = document.getElementById('modal-feed-body'); 
-            body.innerHTML = '';
-            let hasItems = false;
-
-            allDataRows.forEach(row => {
-                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (col.length >= 4 && col[3].trim().toLowerCase() === 'publicar') {
-                    const title = col[0].replace(/^"|"$/g, ''), 
-                          content = col[1].replace(/^"|"$/g, ''), 
-                          cat = (col[4] || 'data').trim().toLowerCase(), 
-                          imgUrl = (col[5] || '').replace(/^"|"$/g, '').trim();
-
-                    if (cat === category) {
-                        hasItems = true;
-                        let imgHtml = imgUrl ? `<img src="${imgUrl}" class="feed-img" onerror="this.style.display='none'">` : '';
-                        body.innerHTML += `
-                            <div class="feed-item">
-                                ${imgHtml}
-                                <h2>${cat === 'senalsj' ? '🌞 ' : ''}${title}</h2>
-                                <p>${content}</p>
-                            </div>`;
-                    }
-                }
-            });
-
-            if(!hasItems) {
-                body.innerHTML = '<div class="feed-item"><h2>PRÓXIMAMENTE</h2><p>Estamos preparando contenido para esta sección...</p></div>';
-            }
-
-            document.getElementById('feedModal').style.display = "block";
-            // Nota: No bloqueamos el scroll del body para permitir una navegación más fluida
-        }
-
-        function closeModal() { 
-            document.getElementById('feedModal').style.display = "none"; 
-        }
-
-        function renderSponsors(rows) {
-            const container = document.getElementById('container-sponsor'); 
-            container.innerHTML = ''; 
-            if(sponsorInterval) clearInterval(sponsorInterval);
+        function startSponsors() {
+            const box = document.getElementById('sponsor-ad');
+            let idx = 0;
+            if (sponsors.length === 0) return;
             
-            rows.forEach((row, i) => {
-                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/); 
-                const url = col[0].replace(/^"|"$/g, '').trim(), 
-                      tipo = (col[1] || 'imagen').replace(/^"|"$/g, '').trim().toLowerCase();
-                if(!url) return;
-                const div = document.createElement('div'); 
-                div.className = `sponsor-slide ${i === 0 ? 'active' : ''}`;
-                div.innerHTML = tipo === 'video' ? 
-                    `<video src="${url}" autoplay muted loop style="width:100%; height:100%; object-fit: contain;"></video>` : 
-                    `<img src="${url}" style="width:100%; height:100%; object-fit: contain;">`;
-                container.appendChild(div);
-            });
-
-            if(rows.length > 1) { 
-                sponsorInterval = setInterval(() => { 
-                    const slides = document.querySelectorAll('.sponsor-slide'); 
-                    if(slides.length > 0){ 
-                        slides[sponsorIndex].classList.remove('active'); 
-                        sponsorIndex = (sponsorIndex + 1) % slides.length; 
-                        slides[sponsorIndex].classList.add('active'); 
-                    } 
-                }, 7000); 
-            }
+            const show = () => {
+                const col = sponsors[idx].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const url = col[0].replace(/"/g, '');
+                box.innerHTML = `<img src="${url}" style="height:100%; width:auto; animation: fadeIn 1s">`;
+                idx = (idx + 1) % sponsors.length;
+            };
+            show();
+            setInterval(show, 6000);
         }
 
-        window.onload = () => { 
-            loadData(); 
-            updateTicker(); 
-            setInterval(loadData, 300000); 
-            setInterval(updateTicker, 60000); 
+        window.onload = () => {
+            fetchData();
+            updateTicker();
+            setInterval(updateTicker, 60000);
         };
     </script>
+
+    <style>
+        @keyframes fadeIn { from {opacity: 0} to {opacity: 1} }
+    </style>
 </body>
 </html>
