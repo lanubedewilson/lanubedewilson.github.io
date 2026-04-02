@@ -209,6 +209,7 @@
                 const status = col[3].trim().toLowerCase();
                 const cat = (col[4] || 'data').trim().toLowerCase();
                 const img = (col[5] || '').trim().replace(/"/g, '');
+                const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
                 const noteId = `nota-${allNews.length - index}`;
 
                 if (status === 'publicar' && (category === 'all' || cat === category)) {
@@ -216,7 +217,10 @@
                     card.className = `note-card cat-${cat}`;
                     card.id = noteId;
                     card.innerHTML = `
-                        <div style="color:var(--highlight); font-size:0.7rem; font-weight:bold; margin-bottom:5px; opacity:0.8;">[ ${cat.toUpperCase()} ]</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
+                            <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic;">✍️ ${author}</span>
+                        </div>
                         ${img ? `<img src="${img}" class="note-img">` : ''}
                         <h2 class="note-title">${title}</h2>
                         <div class="note-content">${content}</div>
@@ -265,12 +269,17 @@
         }
 
         async function updateTicker() {
-            try {
-                const res = await fetch('https://api.bluelytics.com.ar/v2/latest');
-                const d = await res.json();
-                document.getElementById('main-ticker').innerText = `DÓLAR BLUE: $${d.blue.value_sell} • OFICIAL: $${d.oficial.value_sell} • EURO: $${d.oficial_euro.value_sell} • SAN JUAN - ARGENTINA • LA NUBE DE WILSON • `;
-            } catch (e) {}
-        }
+    try {
+        const [b, c, bt, et] = await Promise.all([
+            fetch('https://api.bluelytics.com.ar/v2/latest').then(r=>r.json()),
+            fetch('https://api.exchangerate-api.com/v4/latest/USD').then(r=>r.json()),
+            fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json()),
+            fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r=>r.json())
+        ]);
+        const r = c.rates, blue = b.blue.value_sell;
+        document.getElementById('main-ticker').innerText = `DÓLAR BLUE: $${blue} • EURO: $${b.blue_euro.value_sell} • REAL: $${(blue/r.BRL).toFixed(2)} • P.CHILENO: $${(blue/r.CLP).toFixed(2)} • P.URUGUAYO: $${(blue/r.UYU).toFixed(2)} • P.MEXICANO: $${(blue/r.MXN).toFixed(2)} • P.COLOMBIANO: $${(blue/r.COP).toFixed(2)} • P.PERUANO: $${(blue/r.PEN).toFixed(2)} • P.CANADIENSE: $${(blue/r.CAD).toFixed(2)} • WON (KRW): ₩${r.KRW} • YEN (JPY): ¥${r.JPY} • BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ETH: U$D ${parseFloat(et.price).toLocaleString()} • LA NUBE DE WILSON • `;
+    } catch (e) {}
+}
 
         function startSponsors() {
             const box = document.getElementById('sponsor-ad');
