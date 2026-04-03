@@ -54,6 +54,10 @@
             display: inline-block; margin-right: 8px; vertical-align: middle;
             box-shadow: 0 0 12px #ff0000; animation: pulse-fade 1.5s infinite ease-in-out; 
         }
+        .dot.live { 
+            background-color: #00ff00; 
+            box-shadow: 0 0 15px #00ff00; 
+        }
         @keyframes pulse-fade { 
             0%, 100% { opacity: 0.3; transform: scale(0.8); } 
             50% { opacity: 1; transform: scale(1.2); } 
@@ -138,7 +142,7 @@
     <header>
         <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
         <div class="signal-selector">
-            <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')"><span class="dot"></span> STREAM</button>
+            <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')"><span id="live-dot" class="dot"></span> STREAM</button>
             <button id="btn-yt" class="btn-signal active" onclick="switchSignal('yt')">MÚSICA 24/7</button>
         </div>
     </header>
@@ -200,7 +204,14 @@
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
                 startSponsors();
-                
+                // DETECTOR DE VIVO
+        let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
+        const dot = document.getElementById('live-dot');
+        if (isLive) { 
+            dot.classList.add('live'); 
+        } else { 
+            dot.classList.remove('live'); 
+        }
                 checkDeepLinking();
             } catch (e) { console.log(e); }
         }
