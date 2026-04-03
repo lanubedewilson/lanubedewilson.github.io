@@ -135,6 +135,35 @@
             .timeline-container { margin-left: 20px; }
             .note-title { font-size: 1.6rem; }
         }
+        /* SIDEBAR DE VIBRAS */
+        #vibe-sidebar {
+            position: fixed; top: 0; right: -35%; width: 33.33%; height: 100%;
+            background: rgba(10, 20, 10, 0.6); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); z-index: 1000;
+            transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+            display: flex; flex-direction: column; padding: 80px 15px 20px;
+            border-left: 1px solid rgba(212, 225, 87, 0.2);
+        }
+        #vibe-sidebar.open { right: 0; }
+        
+        .vibe-header { 
+            font-family: 'Bebas Neue'; font-size: 1.5rem; color: var(--highlight); 
+            margin-bottom: 25px; border-bottom: 1px solid var(--highlight); padding-bottom: 5px;
+        }
+
+        .vibe-item {
+            padding: 15px 10px; margin-bottom: 10px; cursor: pointer;
+            border-radius: 6px; transition: 0.3s; display: flex; align-items: center; gap: 10px;
+            background: rgba(255,255,255,0.03); border: 1px solid transparent;
+        }
+        .vibe-item:hover { background: rgba(212, 225, 87, 0.15); border-color: var(--highlight); }
+        .vibe-item span { font-family: 'Bebas Neue'; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
+
+        /* Ajuste para celulares */
+        @media (max-width: 768px) {
+            #vibe-sidebar { width: 45%; right: -50%; }
+            #vibe-sidebar.open { right: 0; }
+        }
     </style>
 </head>
 <body>
@@ -143,10 +172,20 @@
         <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
         <div class="signal-selector">
             <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')"><span id="live-dot" class="dot"></span> STREAM</button>
-            <button id="btn-yt" class="btn-signal active" onclick="switchSignal('yt')">MÚSICA 24/7</button>
+            <button id="btn-vibe" class="btn-signal active" onclick="toggleVibeMenu()">📻 SELECCIÓN DE VIBRA</button>
         </div>
     </header>
-
+    <div id="vibe-sidebar">
+        <div class="vibe-header">DIAL LA NUBE</div>
+        <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s')"><div style="width:4px; height:20px; background:#ff8a00"></div><span>Rock 90s</span></div>
+        <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk')"><div style="width:4px; height:20px; background:#a2d149"></div><span>Indie Folk</span></div>
+        <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop')"><div style="width:4px; height:20px; background:#00d4ff"></div><span>Radio Pop</span></div>
+        <div class="vibe-item" onclick="changeVibe('Zyqr_A8P_uE', 'Energy Funk')"><div style="width:4px; height:20px; background:#ff007a"></div><span>Energy Funk</span></div>
+        <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop')"><div style="width:4px; height:20px; background:#ffcc00"></div><span>Rock & Pop</span></div>
+        <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urban Hop')"><div style="width:4px; height:20px; background:#9d49d1"></div><span>Urban Hop</span></div>
+        <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues')"><div style="width:4px; height:20px; background:#496ed1"></div><span>Radio Blues</span></div>
+        <button onclick="toggleVibeMenu()" style="margin-top:auto; background:none; border:1px solid #444; color:#888; padding:10px; cursor:pointer; font-size:0.7rem; border-radius:4px;">CERRAR DIAL</button>
+    </div>
     <div class="main-stage">
         <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&enablejsapi=1" allow="autoplay"></iframe>
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
@@ -321,6 +360,27 @@
             updateTicker();
             setInterval(updateTicker, 60000);
         };
+        // --- LÓGICA DEL DIAL DE RADIOS ---
+        function toggleVibeMenu() {
+            const sidebar = document.getElementById('vibe-sidebar');
+            if(sidebar) sidebar.classList.toggle('open');
+        }
+
+        function changeVibe(videoId, vibeName) {
+            const player = document.getElementById('player-yt');
+            if(player) {
+                // Cambia el video y asegura que suene (mute=0)
+                player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1`;
+                
+                // Actualiza el texto de lo que suena
+                const ticker = document.getElementById('main-ticker');
+                if(ticker) ticker.innerText = `SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • CONECTANDO...`;
+                
+                // Cierra el menú y cambia a la señal de YouTube
+                toggleVibeMenu();
+                switchSignal('yt');
+            }
+        }
     </script>
 
     <style>
