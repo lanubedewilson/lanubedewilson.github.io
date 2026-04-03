@@ -172,15 +172,15 @@
         <h1 class="logo">LA NUBE <span>DE WILSON</span></h1>
         <div class="signal-selector">
             <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')"><span id="live-dot" class="dot"></span> STREAM</button>
-            <button id="btn-vibe" class="btn-signal active" onclick="toggleVibeMenu()">📻 SELECCIÓN DE VIBRA</button>
+            <button id="btn-vibe" class="btn-signal active" onclick="toggleVibeMenu()">SELECCIONA TU VIBRA</button>
         </div>
     </header>
     <div id="vibe-sidebar">
-        <div class="vibe-header">DIAL LA NUBE</div>
+        <div class="vibe-header">SELECCIONA TU VIBRA</div>
         <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s')"><div style="width:4px; height:20px; background:#ff8a00"></div><span>Rock 90s</span></div>
         <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk')"><div style="width:4px; height:20px; background:#a2d149"></div><span>Indie Folk</span></div>
         <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop')"><div style="width:4px; height:20px; background:#00d4ff"></div><span>Radio Pop</span></div>
-        <div class="vibe-item" onclick="changeVibe('Zyqr_A8P_uE', 'Energy Funk')"><div style="width:4px; height:20px; background:#ff007a"></div><span>Energy Funk</span></div>
+        <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk')"><div style="width:4px; height:20px; background:#ff007a"></div><span>Energy Funk</span></div>
         <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop')"><div style="width:4px; height:20px; background:#ffcc00"></div><span>Rock & Pop</span></div>
         <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urban Hop')"><div style="width:4px; height:20px; background:#9d49d1"></div><span>Urban Hop</span></div>
         <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues')"><div style="width:4px; height:20px; background:#496ed1"></div><span>Radio Blues</span></div>
@@ -219,16 +219,28 @@
 
         // Cambiar entre señales sin recargar página
         function switchSignal(type) {
-            const pk = document.getElementById('player-kick'), py = document.getElementById('player-yt');
-            const bk = document.getElementById('btn-kick'), by = document.getElementById('btn-yt');
-            if (type === 'kick') {
-                pk.classList.add('active'); py.classList.remove('active'); bk.classList.add('active'); by.classList.remove('active');
-                py.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-            } else {
-                py.classList.add('active'); pk.classList.remove('active'); by.classList.add('active'); bk.classList.remove('active');
-                py.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-            }
-        }
+    const pk = document.getElementById('player-kick');
+    const py = document.getElementById('player-yt');
+    const bk = document.getElementById('btn-kick');
+    const bv = document.getElementById('btn-vibe'); // <--- El nombre correcto
+
+    if (type === 'kick') {
+        pk.classList.add('active');
+        py.classList.remove('active');
+        bk.classList.add('active');
+        bv.classList.remove('active');
+        // Silenciamos YouTube para que no moleste al Stream
+        py.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    } else {
+        py.classList.add('active');
+        pk.classList.remove('active');
+        bv.classList.add('active');
+        bk.classList.add('active'); // Ojo, solo uno queda activo
+        bk.classList.remove('active');
+        // Le damos Play a la música al volver
+        py.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
+}
 
         async function fetchData() {
             const newsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + Date.now();
