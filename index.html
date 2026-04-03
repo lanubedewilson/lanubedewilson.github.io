@@ -207,7 +207,7 @@
                 const title = col[0].replace(/"/g, '');
                 const content = col[1].replace(/"/g, '');
                 const status = col[3].trim().toLowerCase();
-                const cat = (col[4] || 'data').trim().toLowerCase();
+                const cat = (col[4] || 'data').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
                 const img = (col[5] || '').trim().replace(/"/g, '');
                 const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
                 const noteId = `nota-${allNews.length - index}`;
