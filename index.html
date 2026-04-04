@@ -459,16 +459,25 @@ const unlockAudio = () => {
         bgAudio.play()
             .then(() => {
                 console.log("Audio sintonizado con éxito");
-                // Una vez que arrancó, el navegador ya nos dio "luz verde"
             })
-            .catch(err => console.log("Esperando una interacción real del usuario..."));
+            .catch(err => console.log("Esperando interacción real..."));
     }
 };
 
-// Escuchamos en la ventana entera (window) para que el celu no tenga excusas
 window.addEventListener('click', unlockAudio, { once: true });
 window.addEventListener('touchstart', unlockAudio, { once: true });
 window.addEventListener('touchend', unlockAudio, { once: true });
+
+// --- TIMEOUT PARA EL LOADER (EVITA QUE SE TRABE LA PÁGINA) ---
+setTimeout(() => {
+    const loader = document.getElementById('loader-wrapper') || document.getElementById('loader');
+    if (loader) {
+        loader.style.display = 'none';
+        loader.style.opacity = '0';
+        loader.style.visibility = 'hidden';
+        console.log("Carga forzada: timeout cumplido.");
+    }
+}, 6000);
 
         // MODIFICACIÓN DE SWITCH SIGNAL: Para apagar el audio al ir a Kick o YT
         function switchSignal(type) {
