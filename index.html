@@ -276,53 +276,6 @@
     filter: grayscale(1) brightness(1.2);
     opacity: 0.7;
     transition: all 0.3s ease;
-}/* EL LATIDO DE LA NUBE (PULSE ANIMATION) */
-
-/* 1. Definimos la animación */
-@keyframes pulse-latido {
-    0% {
-        box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.7);
-        transform: scale(1); /* Sin cambio de tamaño al inicio */
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(0, 212, 255, 0); /* El anillo se expande y desaparece */
-        transform: scale(1.03); /* Crece un 3% para el efecto de latido */
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(0, 212, 255, 0);
-        transform: scale(1); /* Vuelve a su tamaño */
-    }
-}
-
-/* 2. Estilo del Botón Maestro de Vibras */
-.vibe-selector-header-latido {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.05); /* Fondo sutil */
-    border: 2px solid #00d4ff; /* El marco del mismo color del Feed */
-    color: #fff;
-    padding: 15px 20px;
-    border-radius: 50px; /* Bordes redondeados tipo pastilla */
-    cursor: pointer;
-    font-family: 'Bebas Neue', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    width: 90%;
-    margin: 15px auto;
-    
-    /* Aplicamos la animación */
-    animation: pulse-latido 2s infinite ease-out; /* Latido constante cada 2s */
-    
-    /* Importante para la interacción */
-    transition: all 0.3s ease;
-}
-
-/* 3. Feedback al pasar el mouse (PC) o tocar (Mobile) */
-.vibe-selector-header-latido:active,
-.vibe-selector-header-latido:hover {
-    background: rgba(0, 212, 255, 0.15); /* Se ilumina un poco más */
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
 }
     </style>
 </head>
@@ -337,10 +290,7 @@
     </header>
     
     <div id="vibe-sidebar">
-        <div class="vibe-selector-header-latido" onclick="toggleVibeSidebar()">
-    <h2>Selecciona tu vibra</h2>
-    <span class="vibe-icon">▼</span>
-</div>
+        <div class="vibe-header">SELECCIONA TU VIBRA</div>
         
         <div class="vibe-container">
             <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'yt', 'La Buena Vida')"><div style="width:4px; height:20px; background:#FFD700"></div><span>La Buena Vida</span></div>
