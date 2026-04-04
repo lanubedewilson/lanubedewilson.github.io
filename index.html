@@ -205,6 +205,45 @@
         #initial-loop {
             pointer-events: none; 
         }
+        /* EL BOTÓN MAESTRO - ESTILO ANCHO Y PRO */
+.feed-master-access {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid #00d4ff; /* Celeste Nube */
+    padding: 20px;
+    margin: 20px auto;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 90%; /* Ocupa casi todo el ancho */
+    max-width: 600px;
+}
+
+.feed-master-access:hover {
+    background: rgba(0, 212, 255, 0.1);
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+}
+
+.feed-text-group {
+    display: flex;
+    flex-direction: column;
+    margin-left: 15px;
+    text-align: left;
+}
+
+.feed-main-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: #fff;
+    line-height: 1.1;
+}
+
+.feed-description {
+    font-size: 0.9rem;
+    color: #00ffcc; /* Verde agua para resaltar */
+}
     </style> </body>
     </style>
 </head>
@@ -261,11 +300,13 @@
     </div>
 
     <main class="grid-filters">
-        <div class="filter-card" onclick="openTimeline('data')"><h3>+ DATA</h3></div>
-        <div class="filter-card" onclick="openTimeline('capsula')"><h3>CÁPSULAS</h3></div>
-        <div class="filter-card" onclick="openTimeline('senalsj')"><h3>SEÑAL SJ</h3></div>
-        <div class="filter-card" onclick="openTimeline('musica')"><h3>MÚSICA</h3></div>
-        <div class="filter-card" onclick="openTimeline('all')"><h3 style="color: var(--highlight);">TODO EL FEED</h3></div>
+        <div class="feed-master-access" onclick="openTimeline('all')">
+    <div style="font-size: 35px;">📰</div>
+    <div class="feed-text-group">
+        <span class="feed-main-title">EL FEED DE LA NUBE</span>
+        <span class="feed-description">Explorá datos, cápsulas y la señal de San Juan</span>
+    </div>
+</div>
     </main>
 
     <div class="sponsor-footer">
