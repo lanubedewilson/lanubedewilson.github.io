@@ -135,14 +135,38 @@
             .timeline-container { margin-left: 20px; }
             .note-title { font-size: 1.6rem; }
         }
-        /* SIDEBAR DE VIBRAS */
+        /* SIDEBAR DE VIBRAS MEJORADO */
         #vibe-sidebar {
-            position: fixed; top: 0; right: -35%; width: 33.33%; height: 100%;
-            background: rgba(10, 20, 10, 0.6); backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px); z-index: 1000;
+            position: fixed; top: 0; right: -40%; width: 33.33%; height: 100%;
+            background: rgba(5, 10, 5, 0.7); backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px); z-index: 1000;
             transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1);
-            display: flex; flex-direction: column; padding: 80px 15px 20px;
+            display: flex; flex-direction: column; /* Organiza título arriba, lista abajo */
+            padding: 0; /* Quitamos el padding general para que el scroll sea limpio */
             border-left: 1px solid rgba(212, 225, 87, 0.2);
+        }
+
+        #vibe-sidebar.open { right: 0; }
+
+        /* Título Fijo Arriba */
+        .vibe-header { 
+            font-family: 'Bebas Neue'; font-size: 1.5rem; color: var(--highlight); 
+            padding: 80px 20px 20px; /* Padding solo acá para el título */
+            background: rgba(5, 10, 5, 0.2); 
+            text-align: center; border-bottom: 1px solid rgba(212, 225, 87, 0.1);
+        }
+
+        /* La lista que se mueve (Contenedor con Scroll Invisible) */
+        .vibe-container {
+            flex-grow: 1; /* Ocupa todo el espacio sobrante */
+            overflow-y: auto; /* Permite el movimiento */
+            padding: 20px;
+            /* ESCONDER LA BARRA DE SCROLL */
+            -ms-overflow-style: none;  /* Internet Explorer/Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .vibe-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
         }
         #vibe-sidebar.open { right: 0; }
         
@@ -177,16 +201,20 @@
     </header>
     <div id="vibe-sidebar">
         <div class="vibe-header">SELECCIONA TU VIBRA</div>
-        <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s')"><div style="width:4px; height:20px; background:#ff8a00"></div><span>Rock 90s</span></div>
-        <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk')"><div style="width:4px; height:20px; background:#a2d149"></div><span>Indie Folk</span></div>
-        <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop')"><div style="width:4px; height:20px; background:#00d4ff"></div><span>Radio Pop</span></div>
-        <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk')"><div style="width:4px; height:20px; background:#ff007a"></div><span>Energy Funk</span></div>
-        <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop')"><div style="width:4px; height:20px; background:#ffcc00"></div><span>Rock & Pop</span></div>
-        <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urban Hop')"><div style="width:4px; height:20px; background:#9d49d1"></div><span>Urban Hop</span></div>
-        <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues')"><div style="width:4px; height:20px; background:#496ed1"></div><span>Radio Blues</span></div>
-        <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana')"><div style="width:4px; height:20px; background:#00f2ff"></div><span>Musica Cristiana</span></div>
-        <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion')"><div style="width:4px; height:20px; background:#d487ff"></div><span>Meditacion</span></div>
-        <button onclick="toggleVibeMenu()" style="margin-top:auto; background:none; border:1px solid #444; color:#888; padding:10px; cursor:pointer; font-size:0.7rem; border-radius:4px;">CERRAR DIAL</button>
+        
+        <div class="vibe-container">
+            <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s')"><div style="width:4px; height:20px; background:#ff8a00"></div><span>Rock 90s</span></div>
+            <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk')"><div style="width:4px; height:20px; background:#a2d149"></div><span>Indie Folk</span></div>
+            <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop')"><div style="width:4px; height:20px; background:#00d4ff"></div><span>Radio Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk')"><div style="width:4px; height:20px; background:#ff007a"></div><span>Energy Funk</span></div>
+            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop')"><div style="width:4px; height:20px; background:#ffcc00"></div><span>Rock & Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urban Hop')"><div style="width:4px; height:20px; background:#9d49d1"></div><span>Urban Hop</span></div>
+            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues')"><div style="width:4px; height:20px; background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana')"><div style="width:4px; height:20px; background:#00f2ff"></div><span>Musica Cristiana</span></div>
+            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion')"><div style="width:4px; height:20px; background:#d487ff"></div><span>Meditacion</span></div>
+
+            <button onclick="toggleVibeMenu()" style="width:100%; margin-top:30px; background:none; border:1px solid #444; color:#888; padding:12px; cursor:pointer; font-size:0.8rem; border-radius:4px; font-family:'Bebas Neue'; letter-spacing:1px;">CERRAR DIAL</button>
+        </div>
     </div>
     <div class="main-stage">
         <iframe id="player-yt" class="player-frame active" src="https://www.youtube.com/embed/36YnV9STBqc?autoplay=1&mute=1&enablejsapi=1" allow="autoplay"></iframe>
