@@ -452,19 +452,23 @@
         const bgAudio = document.getElementById('bg-audio');
         const initialLoop = document.getElementById('initial-loop');
 
-        // FUNCIÓN: Activa el audio con el primer clic del usuario
-        function startWelcomeExperience() {
-            if (bgAudio.paused) {
-                bgAudio.play().catch(error => console.log("Esperando interacción..."));
-                // Una vez que arrancó, removemos el escucha para no repetir la orden
-                document.removeEventListener('click', startWelcomeExperience);
-                document.removeEventListener('touchstart', startWelcomeExperience);
-            }
-        }
+        // --- DESBLOQUEADOR DE AUDIO UNIVERSAL (MOBILE FIX) ---
+const unlockAudio = () => {
+    const bgAudio = document.getElementById('bg-audio');
+    if (bgAudio && bgAudio.paused) {
+        bgAudio.play()
+            .then(() => {
+                console.log("Audio sintonizado con éxito");
+                // Una vez que arrancó, el navegador ya nos dio "luz verde"
+            })
+            .catch(err => console.log("Esperando una interacción real del usuario..."));
+    }
+};
 
-        // Escuchamos el primer clic o touch en cualquier parte
-        document.addEventListener('click', startWelcomeExperience);
-        document.addEventListener('touchstart', startWelcomeExperience);
+// Escuchamos en la ventana entera (window) para que el celu no tenga excusas
+window.addEventListener('click', unlockAudio, { once: true });
+window.addEventListener('touchstart', unlockAudio, { once: true });
+window.addEventListener('touchend', unlockAudio, { once: true });
 
         // MODIFICACIÓN DE SWITCH SIGNAL: Para apagar el audio al ir a Kick o YT
         function switchSignal(type) {
