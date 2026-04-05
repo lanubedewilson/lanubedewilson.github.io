@@ -277,6 +277,18 @@
     opacity: 0.7;
     transition: all 0.3s ease;
 }
+        /* ANIMACIÓN DE COLOR SLOW MOTION PARA EL BOTÓN DE INICIO */
+@keyframes vibe-color-fade {
+    0%, 100% { background-color: #d4e157; } /* Amarillo original */
+    25% { background-color: #00ced1; }     /* Turquesa */
+    50% { background-color: #c0c0c0; }     /* Gris Plata */
+    75% { background-color: #ff8a00; }     /* Naranja */
+}
+
+#btn-vibe {
+    animation: vibe-color-fade 12s infinite ease-in-out !important;
+    transition: background-color 2s ease;
+}
     </style>
 </head>
 <body>
