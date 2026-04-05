@@ -277,72 +277,6 @@
     opacity: 0.7;
     transition: all 0.3s ease;
 }
-        /* ANIMACIÓN DE COLOR SLOW MOTION PARA EL BOTÓN DE INICIO */
-@keyframes vibe-color-fade {
-    0%, 100% { background-color: #d4e157; } /* Amarillo original */
-    25% { background-color: #00ced1; }     /* Turquesa */
-    50% { background-color: #c0c0c0; }     /* Gris Plata */
-    75% { background-color: #ff8a00; }     /* Naranja */
-}
- /* CONTENEDOR DEL SLIDER DE SPONSORS */
-.sponsor-slider-container {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    margin: 10px 0;
-    padding: 15px 0;
-    overflow: hidden; /* Oculta los que no están en escena */
-    position: relative;
-    width: 100%;
-    height: 100px;
-}
-
-/* EL TRACK QUE SE MUEVE (EL BARRIDO) */
-.sponsor-track {
-    display: flex;
-    transition: transform 0.8s cubic-bezier(0.45, 0.05, 0.55, 0.95); /* El efecto de empuje */
-    width: 100%;
-}
-
-.sponsor-slide {
-    min-width: 100%; /* Cada sponsor ocupa todo el ancho del túnel */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-.sponsor-slide img {
-    height: 50px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.3));
-}
-
-.sponsor-label {
-    font-size: 0.6rem;
-    color: #666;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-}
-        let currentSponsor = 0;
-
-function rotateSponsors() {
-    const track = document.getElementById('sponsor-track');
-    const slides = document.querySelectorAll('.sponsor-slide');
-    if (!track || slides.length === 0) return;
-
-    setInterval(() => {
-        currentSponsor = (currentSponsor + 1) % slides.length;
-        const offset = -currentSponsor * 100;
-        track.style.transform = `translateX(${offset}%)`;
-    }, 7000); // Tus 7 segundos exactos
-}
-
-// Llamamos a la función al cargar
-window.addEventListener('load', rotateSponsors);
     </style>
 </head>
 <body>
@@ -397,21 +331,7 @@ window.addEventListener('load', rotateSponsors);
     <div class="ticker-wrap">
         <div class="ticker" id="main-ticker">CONECTANDO CON LA NUBE...</div>
     </div>
-<section class="sponsor-slider">
-    <div class="sponsor-track" id="sponsor-track">
-        
-        <div class="sponsor-slide">
-            <span class="sponsor-label">Nuestros Sponsors</span>
-            <img src="https://lanubedewilson.github.io/img/sj-gob.png" alt="Gobierno SJ">
-        </div>
 
-        <div class="sponsor-slide">
-            <span class="sponsor-label">Socio Estratégico</span>
-            <img src="URL_OTRO_LOGO" alt="Sponsor 2">
-        </div>
-
-    </div>
-</section>
     <main class="grid-filters">
         <div class="feed-master-access" onclick="openTimeline('all')">
     <div style="font-size: 35px;"></div>
@@ -422,8 +342,9 @@ window.addEventListener('load', rotateSponsors);
 </div>
     </main>
 
-    
-</section>
+    <div class="sponsor-footer">
+        <div id="sponsor-ad">Cargando auspiciantes...</div>
+    </div>
 
     <div id="timeline-overlay">
         <span class="close-timeline" onclick="closeTimeline()">×</span>
@@ -486,52 +407,38 @@ window.addEventListener('load', rotateSponsors);
         }
 
         function openTimeline(category) {
-    const container = document.getElementById('timeline-content');
-    container.innerHTML = '';
-    
-    allNews.forEach((row, index) => {
-        // Este split es el que separa las columnas de tu Google Sheets
-        const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-        if (col.length < 4) return;
-        
-        const title = col[0].replace(/"/g, '');
-        const content = col[1].replace(/"/g, '');
-        const status = col[3].trim().toLowerCase();
-        const cat = (col[4] || 'data').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
-        
-        // --- EL CABLE DE LA IMAGEN (Columna 5) ---
-        // Si en tu Sheets la imagen es la columna F, acá va [5]. 
-        // Si es la columna G, cambiá el 5 por un 6.
-        const img = (col[5] || '').trim().replace(/"/g, '');
-        
-        const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
-        const noteId = `nota-${allNews.length - index}`;
-
-        if (status === 'publicar' && (category === 'all' || cat === category)) {
-            const card = document.createElement('div');
-            card.className = `note-card cat-${cat}`;
-            card.id = noteId;
-            card.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
-                    <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic;">✍️ ${author}</span>
-                </div>
+            const container = document.getElementById('timeline-content');
+            container.innerHTML = '';
+            
+            allNews.forEach((row, index) => {
+                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                if (col.length < 4) return;
                 
-                ${img ? `<img src="${img}" class="note-img" style="width:100%; height:auto; border-radius:8px; margin-bottom:15px; display:block;">` : ''}
-                
-                <h2 class="note-title" style="font-family:'Bebas Neue'; font-size:2rem; color:#fff;">${title}</h2>
-                <div class="note-content" style="color:var(--accent-green); line-height:1.6;">${content}</div>
-                <div class="share-bar">
-                    <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
-                    <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
-                </div>
-            `;
-            container.appendChild(card);
-        }
-    });
+                const title = col[0].replace(/"/g, '');
+                const content = col[1].replace(/"/g, '');
+                const status = col[3].trim().toLowerCase();
+                const cat = (col[4] || 'data').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
+                const img = (col[5] || '').trim().replace(/"/g, '');
+                const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
+                const noteId = `nota-${allNews.length - index}`;
 
-    document.getElementById('timeline-overlay').classList.add('open');
-}
+                if (status === 'publicar' && (category === 'all' || cat === category)) {
+                    const card = document.createElement('div');
+                    card.className = `note-card cat-${cat}`;
+                    card.id = noteId;
+                    card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
+                            <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic;">✍️ ${author}</span>
+                        </div>
+                        ${img ? `<img src="${img}" class="note-img">` : ''}
+                        <h2 class="note-title">${title}</h2>
+                        <div class="note-content">${content}</div>
+                        <div class="share-bar">
+                            <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
+                            <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
+                        </div>
+                    `;
                     container.appendChild(card);
                 }
             });
