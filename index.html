@@ -284,6 +284,53 @@
     50% { background-color: #c0c0c0; }     /* Gris Plata */
     75% { background-color: #ff8a00; }     /* Naranja */
 }
+        /* CONTENEDOR MAESTRO DE SPONSORS */
+.sponsors-section {
+    padding: 30px 5%;
+    text-align: center;
+}
+
+.sponsors-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* Se acomodan solos en el celu */
+}
+
+/* LA CÁPSULA DE CRISTAL (EL VALOR AGREGADO) */
+.sponsor-card {
+    background: rgba(255, 255, 255, 0.05); /* Transparencia */
+    backdrop-filter: blur(10px); /* Efecto vidrio esmerilado */
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    width: 160px; /* Tamaño caja */
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.sponsor-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #00d4ff; /* El celeste de tu Feed */
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.sponsor-card img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: grayscale(1) brightness(1.5); /* Look elegante inicial */
+    transition: all 0.3s ease;
+}
+
+.sponsor-card:hover img {
+    filter: grayscale(0) brightness(1); /* Cobra vida al tocarlo */
+}
 
 #btn-vibe {
     animation: vibe-color-fade 12s infinite ease-in-out !important;
@@ -354,9 +401,18 @@
 </div>
     </main>
 
-    <div class="sponsor-footer">
-        <div id="sponsor-ad">Cargando auspiciantes...</div>
+    <section class="sponsors-section">
+    <div style="font-size: 0.65rem; color: #666; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase;">Acompañan a La Nube</div>
+    <div class="sponsors-grid">
+        <div class="sponsor-card">
+            <img src="https://lanubedewilson.github.io/img/sj-gob.png" alt="Gobierno de San Juan">
+        </div>
+        
+        <div class="sponsor-card">
+            <img src="URL_DE_TU_OTRO_LOGO" alt="Sponsor 2">
+        </div>
     </div>
+</section>
 
     <div id="timeline-overlay">
         <span class="close-timeline" onclick="closeTimeline()">×</span>
