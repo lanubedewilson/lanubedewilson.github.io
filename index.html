@@ -367,35 +367,41 @@
     <script>
         let allNews = [];
         let sponsors = [];
+        const bgAudio = document.getElementById('bg-audio');
 
-        // Cambiar entre señales sin recargar página
+        // FUNCIÓN MAESTRA DE SEÑALES: Unificada y sin rebotes
         function switchSignal(type) {
-    const pk = document.getElementById('player-kick');
-    const py = document.getElementById('player-yt');
-    const bk = document.getElementById('btn-kick');
-    const bv = document.getElementById('btn-vibe'); // <--- El nombre correcto
+            const pk = document.getElementById('player-kick');
+            const py = document.getElementById('player-yt');
+            const loop = document.getElementById('initial-loop');
+            const bk = document.getElementById('btn-kick');
+            const bv = document.getElementById('btn-vibe');
 
-    if (type === 'kick') {
-        pk.classList.add('active');
-        py.classList.remove('active');
-        bk.classList.add('active');
-        bv.classList.remove('active');
-        // Silenciamos YouTube para que no moleste al Stream
-        py.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-    } else {
-        py.classList.add('active');
-        pk.classList.remove('active');
-        bv.classList.add('active');
-        bk.classList.add('active'); // Ojo, solo uno queda activo
-        bk.classList.remove('active');
-        // Le damos Play a la música al volver
-        py.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-    }
-}
+            // Apagamos todo lo visual y quitamos clases activas
+            [pk, py, loop].forEach(el => el.classList.remove('active'));
+            bk.classList.remove('active');
+            bv.classList.remove('active');
 
+            if (type === 'kick') {
+                pk.classList.add('active');
+                bk.classList.add('active');
+                bgAudio.pause(); // Silenciamos el fondo si suena Kick
+                py.src = ""; // Cortamos YouTube para ahorrar ancho de banda
+            } else if (type === 'yt') {
+                py.classList.add('active');
+                bv.classList.add('active');
+                bgAudio.pause(); // Silenciamos el fondo si suena YouTube
+            } else {
+                loop.classList.add('active');
+                bgAudio.play().catch(() => {}); // Vuelve el audio ambiental
+            }
+        }
+
+        // CARGA DE DATOS DESDE GOOGLE SHEETS
         async function fetchData() {
-            const newsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=' + Date.now();
-            const sponsorsUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=' + Date.now();
+            const now = Date.now();
+            const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+            const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
             
             try {
                 const res = await fetch(newsUrl);
@@ -405,17 +411,15 @@
                 const resSpo = await fetch(sponsorsUrl);
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
+                
                 startSponsors();
-                // DETECTOR DE VIVO
-        let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
-        const dot = document.getElementById('live-dot');
-        if (isLive) { 
-            dot.classList.add('live'); 
-        } else { 
-            dot.classList.remove('live'); 
-        }
+                
+                // Detector de VIVO
+                let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
+                document.getElementById('live-dot').classList.toggle('live', isLive);
+                
                 checkDeepLinking();
-            } catch (e) { console.log(e); }
+            } catch (e) { console.error("Error cargando la Nube:", e); }
         }
 
         function openTimeline(category) {
@@ -454,13 +458,94 @@
                     container.appendChild(card);
                 }
             });
-
             document.getElementById('timeline-overlay').classList.add('open');
         }
 
         function closeTimeline() {
             document.getElementById('timeline-overlay').classList.remove('open');
             window.history.pushState(null, null, ' ');
+        }
+
+        function changeVibe(videoId, vibeName) {
+            const player = document.getElementById('player-yt');
+            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1`;
+            document.getElementById('main-ticker').innerText = `SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `;
+            toggleVibeMenu();
+            switchSignal('yt');
+        }
+
+        function toggleVibeMenu() {
+            const sidebar = document.getElementById('vibe-sidebar');
+            if(sidebar) sidebar.classList.toggle('open');
+        }
+
+        // TICKER FINANCIERO
+        async function updateTicker() {
+    try {
+        const [b, c, bt, et] = await Promise.all([
+            fetch('https://api.bluelytics.com.ar/v2/latest').then(r=>r.json()),
+            fetch('https://api.exchangerate-api.com/v4/latest/USD').then(r=>r.json()),
+            fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json()),
+            fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r=>r.json())
+        ]);
+        
+        const r = c.rates;
+        const blue = b.blue.value_sell;
+        const oficial = b.oficial.value_sell;
+        
+        // Cálculo de Dólar Tarjeta (Oficial + 60% de carga impositiva actual)
+        const tarjeta = (oficial * 1.60).toFixed(2);
+        
+        // Este texto es el corazón de la consulta para el viajero
+        document.getElementById('main-ticker').innerText = 
+            `DÓLAR BLUE: $${blue} • ` +
+            `OFICIAL: $${oficial} • ` +
+            `TARJETA: $${tarjeta} • ` +
+            `EURO BLUE: $${b.blue_euro.value_sell} • ` +
+            `REAL (BR): $${(blue/r.BRL).toFixed(2)} • ` +
+            `P.CHILENO: $${(blue/r.CLP).toFixed(2)} • ` +
+            `P.URUGUAYO: $${(blue/r.UYU).toFixed(2)} • ` +
+            `GUARANÍ (PY): $${(blue/r.PYG).toFixed(2)} • ` +
+            `BOLIVIANO: $${(blue/r.BOB).toFixed(2)} • ` +
+            `SOL PERUANO: $${(blue/r.PEN).toFixed(2)} • ` +
+            `P.COLOMBIANO: $${(blue/r.COP).toFixed(2)} • ` +
+            `BOLÍVAR (VE): $${(blue/r.VES).toFixed(2)} • ` +
+            `P.MEXICANO: $${(blue/r.MXN).toFixed(2)} • ` +
+            `ECUADOR/SALVADOR: U$D • ` +
+            `WON COREANO (KRW): ₩${r.KRW} • ` +
+            `YEN JAPONÉS (JPY): ¥${r.JPY} • ` +
+            `DÓLAR AUSTRALIANO: $${(blue/r.AUD).toFixed(2)} • ` +
+            `BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ` +
+            `ETH: U$D ${parseFloat(et.price).toLocaleString()} • ` +
+            `LA NUBE DE WILSON • `;
+    } catch (e) {
+        document.getElementById('main-ticker').innerText = "CONECTANDO CON MERCADOS... LA NUBE DE WILSON";
+    }
+}
+
+        function startSponsors() {
+            const box = document.getElementById('sponsor-ad');
+            let idx = 0;
+            if (sponsors.length === 0) return;
+            const show = () => {
+                const col = sponsors[idx].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const url = col[0].replace(/"/g, '');
+                box.innerHTML = `<img src="${url}" style="height:100%; width:auto; animation: fadeIn 1s">`;
+                idx = (idx + 1) % sponsors.length;
+            };
+            show();
+            setInterval(show, 6000);
+        }
+
+        function checkDeepLinking() {
+            const hash = window.location.hash;
+            if (hash && hash.startsWith('#nota-')) {
+                openTimeline('all');
+                setTimeout(() => {
+                    const el = document.getElementById(hash.substring(1));
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 800);
+            }
         }
 
         function shareNote(id, title) {
@@ -476,132 +561,29 @@
         function copyLink(id) {
             const url = `${window.location.origin}${window.location.pathname}#${id}`;
             navigator.clipboard.writeText(url);
-            alert("¡Link copiado para compartir!");
+            alert("¡Link copiado!");
         }
 
-        function checkDeepLinking() {
-            const hash = window.location.hash;
-            if (hash && hash.startsWith('#nota-')) {
-                openTimeline('all');
-                setTimeout(() => {
-                    const el = document.getElementById(hash.substring(1));
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 800);
+        // DESBLOQUEADOR DE AUDIO MOBILE
+        const unlockAudio = () => {
+            if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) {
+                bgAudio.play().catch(() => {});
             }
-        }
-
-        async function updateTicker() {
-    try {
-        const [b, c, bt, et] = await Promise.all([
-            fetch('https://api.bluelytics.com.ar/v2/latest').then(r=>r.json()),
-            fetch('https://api.exchangerate-api.com/v4/latest/USD').then(r=>r.json()),
-            fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r=>r.json()),
-            fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r=>r.json())
-        ]);
-        const r = c.rates, blue = b.blue.value_sell;
-        document.getElementById('main-ticker').innerText = `DÓLAR BLUE: $${blue} • EURO: $${b.blue_euro.value_sell} • REAL: $${(blue/r.BRL).toFixed(2)} • P.CHILENO: $${(blue/r.CLP).toFixed(2)} • P.URUGUAYO: $${(blue/r.UYU).toFixed(2)} • P.MEXICANO: $${(blue/r.MXN).toFixed(2)} • P.COLOMBIANO: $${(blue/r.COP).toFixed(2)} • P.PERUANO: $${(blue/r.PEN).toFixed(2)} • P.CANADIENSE: $${(blue/r.CAD).toFixed(2)} • WON (KRW): ₩${r.KRW} • YEN (JPY): ¥${r.JPY} • BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ETH: U$D ${parseFloat(et.price).toLocaleString()} • LA NUBE DE WILSON • `;
-    } catch (e) {}
-}
-
-        function startSponsors() {
-            const box = document.getElementById('sponsor-ad');
-            let idx = 0;
-            if (sponsors.length === 0) return;
-            
-            const show = () => {
-                const col = sponsors[idx].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                const url = col[0].replace(/"/g, '');
-                box.innerHTML = `<img src="${url}" style="height:100%; width:auto; animation: fadeIn 1s">`;
-                idx = (idx + 1) % sponsors.length;
-            };
-            show();
-            setInterval(show, 6000);
-        }
+        };
 
         window.onload = () => {
             fetchData();
             updateTicker();
             setInterval(updateTicker, 60000);
         };
-        // --- LÓGICA DEL DIAL DE RADIOS ---
-        function toggleVibeMenu() {
-            const sidebar = document.getElementById('vibe-sidebar');
-            if(sidebar) sidebar.classList.toggle('open');
-        }
 
-        function changeVibe(videoId, vibeName) {
-            const player = document.getElementById('player-yt');
-            if(player) {
-                // Cambia el video y asegura que suene (mute=0)
-                player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1`;
-                
-                // Actualiza el texto de lo que suena
-                const ticker = document.getElementById('main-ticker');
-                if(ticker) ticker.innerText = `SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • CONECTANDO...`;
-                
-                // Cierra el menú y cambia a la señal de YouTube
-                toggleVibeMenu();
-                switchSignal('yt');
-            }
-        }
-        const bgAudio = document.getElementById('bg-audio');
-        const initialLoop = document.getElementById('initial-loop');
+        window.addEventListener('click', unlockAudio, { once: true });
+        window.addEventListener('touchstart', unlockAudio, { once: true });
 
-        // --- DESBLOQUEADOR DE AUDIO UNIVERSAL (MOBILE FIX) ---
-const unlockAudio = () => {
-    const bgAudio = document.getElementById('bg-audio');
-    if (bgAudio && bgAudio.paused) {
-        bgAudio.play()
-            .then(() => {
-                console.log("Audio sintonizado con éxito");
-            })
-            .catch(err => console.log("Esperando interacción real..."));
-    }
-};
-
-window.addEventListener('click', unlockAudio, { once: true });
-window.addEventListener('touchstart', unlockAudio, { once: true });
-window.addEventListener('touchend', unlockAudio, { once: true });
-
-// --- TIMEOUT PARA EL LOADER (EVITA QUE SE TRABE LA PÁGINA) ---
-setTimeout(() => {
-    const loader = document.getElementById('loader-wrapper') || document.getElementById('loader');
-    if (loader) {
-        loader.style.display = 'none';
-        loader.style.opacity = '0';
-        loader.style.visibility = 'hidden';
-        console.log("Carga forzada: timeout cumplido.");
-    }
-}, 6000);
-
-        // MODIFICACIÓN DE SWITCH SIGNAL: Para apagar el audio al ir a Kick o YT
-        function switchSignal(type) {
-            const pk = document.getElementById('player-kick');
-            const py = document.getElementById('player-yt');
-            const loop = document.getElementById('initial-loop');
-            const bk = document.getElementById('btn-kick');
-            const bv = document.getElementById('btn-vibe');
-
-            // Apagamos todo lo visual primero
-            [pk, py, loop].forEach(el => el.classList.remove('active'));
-
-            if (type === 'kick') {
-                pk.classList.add('active');
-                bk.classList.add('active');
-                bv.classList.remove('active');
-                bgAudio.pause(); // Silenciamos el Indie Pop
-                py.src = ""; // Limpiamos YT
-            } else if (type === 'yt') {
-                py.classList.add('active');
-                bv.classList.add('active');
-                bk.classList.remove('active');
-                bgAudio.pause(); // Silenciamos el Indie Pop
-            } else {
-                // Volver al loop inicial (si fuera necesario)
-                loop.classList.add('active');
-                bgAudio.play();
-            }
-        }
+        setTimeout(() => {
+            const loader = document.getElementById('loader-wrapper') || document.getElementById('loader');
+            if (loader) loader.style.display = 'none';
+        }, 6000);
     </script>
 
     <style>
