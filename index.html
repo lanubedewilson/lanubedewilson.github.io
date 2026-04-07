@@ -428,6 +428,7 @@
     container.innerHTML = '';
     
     allNews.forEach((row, index) => {
+        // Corregimos el regex para que no tire error de sintaxis
         const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         if (col.length < 4) return;
         
@@ -438,7 +439,7 @@
         const cat = (col[4] || 'data').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
         const img = (col[5] || '').trim().replace(/"/g, '');
         
-        // --- ACÁ AGREGAMOS LA FECHA (Columna 6 del CSV) ---
+        // Atajamos la fecha de la columna G (índice 6)
         const date = (col[6] || '').replace(/"/g, '').trim(); 
         
         const noteId = `nota-${allNews.length - index}`;
@@ -466,12 +467,10 @@
             container.appendChild(card);
         }
     });
-}
-               
-            });
-            document.getElementById('timeline-overlay').classList.add('open');
-        }
 
+    // Esta línea tiene que estar ADENTRO de la función para que la Nube se abra
+    document.getElementById('timeline-overlay').classList.add('open');
+}
         function closeTimeline() {
             document.getElementById('timeline-overlay').classList.remove('open');
             window.history.pushState(null, null, ' ');
