@@ -485,7 +485,7 @@
             card.id = noteId;
             card.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
+                    <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8; white-space: nowrap; flex-shrink: 0;">[ ${cat.toUpperCase()} ]</span>
                     <div style="text-align: right;">
                         <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic; display:block;">✍️ ${author}</span>
                         <span style="color:gray; font-size:0.6rem; display:block;">📅 ${date}</span>
