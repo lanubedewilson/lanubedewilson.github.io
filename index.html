@@ -451,29 +451,38 @@
         }
 
         // CARGA DE DATOS DESDE GOOGLE SHEETS
-        async function fetchData() {
-            const now = Date.now();
-            const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
-            const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
-            
-            try {
-                const res = await fetch(newsUrl);
-                const text = await res.text();
-                allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
-                
-                const resSpo = await fetch(sponsorsUrl);
-                const textSpo = await resSpo.text();
-                sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
-                
-                startSponsors();
-                
-                // Detector de VIVO
-                let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
-                document.getElementById('live-dot').classList.toggle('live', isLive);
-                
-                checkDeepLinking();
-            } catch (e) { console.error("Error cargando la Nube:", e); }
+       async function fetchData() {
+    const now = Date.now();
+    const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+    const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
+    
+    try {
+        const res = await fetch(newsUrl);
+        const text = await res.text();
+        allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
+        
+        const resSpo = await fetch(sponsorsUrl);
+        const textSpo = await resSpo.text();
+        sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
+        
+        startSponsors();
+        
+        // --- LÓGICA DEL TELÓN Y EL VIVO ---
+        const statusCol = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
+        const overlay = document.getElementById('stream-overlay');
+        const dot = document.getElementById('live-dot');
+
+        if (statusCol) {
+            dot.classList.add('live');
+            if (overlay) overlay.style.display = 'none'; // ABRIMOS LA PERSIANA
+        } else {
+            dot.classList.remove('live');
+            if (overlay) overlay.style.display = 'flex'; // BAJAMOS EL TELÓN
         }
+        
+        checkDeepLinking();
+    } catch (e) { console.error("Error cargando la Nube:", e); }
+}
 
         function openTimeline(category) {
     const container = document.getElementById('timeline-content');
@@ -651,14 +660,7 @@
             const loader = document.getElementById('loader-wrapper') || document.getElementById('loader');
             if (loader) loader.style.display = 'none';
         }, 6000);
-        /* --- CONTENEDOR MAESTRO DEL STREAM --- */
-.stream-master {
-    position: relative;
-    width: 100%;
-    margin-top: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: #000;
-}
+        
 
 /* --- EL TELÓN: BLOQUEO E INFORMACIÓN --- */
 .telon-offline {
@@ -712,6 +714,14 @@
     </script>
 
     <style>
+        /* --- CONTENEDOR MAESTRO DEL STREAM --- */
+.stream-master {
+    position: relative;
+    width: 100%;
+    margin-top: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: #000;
+}
         @keyframes fadeIn { from {opacity: 0} to {opacity: 1} }
         /* Definición del latido (cambia la escala y la opacidad) */
 @keyframes latido {
