@@ -439,7 +439,10 @@
                 const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
                 const noteId = `nota-${allNews.length - index}`;
 
-                if (status === 'publicar' && (category === 'all' || cat === category)) {
+               // Normalizamos la entrada para que coincida con la limpieza que ya tiene 'cat'
+            const normalizedInput = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "").trim();
+
+            if (status === 'publicar' && (category === 'all' || cat === normalizedInput)) {
                     const card = document.createElement('div');
                     card.className = `note-card cat-${cat}`;
                     card.id = noteId;
