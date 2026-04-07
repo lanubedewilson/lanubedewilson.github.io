@@ -424,40 +424,49 @@
         }
 
         function openTimeline(category) {
-            const container = document.getElementById('timeline-content');
-            container.innerHTML = '';
-            
-            allNews.forEach((row, index) => {
-                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                if (col.length < 4) return;
-                
-                const title = col[0].replace(/"/g, '');
-                const content = col[1].replace(/"/g, '');
-                const status = col[3].trim().toLowerCase();
-                const cat = (col[4] || 'data').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
-                const img = (col[5] || '').trim().replace(/"/g, '');
-                const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
-                const noteId = `nota-${allNews.length - index}`;
-        // bypass: ignoramos categorías y filtramos solo por estado
-            if (status === 'publicar') {
-                const card = document.createElement('div');
-                card.className = `note-card cat-${cat}`;
-                card.id = noteId;
-                card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
-                        <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic;">✍️ ${author}</span>
+    const container = document.getElementById('timeline-content');
+    container.innerHTML = '';
+    
+    allNews.forEach((row, index) => {
+        const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        if (col.length < 4) return;
+        
+        const title = col[0].replace(/"/g, '');
+        const content = col[1].replace(/"/g, '');
+        const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
+        const status = col[3].trim().toLowerCase();
+        const cat = (col[4] || 'data').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "");
+        const img = (col[5] || '').trim().replace(/"/g, '');
+        
+        // --- ACÁ AGREGAMOS LA FECHA (Columna 6 del CSV) ---
+        const date = (col[6] || '').replace(/"/g, '').trim(); 
+        
+        const noteId = `nota-${allNews.length - index}`;
+
+        if (status === 'publicar') {
+            const card = document.createElement('div');
+            card.className = `note-card cat-${cat}`;
+            card.id = noteId;
+            card.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
+                    <div style="text-align: right;">
+                        <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic; display:block;">✍️ ${author}</span>
+                        <span style="color:gray; font-size:0.6rem; display:block;">📅 ${date}</span>
                     </div>
-                    ${img ? `<img src="${img}" class="note-img">` : ''}
-                    <h2 class="note-title">${title}</h2>
-                    <div class="note-content">${content}</div>
-                    <div class="share-bar">
-                        <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
-                        <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
-                    </div>
-                `;
-                container.appendChild(card);
-            }
+                </div>
+                ${img ? `<img src="${img}" class="note-img">` : ''}
+                <h2 class="note-title">${title}</h2>
+                <div class="note-content">${content}</div>
+                <div class="share-bar">
+                    <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
+                    <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
+                </div>
+            `;
+            container.appendChild(card);
+        }
+    });
+}
                
             });
             document.getElementById('timeline-overlay').classList.add('open');
