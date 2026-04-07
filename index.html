@@ -438,29 +438,27 @@
                 const img = (col[5] || '').trim().replace(/"/g, '');
                 const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
                 const noteId = `nota-${allNews.length - index}`;
-
-               // Normalizamos la entrada para que coincida con la limpieza que ya tiene 'cat'
-            const normalizedInput = category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s/g, "").trim();
-
-            if (status === 'publicar' && (category === 'all' || cat === normalizedInput)) {
-                    const card = document.createElement('div');
-                    card.className = `note-card cat-${cat}`;
-                    card.id = noteId;
-                    card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
-                            <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic;">✍️ ${author}</span>
-                        </div>
-                        ${img ? `<img src="${img}" class="note-img">` : ''}
-                        <h2 class="note-title">${title}</h2>
-                        <div class="note-content">${content}</div>
-                        <div class="share-bar">
-                            <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
-                            <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                }
+        // bypass: ignoramos categorías y filtramos solo por estado
+            if (status === 'publicar') {
+                const card = document.createElement('div');
+                card.className = `note-card cat-${cat}`;
+                card.id = noteId;
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="color:var(--highlight); font-size:0.7rem; font-weight:bold; opacity:0.8;">[ ${cat.toUpperCase()} ]</span>
+                        <span style="color:var(--accent-green); font-size:0.7rem; font-style:italic;">✍️ ${author}</span>
+                    </div>
+                    ${img ? `<img src="${img}" class="note-img">` : ''}
+                    <h2 class="note-title">${title}</h2>
+                    <div class="note-content">${content}</div>
+                    <div class="share-bar">
+                        <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
+                        <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+               
             });
             document.getElementById('timeline-overlay').classList.add('open');
         }
