@@ -290,6 +290,41 @@
     animation: vibe-color-fade 12s infinite ease-in-out !important;
     transition: background-color 2s ease;
 }
+        /* --- MEZCLA DE COLORES POR CATEGORÍA --- */
+
+.cat-sanjuan { 
+    --highlight: #ffcc00; 
+    border-left: 4px solid var(--highlight); 
+}
+
+.cat-musica { 
+    --highlight: #ff00ff; 
+    border-left: 4px solid var(--highlight); 
+}
+
+.cat-tecnologia { 
+    --highlight: #00ffff; 
+    border-left: 4px solid var(--highlight); 
+}
+
+.cat-ciencia { 
+    --highlight: #00ff00; 
+    border-left: 4px solid var(--highlight); 
+}
+
+.cat-juegos { 
+    --highlight: #ffffff; 
+    border-left: 4px solid var(--highlight); 
+}
+
+/* Estilo base para que las tarjetas respiren */
+.note-card {
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.05);
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+}
     </style>
 </head>
 <body>
