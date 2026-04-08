@@ -476,40 +476,36 @@
     const loop = document.getElementById('initial-loop');
     const bk = document.getElementById('btn-kick');
     const bv = document.getElementById('btn-vibe');
-    const overlay = document.getElementById('stream-overlay'); // Identificamos la tapa
+    const overlay = document.getElementById('stream-overlay');
 
-    // 1. Apagamos todos los visuales de una
+    // 1. Limpiamos todos los visuales y botones activos
     [pk, py, loop].forEach(el => el.classList.remove('active'));
     bk.classList.remove('active');
     bv.classList.remove('active');
 
-    // 2. Ruteo de señal según lo que vos elijas
+    // 2. Ruteo según el botón que apretaste
     if (type === 'kick') {
         bk.classList.add('active');
         pk.classList.add('active');
-        bgAudio.pause(); // Silenciamos la radio de fondo
-        py.src = ""; // Cortamos YouTube para no gastar datos
+        bgAudio.pause(); // Silenciamos el fondo
         
-        // --- LÓGICA DE PROTECCIÓN ---
-        // Solo acá decidimos si mostrar el telón o no
+        // --- LA LLAVE DE SEGURIDAD ---
+        // Solo acá preguntamos por el VIVO para ver si ponemos el telón
         let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
-        if (overlay) {
-            overlay.style.display = isLive ? 'none' : 'flex';
-        }
-
-    } else if (type === 'yt') {
-        bv.classList.add('active');
-        py.classList.add('active');
-        bgAudio.pause();
-        
-        // --- BYPASS ---
-        // Si elegís una VIBRA, el telón SE OCULTA SIEMPRE
-        if (overlay) overlay.style.display = 'none';
+        if (overlay) overlay.style.display = isLive ? 'none' : 'flex';
 
     } else {
-        // Estado inicial (Loop de nubes)
-        loop.classList.add('active');
-        bgAudio.play().catch(() => {});
+        // SI ELEGÍS VIBRAS (yt) O VOLVÉS AL INICIO
+        if (type === 'yt') {
+            bv.classList.add('active');
+            py.classList.add('active');
+        } else {
+            loop.classList.add('active');
+            bgAudio.play().catch(() => {});
+        }
+
+        // --- BYPASS MAESTRO ---
+        // En cualquier otra señal que no sea Kick, el telón SE ESCONDE SIEMPRE
         if (overlay) overlay.style.display = 'none';
     }
 }
@@ -557,6 +553,20 @@ if (overlay && btnKick) {
         checkDeepLinking();
     } catch (e) { 
         console.error("Error cargando la Nube:", e); 
+    }
+}
+        let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
+const overlay = document.getElementById('stream-overlay');
+const btnKick = document.getElementById('btn-kick');
+
+// SOLO actuamos sobre el telón si el usuario está parado en la pestaña de STREAM
+if (overlay && btnKick) {
+    if (btnKick.classList.contains('active')) {
+        // Acá el telón decide según el vivo
+        overlay.style.display = isLive ? 'none' : 'flex';
+    } else {
+        // Si el usuario está en Vibras o Inicio, forzamos que el telón esté oculto
+        overlay.style.display = 'none';
     }
 }
 
