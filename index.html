@@ -619,6 +619,7 @@
             fetchData();
             updateTicker();
             setInterval(updateTicker, 60000);
+            setInterval(fetchData, 15000); // Revisa noticias cada 15 segundos
         };
 
         window.addEventListener('click', unlockAudio, { once: true });
