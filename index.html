@@ -471,31 +471,48 @@
 
         // FUNCIÓN MAESTRA DE SEÑALES: Unificada y sin rebotes
         function switchSignal(type) {
-            const pk = document.getElementById('player-kick');
-            const py = document.getElementById('player-yt');
-            const loop = document.getElementById('initial-loop');
-            const bk = document.getElementById('btn-kick');
-            const bv = document.getElementById('btn-vibe');
+    const pk = document.getElementById('player-kick');
+    const py = document.getElementById('player-yt');
+    const loop = document.getElementById('initial-loop');
+    const bk = document.getElementById('btn-kick');
+    const bv = document.getElementById('btn-vibe');
+    const overlay = document.getElementById('stream-overlay'); // Identificamos la tapa
 
-            // Apagamos todo lo visual y quitamos clases activas
-            [pk, py, loop].forEach(el => el.classList.remove('active'));
-            bk.classList.remove('active');
-            bv.classList.remove('active');
+    // 1. Apagamos todos los visuales de una
+    [pk, py, loop].forEach(el => el.classList.remove('active'));
+    bk.classList.remove('active');
+    bv.classList.remove('active');
 
-            if (type === 'kick') {
-                pk.classList.add('active');
-                bk.classList.add('active');
-                bgAudio.pause(); // Silenciamos el fondo si suena Kick
-                py.src = ""; // Cortamos YouTube para ahorrar ancho de banda
-            } else if (type === 'yt') {
-                py.classList.add('active');
-                bv.classList.add('active');
-                bgAudio.pause(); // Silenciamos el fondo si suena YouTube
-            } else {
-                loop.classList.add('active');
-                bgAudio.play().catch(() => {}); // Vuelve el audio ambiental
-            }
+    // 2. Ruteo de señal según lo que vos elijas
+    if (type === 'kick') {
+        bk.classList.add('active');
+        pk.classList.add('active');
+        bgAudio.pause(); // Silenciamos la radio de fondo
+        py.src = ""; // Cortamos YouTube para no gastar datos
+        
+        // --- LÓGICA DE PROTECCIÓN ---
+        // Solo acá decidimos si mostrar el telón o no
+        let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
+        if (overlay) {
+            overlay.style.display = isLive ? 'none' : 'flex';
         }
+
+    } else if (type === 'yt') {
+        bv.classList.add('active');
+        py.classList.add('active');
+        bgAudio.pause();
+        
+        // --- BYPASS ---
+        // Si elegís una VIBRA, el telón SE OCULTA SIEMPRE
+        if (overlay) overlay.style.display = 'none';
+
+    } else {
+        // Estado inicial (Loop de nubes)
+        loop.classList.add('active');
+        bgAudio.play().catch(() => {});
+        if (overlay) overlay.style.display = 'none';
+    }
+}
 
         // CARGA DE DATOS DESDE GOOGLE SHEETS
         async function fetchData() {
@@ -523,14 +540,19 @@
         // Actualiza el punto rojo/verde
         if (dot) dot.classList.toggle('live', isLive);
 
-        // ABRE O CIERRA EL TELÓN SEGÚN EL VIVO
-        if (overlay) {
-            if (isLive) {
-                overlay.style.display = 'none'; // Si hay vivo, sacamos el telón
-            } else {
-                overlay.style.display = 'flex'; // Si no hay vivo, ponemos el telón
-            }
-        }
+       // ABRE O CIERRA EL TELÓN SOLO SI ESTAMOS EN LA PESTAÑA DE KICK
+const btnKick = document.getElementById('btn-kick');
+
+if (overlay && btnKick) {
+    // Si el botón de Kick está activo (clase 'active')
+    if (btnKick.classList.contains('active')) {
+        // Mostramos el telón solo si NO hay vivo
+        overlay.style.display = isLive ? 'none' : 'flex';
+    } else {
+        // Si estamos en VIBRAS o INICIO, el telón siempre se esconde
+        overlay.style.display = 'none';
+    }
+}
         
         checkDeepLinking();
     } catch (e) { 
