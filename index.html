@@ -354,20 +354,26 @@
     opacity: 0.35;
 }
 
-@keyframes latido {
-    0% { transform: scale(1); opacity: 0.8; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.8; }
+/* Una respiración suave de luz, sin movimiento físico */
+@keyframes luzSuave {
+    0%, 100% { 
+        opacity: 0.6; 
+        text-shadow: 0 0 10px rgba(212, 225, 87, 0.2); 
+    }
+    50% { 
+        opacity: 1; 
+        text-shadow: 0 0 25px rgba(212, 225, 87, 0.6); 
+    }
 }
 
-.latido-vivo {
-    font-size: 2.5rem;
+.glow-vivo {
+    font-size: 2.2rem;
     color: var(--highlight);
-    font-weight: 900;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 4px;
-    animation: latido 2.5s infinite ease-in-out;
-    text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    letter-spacing: 5px;
+    /* Bajamos la velocidad a 4 segundos para que sea bien calmo */
+    animation: luzSuave 4s infinite ease-in-out; 
 }
     </style>
 </head>
@@ -412,8 +418,22 @@
         <source src="La Nube.mp4" type="video/mp4">
     </video>
 
+    <div id="stream-wrapper" class="stream-master">
+    <div id="stream-overlay" class="telon-offline">
+        <video autoplay muted loop playsinline class="video-fondo">
+            <source src="La Nube.mp4" type="video/mp4">
+        </video>
+        <div class="mensaje-telon">
+            <div class="glow-vivo">Eventos en vivo</div>
+            <p style="color: white; opacity: 0.6; margin-top: 10px; font-size: 0.9rem;">
+                Sintonizá la vibración de San Juan
+            </p>
+        </div>
+    </div>
+
     <iframe id="player-yt" class="player-frame" src="" allow="autoplay"></iframe>
     <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
+</div>
 
     <audio id="bg-audio" loop>
         <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
@@ -479,28 +499,44 @@
 
         // CARGA DE DATOS DESDE GOOGLE SHEETS
         async function fetchData() {
-            const now = Date.now();
-            const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
-            const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
-            
-            try {
-                const res = await fetch(newsUrl);
-                const text = await res.text();
-                allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
-                
-                const resSpo = await fetch(sponsorsUrl);
-                const textSpo = await resSpo.text();
-                sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
-                
-                startSponsors();
-                
-                // Detector de VIVO
-                let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
-                document.getElementById('live-dot').classList.toggle('live', isLive);
-                
-                checkDeepLinking();
-            } catch (e) { console.error("Error cargando la Nube:", e); }
+    const now = Date.now();
+    const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+    const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
+    
+    try {
+        const res = await fetch(newsUrl);
+        const text = await res.text();
+        allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
+        
+        const resSpo = await fetch(sponsorsUrl);
+        const textSpo = await resSpo.text();
+        sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
+        
+        startSponsors();
+        
+        // --- DETECTOR DE VIVO Y CONTROL DEL TELÓN ---
+        let isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
+        
+        const dot = document.getElementById('live-dot');
+        const overlay = document.getElementById('stream-overlay');
+
+        // Actualiza el punto rojo/verde
+        if (dot) dot.classList.toggle('live', isLive);
+
+        // ABRE O CIERRA EL TELÓN SEGÚN EL VIVO
+        if (overlay) {
+            if (isLive) {
+                overlay.style.display = 'none'; // Si hay vivo, sacamos el telón
+            } else {
+                overlay.style.display = 'flex'; // Si no hay vivo, ponemos el telón
+            }
         }
+        
+        checkDeepLinking();
+    } catch (e) { 
+        console.error("Error cargando la Nube:", e); 
+    }
+}
 
         function openTimeline(category) {
     const container = document.getElementById('timeline-content');
