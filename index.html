@@ -629,6 +629,16 @@
             z-index: 50;
             pointer-events: none;
             overflow: hidden;
+            /* Invisible e inactivo por defecto — solo aparece cuando hay un slide activo */
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+        #ranking-carousel.has-active {
+            opacity: 1;
+        }
+        #ranking-carousel.carousel-hidden {
+            opacity: 0 !important;
+            pointer-events: none !important;
         }
 
         .carousel-slide {
@@ -640,31 +650,27 @@
             align-items: center;
             justify-content: center;
             background: rgba(5, 10, 5, 0.93);
-            transform: translateX(0%);
+            transform: translateX(100%);
             transition: none;
             pointer-events: none;
             z-index: 1;
         }
         .carousel-slide.active {
             transform: translateX(0%);
-            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: all;
             z-index: 2;
         }
         .carousel-slide.from-right {
             transform: translateX(100%);
+            transition: none;
         }
         .carousel-slide.from-left {
             transform: translateX(-100%);
+            transition: none;
         }
         .carousel-slide.hidden {
-            transform: translateX(0%);
-            transition: none;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .carousel-slide.hidden-left {
-            transform: translateX(0%);
+            transform: translateX(100%);
             transition: none;
             pointer-events: none;
             z-index: 1;
@@ -810,11 +816,6 @@
         }
         #carousel-dots {
             transition: opacity 0.4s ease;
-        }
-        #carousel-dots.carousel-hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
             position: absolute;
             bottom: 72px;
             left: 50%;
@@ -823,6 +824,10 @@
             gap: 8px;
             z-index: 60;
             pointer-events: all;
+        }
+        #carousel-dots.carousel-hidden {
+            opacity: 0;
+            pointer-events: none;
         }
         .carousel-dot {
             width: 8px; height: 8px;
@@ -1210,24 +1215,32 @@
         const bgAudio = document.getElementById('bg-audio');
 
         function hideCarousel() {
-            document.getElementById('ranking-carousel').classList.add('carousel-hidden');
+            const carousel = document.getElementById('ranking-carousel');
+            carousel.classList.remove('has-active');
+            carousel.classList.add('carousel-hidden');
             document.getElementById('carousel-dots').classList.add('carousel-hidden');
             document.getElementById('btn-rankings-toggle').classList.add('visible');
-            if (carouselIdx > 0 && slideEls[carouselIdx]) {
-                slideEls[carouselIdx].classList.remove('active');
-                slideEls[carouselIdx].classList.add('hidden');
-            }
+            /* Resetear todos los slides fuera de pantalla */
+            Object.values(slideEls).forEach(el => {
+                if (el) {
+                    el.style.transition    = 'none';
+                    el.style.transform     = 'translateX(100%)';
+                    el.style.pointerEvents = 'none';
+                    el.style.zIndex        = '1';
+                }
+            });
             carouselIdx = 0;
             updateDots(0);
             killTimer();
         }
 
         function showCarousel() {
-            document.getElementById('ranking-carousel').classList.remove('carousel-hidden');
+            const carousel = document.getElementById('ranking-carousel');
+            carousel.classList.remove('carousel-hidden');
+            /* No mostramos has-active todavía — el video es visible hasta que el usuario elige un slide */
             document.getElementById('carousel-dots').classList.remove('carousel-hidden');
             document.getElementById('btn-rankings-toggle').classList.remove('visible');
-            /* Sin automatismo — el usuario controla desde acá */
-            carouselPaused = true;
+            carouselPaused = true; /* sin automatismo al volver */
         }
 
         /* =============================================
@@ -1661,6 +1674,9 @@
             3: document.getElementById('slide-yt')
         };
 
+        /* Al inicio todos los slides están fuera de pantalla (translateX 100% por CSS),
+           el video La Nube.mp4 es visible porque es el video del main-stage, no un slide */
+
         function updateDots(idx) {
             document.querySelectorAll('.carousel-dot').forEach((d, i) => {
                 d.classList.toggle('active', i === idx);
@@ -1678,22 +1694,35 @@
             const prev = carouselIdx;
             carouselIdx = idx;
             const dir = (direction === -1) ? -1 : 1;
+            const carousel = document.getElementById('ranking-carousel');
 
-            /* Saliente: lo dejamos quieto (z-index bajo), sin animación */
+            /* Saliente: sacarlo fuera de pantalla sin animación */
             if (prev > 0 && slideEls[prev]) {
-                slideEls[prev].classList.remove('active', 'from-right', 'from-left');
-                slideEls[prev].classList.add('hidden');
+                slideEls[prev].style.transition   = 'none';
+                slideEls[prev].style.transform    = dir === 1 ? 'translateX(-100%)' : 'translateX(100%)';
+                slideEls[prev].style.pointerEvents = 'none';
+                slideEls[prev].style.zIndex       = '1';
             }
 
-            /* Entrante: lo posicionamos del lado correcto sin transición,
-               luego quitamos la clase de posición para que anime hacia 0 */
-            if (idx > 0 && slideEls[idx]) {
-                slideEls[idx].classList.remove('active', 'hidden', 'hidden-left', 'from-right', 'from-left');
-                slideEls[idx].classList.add(dir === 1 ? 'from-right' : 'from-left');
-                slideEls[idx].getBoundingClientRect(); /* forzar reflow */
-                slideEls[idx].classList.remove('from-right', 'from-left');
-                slideEls[idx].classList.add('active');
+            /* Índice 0 = volver al video La Nube */
+            if (idx === 0) {
+                carousel.classList.remove('has-active');
+                updateDots(0);
+                if (manual) killTimer();
+                return;
             }
+
+            /* Índice > 0 = slide de ranking */
+            carousel.classList.add('has-active');
+            const el = slideEls[idx];
+            el.style.transition    = 'none';
+            el.style.transform     = dir === 1 ? 'translateX(100%)' : 'translateX(-100%)';
+            el.style.pointerEvents = 'none';
+            el.style.zIndex        = '2';
+            void el.offsetWidth; /* reflow */
+            el.style.transition    = 'transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)';
+            el.style.transform     = 'translateX(0%)';
+            el.style.pointerEvents = 'all';
 
             updateDots(idx);
             if (manual) killTimer();
@@ -1730,10 +1759,8 @@
                 const dy = e.changedTouches[0].clientY - touchStartY;
                 if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
                 if (dx < 0) {
-                    /* dedo va a la izquierda → avanza → slide entra desde la derecha */
                     goToSlide((carouselIdx + 1) % SLIDES.length, true, 1);
                 } else {
-                    /* dedo va a la derecha → retrocede → slide entra desde la izquierda */
                     goToSlide((carouselIdx - 1 + SLIDES.length) % SLIDES.length, true, -1);
                 }
             }, { passive: true });
