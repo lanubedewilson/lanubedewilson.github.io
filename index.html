@@ -750,8 +750,57 @@
         .carousel-cta:hover  { opacity: 0.9; }
         .carousel-cta:active { transform: scale(0.97); }
 
-        /* DOTS — encima del botón CTA */
+        /* Botón toggle rankings */
+        #btn-rankings-toggle {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            z-index: 55;
+            background: rgba(5,10,5,0.75);
+            border: 1px solid rgba(212,225,87,0.4);
+            border-radius: 20px;
+            padding: 5px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: opacity 0.3s, border-color 0.3s;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+        #btn-rankings-toggle:hover {
+            border-color: var(--highlight);
+        }
+        #btn-rankings-toggle .btn-r-icon {
+            font-size: 0.75rem;
+        }
+        #btn-rankings-toggle .btn-r-label {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            color: var(--highlight);
+        }
+        /* Solo visible cuando el carrusel está oculto */
+        #btn-rankings-toggle {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        #btn-rankings-toggle.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* Carrusel visible/oculto */
+        #ranking-carousel,
         #carousel-dots {
+            transition: opacity 0.4s ease, pointer-events 0s;
+        }
+        #ranking-carousel.carousel-hidden,
+        #carousel-dots.carousel-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
             position: absolute;
             bottom: 72px;
             left: 50%;
@@ -988,7 +1037,7 @@
             <source src="La Nube.mp4" type="video/mp4">
         </video>
 
-        <iframe id="player-yt" class="player-frame" src="" allow="autoplay"></iframe>
+        <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
 
         <!-- OVERLAY SEÑAL EN ESPERA -->
@@ -1019,6 +1068,12 @@
         <audio id="bg-audio" loop>
             <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
         </audio>
+
+        <!-- Botón para recuperar el carrusel cuando está oculto -->
+        <button id="btn-rankings-toggle" onclick="showCarousel()">
+            <span class="btn-r-icon">📊</span>
+            <span class="btn-r-label">RANKINGS</span>
+        </button>
 
         <!-- ==========================================
              CARRUSEL DE RANKINGS
@@ -1140,8 +1195,28 @@
         let sponsors = [];
         const bgAudio = document.getElementById('bg-audio');
 
+        function hideCarousel() {
+            document.getElementById('ranking-carousel').classList.add('carousel-hidden');
+            document.getElementById('carousel-dots').classList.add('carousel-hidden');
+            document.getElementById('btn-rankings-toggle').classList.add('visible');
+            if (carouselIdx > 0 && slideEls[carouselIdx]) {
+                slideEls[carouselIdx].classList.remove('active');
+                slideEls[carouselIdx].classList.add('hidden');
+            }
+            carouselIdx = 0;
+            updateDots(0);
+            killTimer();
+        }
+
+        function showCarousel() {
+            document.getElementById('ranking-carousel').classList.remove('carousel-hidden');
+            document.getElementById('carousel-dots').classList.remove('carousel-hidden');
+            document.getElementById('btn-rankings-toggle').classList.remove('visible');
+            carouselPaused = false;
+            resetCarouselTimer();
+        }
+
         /* =============================================
-           SEÑALES — overlay elegante cuando no hay stream en vivo
         ============================================= */
         function switchSignal(type) {
             const pk   = document.getElementById('player-kick');
@@ -1161,6 +1236,7 @@
                     bk.classList.add('active');
                     bgAudio.pause();
                     py.src = '';
+                    hideCarousel();
                 } else {
                     loop.classList.add('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
@@ -1169,14 +1245,17 @@
                 py.classList.add('active');
                 bv.classList.add('active');
                 bgAudio.pause();
+                hideCarousel();
             } else {
                 loop.classList.add('active');
                 bgAudio.play().catch(() => {});
+                showCarousel();
             }
         }
 
         function closeNoSignal() {
             document.getElementById('no-signal-msg').classList.remove('visible');
+            showCarousel();
         }
 
         /* =============================================
@@ -1189,6 +1268,7 @@
             showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
             toggleVibeMenu();
             switchSignal('yt');
+            hideCarousel();
         }
 
         function toggleVibeMenu() {
