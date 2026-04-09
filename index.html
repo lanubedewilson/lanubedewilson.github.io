@@ -655,7 +655,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 4px;
         }
         .carousel-badge-icon {
             font-size: 1.1rem;
@@ -670,19 +670,19 @@
 
         .carousel-title {
             font-family: 'Bebas Neue', cursive;
-            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            font-size: clamp(1.2rem, 3vw, 2rem);
             color: #fff;
             letter-spacing: 2px;
-            margin: 0 0 6px;
+            margin: 0 0 4px;
             text-align: center;
             line-height: 1;
         }
 
         .carousel-preview {
-            font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+            font-size: clamp(0.68rem, 1.5vw, 0.82rem);
             color: var(--accent-green);
             font-weight: 300;
-            margin: 0 0 14px;
+            margin: 0 0 8px;
             text-align: center;
             opacity: 0.8;
             max-width: 80%;
@@ -691,10 +691,10 @@
         .carousel-top3 {
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            width: 80%;
+            gap: 4px;
+            width: 88%;
             max-width: 400px;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .carousel-top3-item {
@@ -703,7 +703,7 @@
             gap: 8px;
             background: rgba(255,255,255,0.04);
             border-radius: 6px;
-            padding: 6px 10px;
+            padding: 5px 10px;
             border: 1px solid rgba(255,255,255,0.06);
         }
 
@@ -1056,10 +1056,10 @@
 
         <!-- DOTS de navegación -->
         <div id="carousel-dots">
-            <button class="carousel-dot active" data-idx="0" onclick="goToSlide(0)" title="Video La Nube"></button>
-            <button class="carousel-dot" data-idx="1" onclick="goToSlide(1)" title="YouTube Trending"></button>
-            <button class="carousel-dot" data-idx="2" onclick="goToSlide(2)" title="Spotify Global"></button>
-            <button class="carousel-dot" data-idx="3" onclick="goToSlide(3)" title="Spotify Argentina"></button>
+            <button class="carousel-dot active" data-idx="0" onclick="goToSlide(0, true)" title="Video La Nube"></button>
+            <button class="carousel-dot" data-idx="1" onclick="goToSlide(1, true)" title="Spotify Argentina"></button>
+            <button class="carousel-dot" data-idx="2" onclick="goToSlide(2, true)" title="Spotify Global"></button>
+            <button class="carousel-dot" data-idx="3" onclick="goToSlide(3, true)" title="YouTube Tendencias"></button>
         </div>
     </div>
 
@@ -1546,14 +1546,16 @@
             if (e.target === this) closeRankingModal();
         });
 
-        const SLIDES = [null, 'yt', 'sp-global', 'sp-ar'];
+        const SLIDES = [null, 'sp-ar', 'sp-global', 'yt'];
         let carouselIdx = 0;
         let carouselTimer = null;
+        let carouselPaused = false;
+        let resumeTimeout = null;
 
         const slideEls = {
-            1: document.getElementById('slide-yt'),
+            1: document.getElementById('slide-sp-ar'),
             2: document.getElementById('slide-sp-global'),
-            3: document.getElementById('slide-sp-ar')
+            3: document.getElementById('slide-yt')
         };
 
         function updateDots(idx) {
@@ -1562,7 +1564,7 @@
             });
         }
 
-        function goToSlide(idx) {
+        function goToSlide(idx, manual) {
             if (idx === carouselIdx) return;
             const prev = carouselIdx;
             carouselIdx = idx;
@@ -1575,11 +1577,21 @@
                 slideEls[idx].classList.add('active');
             }
             updateDots(idx);
-            resetCarouselTimer();
+
+            if (manual) {
+                /* Pausar el auto-avance y reactivar 12s después de la última interacción */
+                carouselPaused = true;
+                if (carouselTimer)  { clearInterval(carouselTimer);  carouselTimer  = null; }
+                if (resumeTimeout)  { clearTimeout(resumeTimeout);   resumeTimeout  = null; }
+                resumeTimeout = setTimeout(() => {
+                    carouselPaused = false;
+                    resetCarouselTimer();
+                }, 12000);
+            }
         }
 
         function nextSlide() {
-            goToSlide((carouselIdx + 1) % SLIDES.length);
+            if (!carouselPaused) goToSlide((carouselIdx + 1) % SLIDES.length, false);
         }
 
         function resetCarouselTimer() {
@@ -1608,11 +1620,10 @@
                 const dx = e.changedTouches[0].clientX - touchStartX;
                 const dy = e.changedTouches[0].clientY - touchStartY;
                 if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-                if (dx < 0) {
-                    goToSlide((carouselIdx + 1) % SLIDES.length);
-                } else {
-                    goToSlide((carouselIdx - 1 + SLIDES.length) % SLIDES.length);
-                }
+                const next = dx < 0
+                    ? (carouselIdx + 1) % SLIDES.length
+                    : (carouselIdx - 1 + SLIDES.length) % SLIDES.length;
+                goToSlide(next, true);
             }, { passive: true });
         }
 
