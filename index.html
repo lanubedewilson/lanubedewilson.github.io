@@ -710,9 +710,9 @@
 
         .carousel-top3-num {
             font-family: 'Bebas Neue', cursive;
-            font-size: 1rem;
+            font-size: 0.85rem;
             color: var(--highlight);
-            min-width: 22px;
+            min-width: 20px;
             text-align: center;
             flex-shrink: 0;
         }
@@ -721,31 +721,35 @@
         .carousel-top3-num.bronze { color: #CD7F32; }
 
         .carousel-top3-text {
-            font-size: clamp(0.7rem, 1.4vw, 0.82rem);
+            font-size: 0.67rem;
             color: var(--white-bone);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            opacity: 0.82;
         }
 
         .carousel-cta {
             font-family: 'Bebas Neue', cursive;
-            font-size: 0.85rem;
-            letter-spacing: 2px;
+            font-size: 1.1rem;
+            letter-spacing: 2.5px;
             color: #000;
             background: var(--highlight);
             border: none;
-            padding: 8px 24px;
-            border-radius: 6px;
+            padding: 12px 36px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: opacity 0.2s, transform 0.15s;
+            box-shadow: 0 0 20px rgba(212,225,87,0.4);
+            margin-bottom: 28px;
         }
-        .carousel-cta:hover { opacity: 0.85; }
+        .carousel-cta:hover  { opacity: 0.9; }
+        .carousel-cta:active { transform: scale(0.97); }
 
-        /* DOTS */
+        /* DOTS — encima del botón CTA */
         #carousel-dots {
             position: absolute;
-            bottom: 10px;
+            bottom: 72px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -1565,6 +1569,12 @@
             });
         }
 
+        function killTimer() {
+            if (carouselTimer)  { clearInterval(carouselTimer);  carouselTimer  = null; }
+            if (resumeTimeout)  { clearTimeout(resumeTimeout);   resumeTimeout  = null; }
+            carouselPaused = true;
+        }
+
         function goToSlide(idx, manual) {
             if (idx === carouselIdx) return;
             const prev = carouselIdx;
@@ -1579,23 +1589,14 @@
             /* Entrante: se desliza desde la derecha */
             if (idx > 0 && slideEls[idx]) {
                 slideEls[idx].classList.remove('hidden');
-                /* forzar reflow para que la transición arranque desde translateX(100%) */
                 slideEls[idx].getBoundingClientRect();
                 slideEls[idx].classList.add('active');
             }
 
             updateDots(idx);
 
-            if (manual) {
-                /* Pausar el auto-avance y reactivar 12s después de la última interacción */
-                carouselPaused = true;
-                if (carouselTimer)  { clearInterval(carouselTimer);  carouselTimer  = null; }
-                if (resumeTimeout)  { clearTimeout(resumeTimeout);   resumeTimeout  = null; }
-                resumeTimeout = setTimeout(() => {
-                    carouselPaused = false;
-                    resetCarouselTimer();
-                }, 12000);
-            }
+            /* Al primer toque manual: matar el timer para siempre */
+            if (manual) killTimer();
         }
 
         function nextSlide() {
