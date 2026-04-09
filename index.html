@@ -618,6 +618,314 @@
             #vibe-sidebar { width: 45%; right: -50%; }
             #vibe-sidebar.open { right: 0; }
         }
+
+        /* =============================================
+           CARRUSEL DE RANKINGS — OVERLAY SOBRE MAIN-STAGE
+        ============================================= */
+        #ranking-carousel {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 50;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .carousel-slide {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(5, 10, 5, 0.93);
+            transform: translateX(100%);
+            transition: transform 0.55s cubic-bezier(0.77, 0, 0.175, 1);
+            pointer-events: all;
+        }
+        .carousel-slide.active {
+            transform: translateX(0%);
+        }
+        .carousel-slide.exit-left {
+            transform: translateX(-100%);
+        }
+
+        .carousel-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .carousel-badge-icon {
+            font-size: 1.1rem;
+        }
+        .carousel-badge-label {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            color: var(--highlight);
+            opacity: 0.8;
+        }
+
+        .carousel-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
+            color: #fff;
+            letter-spacing: 2px;
+            margin: 0 0 6px;
+            text-align: center;
+            line-height: 1;
+        }
+
+        .carousel-preview {
+            font-size: clamp(0.7rem, 1.5vw, 0.85rem);
+            color: var(--accent-green);
+            font-weight: 300;
+            margin: 0 0 14px;
+            text-align: center;
+            opacity: 0.8;
+            max-width: 80%;
+        }
+
+        .carousel-top3 {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            width: 80%;
+            max-width: 400px;
+            margin-bottom: 16px;
+        }
+
+        .carousel-top3-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.04);
+            border-radius: 6px;
+            padding: 6px 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .carousel-top3-num {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1rem;
+            color: var(--highlight);
+            min-width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .carousel-top3-num.gold   { color: #FFD700; }
+        .carousel-top3-num.silver { color: #C0C0C0; }
+        .carousel-top3-num.bronze { color: #CD7F32; }
+
+        .carousel-top3-text {
+            font-size: clamp(0.7rem, 1.4vw, 0.82rem);
+            color: var(--white-bone);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .carousel-cta {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            color: #000;
+            background: var(--highlight);
+            border: none;
+            padding: 8px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .carousel-cta:hover { opacity: 0.85; }
+
+        /* DOTS */
+        #carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 60;
+            pointer-events: all;
+        }
+        .carousel-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(212, 225, 87, 0.3);
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .carousel-dot.active {
+            background: var(--highlight);
+            transform: scale(1.35);
+        }
+
+        /* MODAL DE LISTA COMPLETA */
+        #ranking-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 10, 5, 0.92);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        #ranking-modal.visible { display: flex; }
+
+        .ranking-modal-inner {
+            width: 92%;
+            max-width: 540px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(212,225,87,0.2);
+            border-radius: 16px;
+            padding: 28px 24px 32px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            margin: auto;
+        }
+
+        .ranking-modal-close {
+            position: absolute;
+            top: 14px; right: 18px;
+            background: none; border: none;
+            color: rgba(212,225,87,0.6);
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        .ranking-modal-close:hover { color: var(--highlight); }
+
+        .ranking-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid rgba(212,225,87,0.15);
+        }
+
+        .ranking-modal-icon { font-size: 1.4rem; }
+
+        .ranking-modal-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            color: var(--white-bone);
+            margin: 0;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+        .ranking-modal-subtitle {
+            font-size: 0.72rem;
+            color: var(--accent-green);
+            font-weight: 300;
+            margin: 2px 0 0;
+            letter-spacing: 1px;
+        }
+
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ranking-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.2s;
+        }
+        .ranking-row:hover { background: rgba(212,225,87,0.07); }
+
+        .ranking-pos {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.1rem;
+            min-width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .ranking-pos.p1 { color: #FFD700; }
+        .ranking-pos.p2 { color: #C0C0C0; }
+        .ranking-pos.p3 { color: #CD7F32; }
+        .ranking-pos.pn { color: rgba(212,225,87,0.5); }
+
+        .ranking-info { flex: 1; overflow: hidden; }
+
+        .ranking-song {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--white-bone);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .ranking-artist {
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            font-weight: 300;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ranking-trend {
+            font-size: 0.7rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .trend-new  { background: rgba(0,212,255,0.15); color: #00d4ff; }
+        .trend-up   { background: rgba(212,225,87,0.15); color: var(--highlight); }
+        .trend-same { color: rgba(255,255,255,0.2); }
+        .trend-down { color: rgba(255,100,100,0.5); }
+
+        .ranking-loading {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--accent-green);
+            font-size: 0.85rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        .ranking-loading-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(212,225,87,0.2);
+            border-top-color: var(--highlight);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        .ranking-external-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 18px;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            color: rgba(212,225,87,0.4);
+            text-decoration: none;
+            font-family: 'Bebas Neue', cursive;
+            transition: color 0.2s;
+        }
+        .ranking-external-link:hover { color: var(--highlight); }
     </style>
 </head>
 <body>
@@ -702,6 +1010,80 @@
         <audio id="bg-audio" loop>
             <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
         </audio>
+
+        <!-- ==========================================
+             CARRUSEL DE RANKINGS
+        ========================================== -->
+        <div id="ranking-carousel">
+
+            <!-- SLIDE 1: YouTube Global -->
+            <div class="carousel-slide" id="slide-yt" data-source="yt">
+                <div class="carousel-badge">
+                    <span class="carousel-badge-icon">▶</span>
+                    <span class="carousel-badge-label">YOUTUBE · MUNDIAL · 24HS</span>
+                </div>
+                <h2 class="carousel-title">TOP TENDENCIAS</h2>
+                <p class="carousel-preview" id="preview-yt">Cargando ranking...</p>
+                <div class="carousel-top3" id="top3-yt"></div>
+                <button class="carousel-cta" onclick="openRankingModal('yt')">VER TOP 20 COMPLETO</button>
+            </div>
+
+            <!-- SLIDE 2: Spotify Global -->
+            <div class="carousel-slide" id="slide-sp-global" data-source="sp-global">
+                <div class="carousel-badge">
+                    <span class="carousel-badge-icon">♫</span>
+                    <span class="carousel-badge-label">SPOTIFY · GLOBAL DAILY</span>
+                </div>
+                <h2 class="carousel-title">MÁS ESCUCHADO HOY</h2>
+                <p class="carousel-preview" id="preview-sp-global">Cargando ranking...</p>
+                <div class="carousel-top3" id="top3-sp-global"></div>
+                <button class="carousel-cta" onclick="openRankingModal('sp-global')">VER TOP 20 COMPLETO</button>
+            </div>
+
+            <!-- SLIDE 3: Spotify Argentina -->
+            <div class="carousel-slide" id="slide-sp-ar" data-source="sp-ar">
+                <div class="carousel-badge">
+                    <span class="carousel-badge-icon">♫</span>
+                    <span class="carousel-badge-label">SPOTIFY · ARGENTINA DAILY</span>
+                </div>
+                <h2 class="carousel-title">LO MÁS ESCUCHADO EN AR</h2>
+                <p class="carousel-preview" id="preview-sp-ar">Cargando ranking...</p>
+                <div class="carousel-top3" id="top3-sp-ar"></div>
+                <button class="carousel-cta" onclick="openRankingModal('sp-ar')">VER TOP 20 COMPLETO</button>
+            </div>
+
+        </div>
+
+        <!-- DOTS de navegación -->
+        <div id="carousel-dots">
+            <button class="carousel-dot active" data-idx="0" onclick="goToSlide(0)" title="Video La Nube"></button>
+            <button class="carousel-dot" data-idx="1" onclick="goToSlide(1)" title="YouTube Trending"></button>
+            <button class="carousel-dot" data-idx="2" onclick="goToSlide(2)" title="Spotify Global"></button>
+            <button class="carousel-dot" data-idx="3" onclick="goToSlide(3)" title="Spotify Argentina"></button>
+        </div>
+    </div>
+
+    <!-- MODAL DE LISTA COMPLETA -->
+    <div id="ranking-modal">
+        <div class="ranking-modal-inner">
+            <button class="ranking-modal-close" onclick="closeRankingModal()">×</button>
+            <div class="ranking-modal-header">
+                <span class="ranking-modal-icon" id="modal-icon">▶</span>
+                <div>
+                    <p class="ranking-modal-title" id="modal-title">TOP 20</p>
+                    <p class="ranking-modal-subtitle" id="modal-subtitle">Cargando...</p>
+                </div>
+            </div>
+            <div id="modal-list" class="ranking-list">
+                <div class="ranking-loading">
+                    <div class="ranking-loading-spinner"></div>
+                    CONECTANDO CON RANKINGS...
+                </div>
+            </div>
+            <a id="modal-source-link" href="#" target="_blank" class="ranking-external-link">
+                ↗ VER FUENTE COMPLETA EN KWORB.NET
+            </a>
+        </div>
     </div>
 
     <!-- TICKER -->
@@ -721,7 +1103,7 @@
             <div class="feed-icon">☁️</div>
             <div class="feed-text-group">
                 <span class="feed-main-title">EL FEED DE LA NUBE</span>
-                <span class="feed-description">Notas, articulos y data al instante</span>
+                <span class="feed-description">Notas, señales y data al instante</span>
             </div>
         </div>
     </main>
@@ -1023,6 +1405,218 @@
         };
 
         /* =============================================
+           CARRUSEL DE RANKINGS
+        ============================================= */
+        /* URLs CSV desde Google Sheets — sin proxy, carga directa */
+        const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHX6di9e13j4thMxs-fdrylfVDym1b_61DgSNleLZ613EWYOe1VJqGSv4wlSKAo3LxdqlsykYJmAKU/pub?output=csv';
+
+        const CAROUSEL_SOURCES = {
+            'sp-ar':     { csvUrl: `${SHEET_BASE}&gid=0`,         label: 'Spotify · Argentina Daily',      icon: '♫', mode: 'spotify' },
+            'sp-global': { csvUrl: `${SHEET_BASE}&gid=134572978`, label: 'Spotify · Global Daily',         icon: '♫', mode: 'spotify' },
+            'yt':        { csvUrl: `${SHEET_BASE}&gid=839811863`, label: 'YouTube · Videos Globales 24hs', icon: '▶', mode: 'youtube' }
+        };
+
+        const carouselCache = {};
+
+        function parseCSV(text) {
+            return text.split('\n')
+                .map(line => {
+                    const cols = [];
+                    let cur = '', inQ = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const ch = line[i];
+                        if (ch === '"') { inQ = !inQ; }
+                        else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+                        else { cur += ch; }
+                    }
+                    cols.push(cur.trim());
+                    return cols;
+                });
+        }
+
+        async function loadRanking(sourceKey) {
+            if (carouselCache[sourceKey]) return carouselCache[sourceKey];
+            const src = CAROUSEL_SOURCES[sourceKey];
+            try {
+                const res = await fetch(src.csvUrl + '&t=' + Date.now());
+                if (!res.ok) return null;
+                const text = await res.text();
+                const rows = parseCSV(text).slice(1); /* saltar header */
+                const items = [];
+                rows.forEach(cols => {
+                    if (!cols[0]) return;
+                    const pos = parseInt(cols[0]);
+                    if (isNaN(pos)) return;
+                    if (src.mode === 'spotify') {
+                        const artist = (cols[1] || '').replace(/"/g,'').trim();
+                        const title  = (cols[2] || '').replace(/"/g,'').trim();
+                        if (title) items.push({ pos, artist, title, change: '' });
+                    } else {
+                        /* YouTube: col B tiene "Artista - Canción" o solo título */
+                        const full = (cols[1] || '').replace(/"/g,'').trim();
+                        const dash = full.indexOf(' - ');
+                        let artist = '', title = full;
+                        if (dash > -1) { artist = full.slice(0, dash); title = full.slice(dash + 3); }
+                        if (title) items.push({ pos, artist, title, change: '' });
+                    }
+                });
+                const sorted = items.sort((a,b) => a.pos - b.pos).slice(0,20);
+                carouselCache[sourceKey] = sorted;
+                return sorted;
+            } catch(e) {
+                console.error('Error cargando ranking', sourceKey, e);
+                return null;
+            }
+        }
+
+        function posClass(n) {
+            if (n===1) return 'p1'; if (n===2) return 'p2'; if (n===3) return 'p3';
+            return 'pn';
+        }
+
+        function renderTop3(containerId, items) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            const colors = ['gold','silver','bronze'];
+            el.innerHTML = items.slice(0,3).map((it,i) => `
+                <div class="carousel-top3-item">
+                    <span class="carousel-top3-num ${colors[i]}">${it.pos}</span>
+                    <span class="carousel-top3-text">${it.artist ? it.artist + ' – ' : ''}${it.title}</span>
+                </div>`).join('');
+        }
+
+        async function prefetchAllRankings() {
+            for (const key of ['sp-ar','sp-global','yt']) {
+                const items = await loadRanking(key);
+                if (!items || items.length === 0) continue;
+                const previewEl = document.getElementById(`preview-${key}`);
+                if (previewEl) previewEl.textContent = `Top ${items.length} · actualizado hoy`;
+                renderTop3(`top3-${key}`, items);
+            }
+        }
+
+        function trendBadge(change) {
+            if (!change) return '';
+            const c = change.toUpperCase().trim();
+            if (c === 'NEW')  return '<span class="ranking-trend trend-new">NEW</span>';
+            if (c === '=')    return '<span class="ranking-trend trend-same">—</span>';
+            if (c.startsWith('+')) return `<span class="ranking-trend trend-up">${c}</span>`;
+            if (c.startsWith('-')) return `<span class="ranking-trend trend-down">${c}</span>`;
+            return '';
+        }
+
+        async function openRankingModal(sourceKey) {
+            const src = CAROUSEL_SOURCES[sourceKey];
+            document.getElementById('modal-icon').textContent     = src.icon;
+            document.getElementById('modal-title').textContent    = 'TOP 20';
+            document.getElementById('modal-subtitle').textContent = src.label.toUpperCase();
+            document.getElementById('modal-source-link').href     = src.csvUrl;
+            document.getElementById('modal-source-link').style.display = 'none';
+            document.getElementById('modal-list').innerHTML = `
+                <div class="ranking-loading">
+                    <div class="ranking-loading-spinner"></div>
+                    CARGANDO RANKING...
+                </div>`;
+            document.getElementById('ranking-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+
+            let items = carouselCache[sourceKey] || await loadRanking(sourceKey);
+            if (!items || items.length === 0) {
+                document.getElementById('modal-list').innerHTML = `<div class="ranking-loading">No se pudo cargar el ranking.<br>Intentá de nuevo en un momento.</div>`;
+                return;
+            }
+
+            document.getElementById('modal-list').innerHTML = items.slice(0,20).map(it => `
+                <div class="ranking-row">
+                    <span class="ranking-pos ${posClass(it.pos)}">${it.pos}</span>
+                    <div class="ranking-info">
+                        <div class="ranking-song">${it.title}</div>
+                        ${it.artist ? `<div class="ranking-artist">${it.artist}</div>` : ''}
+                    </div>
+                    ${trendBadge(it.change)}
+                </div>`).join('');
+        }
+
+        function closeRankingModal() {
+            document.getElementById('ranking-modal').classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('ranking-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeRankingModal();
+        });
+
+        const SLIDES = [null, 'yt', 'sp-global', 'sp-ar'];
+        let carouselIdx = 0;
+        let carouselTimer = null;
+
+        const slideEls = {
+            1: document.getElementById('slide-yt'),
+            2: document.getElementById('slide-sp-global'),
+            3: document.getElementById('slide-sp-ar')
+        };
+
+        function updateDots(idx) {
+            document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === idx);
+            });
+        }
+
+        function goToSlide(idx) {
+            if (idx === carouselIdx) return;
+            const prev = carouselIdx;
+            carouselIdx = idx;
+            if (prev > 0 && slideEls[prev]) {
+                slideEls[prev].classList.remove('active');
+                slideEls[prev].classList.add('exit-left');
+                setTimeout(() => { if(slideEls[prev]) slideEls[prev].classList.remove('exit-left'); }, 600);
+            }
+            if (idx > 0 && slideEls[idx]) {
+                slideEls[idx].classList.add('active');
+            }
+            updateDots(idx);
+            resetCarouselTimer();
+        }
+
+        function nextSlide() {
+            goToSlide((carouselIdx + 1) % SLIDES.length);
+        }
+
+        function resetCarouselTimer() {
+            if (carouselTimer) clearInterval(carouselTimer);
+            carouselTimer = setInterval(nextSlide, 5000);
+        }
+
+        function startCarousel() {
+            resetCarouselTimer();
+            prefetchAllRankings();
+            initSwipe();
+        }
+
+        /* ---- Swipe táctil ---- */
+        function initSwipe() {
+            const stage = document.querySelector('.main-stage');
+            let touchStartX = 0;
+            let touchStartY = 0;
+
+            stage.addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+
+            stage.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                const dy = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
+                if (dx < 0) {
+                    goToSlide((carouselIdx + 1) % SLIDES.length);
+                } else {
+                    goToSlide((carouselIdx - 1 + SLIDES.length) % SLIDES.length);
+                }
+            }, { passive: true });
+        }
+
+        /* =============================================
            INIT
         ============================================= */
         window.onload = () => {
@@ -1030,6 +1624,7 @@
             updateTicker();
             setInterval(updateTicker, 60000);
             setInterval(fetchData, 15000);
+            setTimeout(startCarousel, 5000);
         };
 
         window.addEventListener('click', unlockAudio, { once: true });
