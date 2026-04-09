@@ -651,6 +651,10 @@
             transform: translateX(100%);
             transition: none;
         }
+        .carousel-slide.hidden-left {
+            transform: translateX(-100%);
+            transition: none;
+        }
 
         .carousel-badge {
             display: flex;
@@ -1061,10 +1065,10 @@
 
         <!-- DOTS de navegación -->
         <div id="carousel-dots">
-            <button class="carousel-dot active" data-idx="0" onclick="goToSlide(0, true)" title="Video La Nube"></button>
-            <button class="carousel-dot" data-idx="1" onclick="goToSlide(1, true)" title="Spotify Argentina"></button>
-            <button class="carousel-dot" data-idx="2" onclick="goToSlide(2, true)" title="Spotify Global"></button>
-            <button class="carousel-dot" data-idx="3" onclick="goToSlide(3, true)" title="YouTube Tendencias"></button>
+            <button class="carousel-dot active" data-idx="0" onclick="goToSlide(0, true, 0 < carouselIdx ? -1 : 1)" title="Video La Nube"></button>
+            <button class="carousel-dot" data-idx="1" onclick="goToSlide(1, true, 1 < carouselIdx ? -1 : 1)" title="Spotify Argentina"></button>
+            <button class="carousel-dot" data-idx="2" onclick="goToSlide(2, true, 2 < carouselIdx ? -1 : 1)" title="Spotify Global"></button>
+            <button class="carousel-dot" data-idx="3" onclick="goToSlide(3, true, 3 < carouselIdx ? -1 : 1)" title="YouTube Tendencias"></button>
         </div>
     </div>
 
@@ -1575,32 +1579,35 @@
             carouselPaused = true;
         }
 
-        function goToSlide(idx, manual) {
+        function goToSlide(idx, manual, direction) {
             if (idx === carouselIdx) return;
             const prev = carouselIdx;
             carouselIdx = idx;
 
-            /* Saliente: desaparece instantáneamente sin animación */
+            /* direction: 1 = avanzar (entra desde derecha), -1 = retroceder (entra desde izquierda) */
+            const dir = (direction === -1) ? -1 : 1;
+
+            /* Saliente: desaparece al instante sin animación */
             if (prev > 0 && slideEls[prev]) {
-                slideEls[prev].classList.remove('active');
-                slideEls[prev].classList.add('hidden');
+                slideEls[prev].classList.remove('active', 'hidden', 'hidden-left');
+                slideEls[prev].classList.add(dir === 1 ? 'hidden' : 'hidden-left');
             }
 
-            /* Entrante: se desliza desde la derecha */
+            /* Entrante: se posiciona del lado correcto sin transición, luego anima hacia el centro */
             if (idx > 0 && slideEls[idx]) {
-                slideEls[idx].classList.remove('hidden');
-                slideEls[idx].getBoundingClientRect();
+                slideEls[idx].classList.remove('active', 'hidden', 'hidden-left');
+                slideEls[idx].classList.add(dir === 1 ? 'hidden' : 'hidden-left');
+                slideEls[idx].getBoundingClientRect(); /* forzar reflow */
+                slideEls[idx].classList.remove('hidden', 'hidden-left');
                 slideEls[idx].classList.add('active');
             }
 
             updateDots(idx);
-
-            /* Al primer toque manual: matar el timer para siempre */
             if (manual) killTimer();
         }
 
         function nextSlide() {
-            if (!carouselPaused) goToSlide((carouselIdx + 1) % SLIDES.length, false);
+            if (!carouselPaused) goToSlide((carouselIdx + 1) % SLIDES.length, false, 1);
         }
 
         function resetCarouselTimer() {
@@ -1629,10 +1636,13 @@
                 const dx = e.changedTouches[0].clientX - touchStartX;
                 const dy = e.changedTouches[0].clientY - touchStartY;
                 if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-                const next = dx < 0
-                    ? (carouselIdx + 1) % SLIDES.length
-                    : (carouselIdx - 1 + SLIDES.length) % SLIDES.length;
-                goToSlide(next, true);
+                if (dx < 0) {
+                    /* dedo va a la izquierda → avanza → slide entra desde la derecha */
+                    goToSlide((carouselIdx + 1) % SLIDES.length, true, 1);
+                } else {
+                    /* dedo va a la derecha → retrocede → slide entra desde la izquierda */
+                    goToSlide((carouselIdx - 1 + SLIDES.length) % SLIDES.length, true, -1);
+                }
             }, { passive: true });
         }
 
