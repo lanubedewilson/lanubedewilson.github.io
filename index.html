@@ -641,14 +641,15 @@
             justify-content: center;
             background: rgba(5, 10, 5, 0.93);
             transform: translateX(100%);
-            transition: transform 0.55s cubic-bezier(0.77, 0, 0.175, 1);
+            transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
             pointer-events: all;
         }
         .carousel-slide.active {
             transform: translateX(0%);
         }
-        .carousel-slide.exit-left {
-            transform: translateX(-100%);
+        .carousel-slide.hidden {
+            transform: translateX(100%);
+            transition: none;
         }
 
         .carousel-badge {
@@ -1568,14 +1569,21 @@
             if (idx === carouselIdx) return;
             const prev = carouselIdx;
             carouselIdx = idx;
+
+            /* Saliente: desaparece instantáneamente sin animación */
             if (prev > 0 && slideEls[prev]) {
                 slideEls[prev].classList.remove('active');
-                slideEls[prev].classList.add('exit-left');
-                setTimeout(() => { if(slideEls[prev]) slideEls[prev].classList.remove('exit-left'); }, 600);
+                slideEls[prev].classList.add('hidden');
             }
+
+            /* Entrante: se desliza desde la derecha */
             if (idx > 0 && slideEls[idx]) {
+                slideEls[idx].classList.remove('hidden');
+                /* forzar reflow para que la transición arranque desde translateX(100%) */
+                slideEls[idx].getBoundingClientRect();
                 slideEls[idx].classList.add('active');
             }
+
             updateDots(idx);
 
             if (manual) {
