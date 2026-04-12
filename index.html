@@ -960,7 +960,7 @@
             <div class="ranking-tabs">
                 <button class="ranking-tab active" onclick="switchRankingTab('sp-ar', this)">♫ Spotify AR</button>
                 <button class="ranking-tab" onclick="switchRankingTab('sp-global', this)">♫ Spotify Global</button>
-                <button class="ranking-tab" onclick="switchRankingTab('yt', this)">♫ Bilboard Radio</button>
+                <button class="ranking-tab" onclick="switchRankingTab('radio', this)">♫ Billboard Radio</button>
             </div>
             <div id="modal-list" class="ranking-list">
                 <div class="ranking-loading">
@@ -1249,7 +1249,7 @@
         const CAROUSEL_SOURCES = {
             'sp-ar':     { csvUrl: `${SHEET_BASE}&gid=0`,         label: 'Spotify · Argentina Daily',      icon: '♫', mode: 'spotify' },
             'sp-global': { csvUrl: `${SHEET_BASE}&gid=134572978`, label: 'Spotify · Global Daily',         icon: '♫', mode: 'spotify' },
-            'yt':        { csvUrl: `${SHEET_BASE}&gid=839811863`, label: 'YouTube · Videos Globales 24hs', icon: '▶', mode: 'youtube' }
+            'radio':        { csvUrl: `${SHEET_BASE}&gid=839811863`, label: 'Billboard · Radio Global',       icon: '🎵', mode: 'radio' }
         };
         const carouselCache = {};
 
