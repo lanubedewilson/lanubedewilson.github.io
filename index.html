@@ -592,6 +592,180 @@
         .vibe-item:hover { background: rgba(212,225,87,0.15); border-color: var(--highlight); }
         .vibe-item span { font-family: 'Bebas Neue'; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
 
+        /* ESTADO ACTIVO VIBRA SELECCIONADA */
+        .vibe-item.active-vibe {
+            background: rgba(212,225,87,0.2) !important;
+            border-color: var(--highlight) !important;
+            box-shadow: inset 0 0 10px rgba(212,225,87,0.1);
+        }
+        .vibe-item.active-vibe span { color: var(--highlight); }
+        .vibe-item.active-vibe::after {
+            content: '🔊';
+            margin-left: auto;
+            font-size: 1rem;
+            animation: pulse-fade 1.5s infinite ease-in-out;
+        }
+
+        /* BOTÓN FLOTANTE CERRAR VIBRAS */
+        .vibe-sidebar-close {
+            position: absolute;
+            top: 50%;
+            left: -40px;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 60px;
+            background: rgba(5,10,5,0.9);
+            border: 1px solid rgba(212,225,87,0.3);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            color: var(--highlight);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .vibe-sidebar-close:hover,
+        .vibe-sidebar-close:active {
+            background: rgba(212,225,87,0.2);
+            color: #fff;
+        }
+
+        /* BOTÓN PLAY/PAUSA CUSTOM */
+        #btn-yt-control {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 42px;
+            height: 42px;
+            background: rgba(5,10,5,0.75);
+            border: 2px solid var(--highlight);
+            border-radius: 50%;
+            color: var(--highlight);
+            font-size: 1.1rem;
+            cursor: pointer;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(212,225,87,0.2);
+        }
+        #btn-yt-control:hover {
+            background: rgba(212,225,87,0.2);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(212,225,87,0.5);
+        }
+
+        /* BOTÓN RANKINGS CIRCULAR */
+        #btn-ranking-modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--highlight);
+            color: var(--highlight);
+            font-size: 1.4rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(212,225,87,0.15);
+        }
+        #btn-ranking-modal:hover {
+            background: rgba(212,225,87,0.15);
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(212,225,87,0.35);
+        }
+
+        /* FILA QUE CONTIENE BTN RANKING + FEED */
+        .feed-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px 5%;
+            background: linear-gradient(to bottom, #000, var(--bg-dark));
+        }
+
+        /* TABS DENTRO DEL MODAL DE RANKINGS */
+        .ranking-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(212,225,87,0.1);
+            padding-bottom: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .ranking-tabs::-webkit-scrollbar { display: none; }
+        .ranking-tab {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.82rem;
+            letter-spacing: 1.5px;
+            padding: 7px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(212,225,87,0.25);
+            background: none;
+            color: rgba(212,225,87,0.55);
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .ranking-tab.active {
+            background: var(--highlight);
+            color: #000;
+            border-color: var(--highlight);
+        }
+        .ranking-tab:hover:not(.active) {
+            border-color: var(--highlight);
+            color: var(--highlight);
+        }
+
+        /* LEER MÁS en las notas del feed */
+        .note-read-more {
+            margin-top: 10px;
+            background: none;
+            border: none;
+            color: var(--highlight);
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: opacity 0.2s;
+        }
+        .note-read-more:hover { opacity: 0.75; }
+        .note-extra-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+        .note-extra-content.expanded { max-height: 2000px; }
+        .note-source-link {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.25);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: color 0.2s;
+        }
+        .note-source-link:hover { color: rgba(255,255,255,0.5); }
+
         /* BOTÓN VIBRA ANIMADO */
         @keyframes vibe-color-fade {
             0%, 100% { background-color: #d4e157; }
@@ -617,6 +791,9 @@
             .note-title { font-size: 1.6rem; }
             #vibe-sidebar { width: 45%; right: -50%; }
             #vibe-sidebar.open { right: 0; }
+            .vibe-sidebar-close { width: 35px; height: 50px; left: -35px; font-size: 1rem; }
+            #btn-ranking-modal { width: 46px; height: 46px; font-size: 1.2rem; }
+            .feed-master-access { flex: 1; }
         }
 
         /* =============================================
@@ -769,42 +946,6 @@
         }
         .carousel-cta:hover  { opacity: 0.9; }
         .carousel-cta:active { transform: scale(0.97); }
-
-        /* Botón toggle rankings */
-        #btn-rankings-toggle {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            z-index: 55;
-            background: rgba(5,10,5,0.82);
-            border: 1px solid rgba(212,225,87,0.5);
-            border-radius: 24px;
-            padding: 8px 18px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            backdrop-filter: blur(6px);
-            -webkit-backdrop-filter: blur(6px);
-        }
-        #btn-rankings-toggle:hover { border-color: var(--highlight); }
-        #btn-rankings-toggle .btn-r-icon  { font-size: 1rem; }
-        #btn-rankings-toggle .btn-r-label {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 0.95rem;
-            letter-spacing: 2px;
-            color: var(--highlight);
-        }
-        /* Solo visible cuando el carrusel está oculto */
-        #btn-rankings-toggle {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        #btn-rankings-toggle.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
 
         /* Carrusel visible/oculto */
         #ranking-carousel {
@@ -1024,29 +1165,30 @@
 
     <!-- SIDEBAR DE VIBRAS -->
     <div id="vibe-sidebar">
+        <button class="vibe-sidebar-close" onclick="toggleVibeMenu()" title="Cerrar menú">▶</button>
         <div class="vibe-header">SELECCIONA TU VIBRA</div>
         <div class="vibe-container">
             <!-- FIX CSS #2: todos los changeVibe con 2 parámetros consistentes (videoId, vibeName) -->
-            <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida')"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
-            <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk')"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
-            <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s')"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
-            <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk')"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
-            <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop')"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urbano')"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Urbano</span></div>
-            <div class="vibe-item" onclick="changeVibe('8zRR2_6aRNE', 'Fogón')"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón</span></div>
-            <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop')"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova')"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
-            <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae')"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
-            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop')"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock & Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues')"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
-            <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana')"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
-            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion')"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
-            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music')"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
-            <div class="vibe-item" onclick="changeVibe('VnV59f8Fzdk', 'Canal 8 SJ')"><div style="width:4px;height:20px;background:#0045ad"></div><span>Canal 8 SJ</span></div>
-            <div class="vibe-item" onclick="changeVibe('f8MxZWnTht8', 'Canal 26')"><div style="width:4px;height:20px;background:#0045ad"></div><span>Canal 26</span></div>
-            <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias')"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
-            <div class="vibe-item" onclick="changeVibe('jIy9zt11Kn0', 'Meganoticias')"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Meganoticias</span></div>
-            <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica')"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
+            <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
+            <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
+            <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
+            <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk', this)"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
+            <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urbano', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Urbano</span></div>
+            <div class="vibe-item" onclick="changeVibe('8zRR2_6aRNE', 'Fogón', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón</span></div>
+            <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop', this)"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
+            <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
+            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock & Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
+            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
+            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
+            <div class="vibe-item" onclick="changeVibe('VnV59f8Fzdk', 'Canal 8 SJ', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Canal 8 SJ</span></div>
+            <div class="vibe-item" onclick="changeVibe('f8MxZWnTht8', 'Canal 26', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Canal 26</span></div>
+            <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
+            <div class="vibe-item" onclick="changeVibe('jIy9zt11Kn0', 'Meganoticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Meganoticias</span></div>
+            <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
             <button onclick="toggleVibeMenu()" style="width:100%;margin-top:30px;background:none;border:1px solid #444;color:#888;padding:12px;cursor:pointer;font-size:0.8rem;border-radius:4px;font-family:'Bebas Neue';letter-spacing:1px;">CERRAR DIAL</button>
         </div>
     </div>
@@ -1054,6 +1196,11 @@
     <!-- PLAYER PRINCIPAL -->
     <div class="main-stage">
         <!-- FIX CSS #6: object-fit:cover solo en <video>, no en iframe -->
+        <!-- BOTÓN PLAY/PAUSA CUSTOM (controla YouTube sin activar su UI) -->
+        <button id="btn-yt-control" onclick="toggleYtPlay()">
+            <span id="yt-icon">⏸</span>
+        </button>
+
         <video id="initial-loop" class="player-frame active" autoplay loop muted playsinline>
             <source src="la nube.mp4" type="video/mp4">
         </video>
@@ -1089,12 +1236,6 @@
         <audio id="bg-audio" loop>
             <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
         </audio>
-
-        <!-- Botón para recuperar el carrusel cuando está oculto -->
-        <button id="btn-rankings-toggle" onclick="showCarousel()">
-            <span class="btn-r-icon">📊</span>
-            <span class="btn-r-label">RANKINGS</span>
-        </button>
 
         <!-- ==========================================
              CARRUSEL DE RANKINGS
@@ -1148,16 +1289,22 @@
         </div>
     </div>
 
-    <!-- MODAL DE LISTA COMPLETA -->
+    <!-- MODAL DE LISTA COMPLETA — con tabs para los 3 rankings -->
     <div id="ranking-modal">
         <div class="ranking-modal-inner">
             <button class="ranking-modal-close" onclick="closeRankingModal()">×</button>
             <div class="ranking-modal-header">
-                <span class="ranking-modal-icon" id="modal-icon">▶</span>
+                <span class="ranking-modal-icon" id="modal-icon">📊</span>
                 <div>
-                    <p class="ranking-modal-title" id="modal-title">TOP 20</p>
-                    <p class="ranking-modal-subtitle" id="modal-subtitle">Cargando...</p>
+                    <p class="ranking-modal-title" id="modal-title">RANKINGS</p>
+                    <p class="ranking-modal-subtitle" id="modal-subtitle">TOP 20 GLOBAL</p>
                 </div>
+            </div>
+            <!-- TABS de navegación entre los 3 rankings -->
+            <div class="ranking-tabs">
+                <button class="ranking-tab active" onclick="switchRankingTab('sp-ar', this)">♫ Spotify AR</button>
+                <button class="ranking-tab" onclick="switchRankingTab('sp-global', this)">♫ Spotify Global</button>
+                <button class="ranking-tab" onclick="switchRankingTab('yt', this)">▶ YouTube</button>
             </div>
             <div id="modal-list" class="ranking-list">
                 <div class="ranking-loading">
@@ -1165,7 +1312,7 @@
                     CONECTANDO CON RANKINGS...
                 </div>
             </div>
-            <a id="modal-source-link" href="#" target="_blank" class="ranking-external-link">
+            <a id="modal-source-link" href="#" target="_blank" class="ranking-external-link" style="display:none;">
                 ↗ VER FUENTE COMPLETA EN KWORB.NET
             </a>
         </div>
@@ -1181,9 +1328,9 @@
         <div class="ticker" id="main-ticker" style="display:none;"></div>
     </div>
 
-    <!-- GRID PRINCIPAL -->
-    <main class="grid-filters">
-        <!-- FIX #3 UX: emoji real en lugar de div vacío + subtítulo con contexto -->
+    <!-- FILA: BOTÓN RANKINGS CIRCULAR + FEED DE LA NUBE -->
+    <div class="feed-row">
+        <button id="btn-ranking-modal" onclick="openRankingModalDirect()" title="Ver Rankings Top 20">📊</button>
         <div class="feed-master-access" onclick="openTimeline('all')">
             <div class="feed-icon">☁️</div>
             <div class="feed-text-group">
@@ -1191,7 +1338,7 @@
                 <span class="feed-description">Notas, articulos y data al instante</span>
             </div>
         </div>
-    </main>
+    </div>
 
     <!-- SPONSORS -->
     <!-- FIX #6 UX: placeholder animado en lugar de texto estático -->
@@ -1221,7 +1368,6 @@
             carousel.classList.remove('has-active');
             carousel.classList.add('carousel-hidden');
             document.getElementById('carousel-dots').classList.add('carousel-hidden');
-            document.getElementById('btn-rankings-toggle').classList.add('visible');
             /* Resetear todos los slides fuera de pantalla */
             Object.values(slideEls).forEach(el => {
                 if (el) {
@@ -1239,24 +1385,24 @@
         function showCarousel() {
             const carousel = document.getElementById('ranking-carousel');
             carousel.classList.remove('carousel-hidden');
-            /* No mostramos has-active todavía — el video es visible hasta que el usuario elige un slide */
             document.getElementById('carousel-dots').classList.remove('carousel-hidden');
-            document.getElementById('btn-rankings-toggle').classList.remove('visible');
-            carouselPaused = true; /* sin automatismo al volver */
+            carouselPaused = true;
         }
 
         /* =============================================
         ============================================= */
         function switchSignal(type) {
-            const pk   = document.getElementById('player-kick');
-            const py   = document.getElementById('player-yt');
-            const loop = document.getElementById('initial-loop');
-            const bk   = document.getElementById('btn-kick');
-            const bv   = document.getElementById('btn-vibe');
+            const pk        = document.getElementById('player-kick');
+            const py        = document.getElementById('player-yt');
+            const loop      = document.getElementById('initial-loop');
+            const bk        = document.getElementById('btn-kick');
+            const bv        = document.getElementById('btn-vibe');
+            const customBtn = document.getElementById('btn-yt-control');
 
             [pk, py, loop].forEach(el => el.classList.remove('active'));
             bk.classList.remove('active');
             bv.classList.remove('active');
+            customBtn.style.display = 'none';
 
             if (type === 'kick') {
                 const isLive = document.getElementById('live-dot').classList.contains('live');
@@ -1273,6 +1419,7 @@
             } else if (type === 'yt') {
                 py.classList.add('active');
                 bv.classList.add('active');
+                customBtn.style.display = 'flex';
                 bgAudio.pause();
                 hideCarousel();
             } else {
@@ -1288,16 +1435,43 @@
         }
 
         /* =============================================
-           FIX CSS #2: changeVibe con 2 parámetros siempre
-           (antes algunos vibes pasaban 3 y el nombre quedaba como "yt")
+           changeVibe: toast + estado activo + delay cierre
         ============================================= */
-        function changeVibe(videoId, vibeName) {
+        let isYtPlaying = true;
+
+        function changeVibe(videoId, vibeName, clickedElement) {
+            showToast(`📻 Sintonizando: ${vibeName}...`);
+
+            document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
+            if (clickedElement) clickedElement.classList.add('active-vibe');
+
             const player = document.getElementById('player-yt');
-            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1`;
+            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
+
+            isYtPlaying = true;
+            document.getElementById('yt-icon').innerText = '⏸';
+
             showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
-            toggleVibeMenu();
             switchSignal('yt');
             hideCarousel();
+
+            setTimeout(() => {
+                const sidebar = document.getElementById('vibe-sidebar');
+                if (sidebar.classList.contains('open')) toggleVibeMenu();
+            }, 500);
+        }
+
+        function toggleYtPlay() {
+            const iframe = document.getElementById('player-yt');
+            const icon   = document.getElementById('yt-icon');
+            if (isYtPlaying) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                icon.innerText = '▶';
+            } else {
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                icon.innerText = '⏸';
+            }
+            isYtPlaying = !isYtPlaying;
         }
 
         function toggleVibeMenu() {
@@ -1425,17 +1599,26 @@
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length < 4) return;
 
-                const title  = col[0].replace(/"/g, '');
-                const content= col[1].replace(/"/g, '');
-                const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
-                const status = col[3].trim().toLowerCase();
-                const cat    = (col[4] || 'data').trim().toLowerCase()
+                const title   = col[0].replace(/"/g, '');
+                const content = col[1].replace(/"/g, '');
+                const author  = (col[2] || 'Redacción').replace(/"/g, '').trim();
+                const status  = col[3].trim().toLowerCase();
+                const cat     = (col[4] || 'data').trim().toLowerCase()
                                 .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s/g, '');
-                const img    = (col[5] || '').trim().replace(/"/g, '');
-                const date   = (col[6] || '').replace(/"/g, '').trim();
-                const noteId = `nota-${allNews.length - index}`;
+                const img     = (col[5] || '').trim().replace(/"/g, '');
+                const date    = (col[6] || '').replace(/"/g, '').trim();
+                const link    = (col[7] || '').replace(/"/g, '').trim();
+                const noteId  = `nota-${allNews.length - index}`;
 
                 if (status === 'publicar') {
+                    /* Dividimos el contenido: primero ~300 chars como preview, el resto oculto */
+                    const previewLen = 300;
+                    const preview    = content.length > previewLen ? content.slice(0, previewLen) + '…' : content;
+                    const extra      = content.length > previewLen ? content.slice(previewLen) : '';
+                    const hasExtra   = extra.length > 0;
+                    const extraId    = `extra-${noteId}`;
+                    const btnId      = `btn-${noteId}`;
+
                     const card = document.createElement('div');
                     card.className = `note-card cat-${cat}`;
                     card.id = noteId;
@@ -1449,7 +1632,15 @@
                         </div>
                         ${img ? `<img src="${img}" class="note-img">` : ''}
                         <h2 class="note-title">${title}</h2>
-                        <div class="note-content">${content}</div>
+                        <div class="note-content">${preview}</div>
+                        ${hasExtra ? `
+                        <div class="note-extra-content" id="${extraId}">
+                            <div class="note-content" style="padding-top:6px;">${extra}</div>
+                            ${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}
+                        </div>
+                        <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
+                            LEER MÁS <span>↓</span>
+                        </button>` : `${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}`}
                         <div class="share-bar">
                             <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
                             <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
@@ -1460,6 +1651,13 @@
             });
 
             document.getElementById('timeline-overlay').classList.add('open');
+        }
+
+        function toggleReadMore(extraId, btnId) {
+            const extra = document.getElementById(extraId);
+            const btn   = document.getElementById(btnId);
+            const isOpen = extra.classList.toggle('expanded');
+            btn.innerHTML = isOpen ? 'LEER MENOS <span>↑</span>' : 'LEER MÁS <span>↓</span>';
         }
 
         function closeTimeline() {
@@ -1623,20 +1821,30 @@
             return '';
         }
 
-        async function openRankingModal(sourceKey) {
+        let currentRankingTab = 'sp-ar';
+
+        function openRankingModalDirect() {
+            /* Abre el modal directo con el tab activo por defecto */
+            document.getElementById('ranking-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            switchRankingTab(currentRankingTab, document.querySelector(`.ranking-tab[onclick*="${currentRankingTab}"]`));
+        }
+
+        async function switchRankingTab(sourceKey, tabEl) {
+            currentRankingTab = sourceKey;
+            /* Actualizar tabs visuales */
+            document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
+            if (tabEl) tabEl.classList.add('active');
+
             const src = CAROUSEL_SOURCES[sourceKey];
             document.getElementById('modal-icon').textContent     = src.icon;
             document.getElementById('modal-title').textContent    = 'TOP 20';
             document.getElementById('modal-subtitle').textContent = src.label.toUpperCase();
-            document.getElementById('modal-source-link').href     = src.csvUrl;
-            document.getElementById('modal-source-link').style.display = 'none';
             document.getElementById('modal-list').innerHTML = `
                 <div class="ranking-loading">
                     <div class="ranking-loading-spinner"></div>
                     CARGANDO RANKING...
                 </div>`;
-            document.getElementById('ranking-modal').classList.add('visible');
-            document.body.style.overflow = 'hidden';
 
             let items = carouselCache[sourceKey] || await loadRanking(sourceKey);
             if (!items || items.length === 0) {
@@ -1653,6 +1861,14 @@
                     </div>
                     ${trendBadge(it.change)}
                 </div>`).join('');
+        }
+
+        async function openRankingModal(sourceKey) {
+            /* Compatibilidad con los botones del carrusel */
+            document.getElementById('ranking-modal').classList.add('visible');
+            document.body.style.overflow = 'hidden';
+            const tabEl = document.querySelector(`.ranking-tab[onclick*="${sourceKey}"]`);
+            switchRankingTab(sourceKey, tabEl);
         }
 
         function closeRankingModal() {
