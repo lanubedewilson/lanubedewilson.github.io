@@ -638,7 +638,7 @@
         #btn-yt-control {
             position: absolute;
             bottom: 20px;
-            right: 20px;
+            left: 20px;
             width: 42px;
             height: 42px;
             background: rgba(5,10,5,0.75);
@@ -1440,7 +1440,7 @@
         let isYtPlaying = true;
 
         function changeVibe(videoId, vibeName, clickedElement) {
-            showToast(`📻 Sintonizando: ${vibeName}...`);
+            showToast(`🎧 Sintonizando: ${vibeName}...`);
 
             document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
             if (clickedElement) clickedElement.classList.add('active-vibe');
