@@ -27,7 +27,6 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             overflow-x: hidden;
-            /* FIX #3: era height:100vh, cortaba el scroll */
             min-height: 100vh;
         }
 
@@ -113,11 +112,9 @@
             width: 100%; height: 100%;
             border: none;
             display: none;
-            /* FIX #6: object-fit no funciona en iframes, solo en <video> */
         }
         .player-frame.active { display: block; }
 
-        /* object-fit solo en el elemento <video>, donde sí funciona */
         video.player-frame { object-fit: cover; }
 
         /* =============================================
@@ -245,7 +242,6 @@
             font-size: 0.85rem;
         }
 
-        /* FIX #5 UX: ticker con estado de carga visible */
         .ticker-loading {
             display: inline-flex;
             align-items: center;
@@ -292,7 +288,7 @@
         .filter-card h3 { font-family: 'Bebas Neue'; margin: 0; font-size: 1.2rem; letter-spacing: 1px; }
 
         /* =============================================
-           BOTÓN FEED PRINCIPAL (FIX #3 UX: emoji vacío + contexto)
+           BOTÓN FEED PRINCIPAL
         ============================================= */
         .feed-master-access {
             display: flex;
@@ -336,7 +332,7 @@
         }
 
         /* =============================================
-           SPONSORS (FIX #6 UX: estado vacío elegante)
+           SPONSORS
         ============================================= */
         .sponsor-footer {
             padding: 5px;
@@ -374,39 +370,6 @@
         }
 
         /* =============================================
-           SPONSORS TRACK
-        ============================================= */
-        .sponsors-container {
-            background: rgba(255,255,255,0.03);
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 2px 0 10px 0;
-            margin: 5px 0 15px 0;
-            width: 100%;
-        }
-        .sponsors-title {
-            font-size: 0.65rem;
-            color: #666;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 0px;
-        }
-        .sponsors-track {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: nowrap;
-        }
-        .sponsor-logo {
-            height: 30px;
-            filter: grayscale(1) brightness(1.2);
-            opacity: 0.7;
-            transition: all 0.3s ease;
-        }
-
-        /* =============================================
            TIMELINE OVERLAY
         ============================================= */
         #timeline-overlay {
@@ -432,7 +395,6 @@
             z-index: 600;
         }
 
-        /* NOTAS EN EL TIMELINE */
         .timeline-container {
             max-width: 700px;
             margin: 60px auto 0;
@@ -461,7 +423,6 @@
             border-radius: 50%;
         }
 
-        /* Colores por categoría */
         .cat-data       { border-left-color: var(--highlight); }
         .cat-senalsj    { border-left-color: var(--sj-gold); }
         .cat-capsula    { border-left-color: var(--capsula-blue); }
@@ -512,7 +473,7 @@
         }
 
         /* =============================================
-           TOAST (FIX #7: reemplaza el alert() del sistema)
+           TOAST
         ============================================= */
         #toast {
             position: fixed;
@@ -538,7 +499,6 @@
 
         /* =============================================
            SIDEBAR DE VIBRAS
-           FIX #2: "SELECCIONA TU VIBRA" sólo en sidebar, no duplicado
         ============================================= */
         #vibe-sidebar {
             position: fixed;
@@ -557,7 +517,6 @@
         }
         #vibe-sidebar.open { right: 0; }
 
-        /* FIX CSS #1: un solo bloque .vibe-header, sin duplicados */
         .vibe-header {
             font-family: 'Bebas Neue';
             font-size: 1.5rem;
@@ -592,7 +551,6 @@
         .vibe-item:hover { background: rgba(212,225,87,0.15); border-color: var(--highlight); }
         .vibe-item span { font-family: 'Bebas Neue'; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
 
-        /* ESTADO ACTIVO VIBRA SELECCIONADA */
         .vibe-item.active-vibe {
             background: rgba(212,225,87,0.2) !important;
             border-color: var(--highlight) !important;
@@ -606,7 +564,6 @@
             animation: pulse-fade 1.5s infinite ease-in-out;
         }
 
-        /* BOTÓN FLOTANTE CERRAR VIBRAS */
         .vibe-sidebar-close {
             position: absolute;
             top: 50%;
@@ -634,7 +591,7 @@
             color: #fff;
         }
 
-        /* BOTÓN PLAY/PAUSA CUSTOM */
+        /* BOTÓN PLAY/PAUSA CUSTOM (EN LA IZQUIERDA) */
         #btn-yt-control {
             position: absolute;
             bottom: 20px;
@@ -685,7 +642,6 @@
             box-shadow: 0 0 20px rgba(212,225,87,0.35);
         }
 
-        /* FILA QUE CONTIENE BTN RANKING + FEED */
         .feed-row {
             display: flex;
             align-items: center;
@@ -695,7 +651,6 @@
             background: linear-gradient(to bottom, #000, var(--bg-dark));
         }
 
-        /* TABS DENTRO DEL MODAL DE RANKINGS */
         .ranking-tabs {
             display: flex;
             gap: 6px;
@@ -725,12 +680,7 @@
             color: #000;
             border-color: var(--highlight);
         }
-        .ranking-tab:hover:not(.active) {
-            border-color: var(--highlight);
-            color: var(--highlight);
-        }
 
-        /* LEER MÁS en las notas del feed */
         .note-read-more {
             margin-top: 10px;
             background: none;
@@ -745,244 +695,13 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            transition: opacity 0.2s;
         }
-        .note-read-more:hover { opacity: 0.75; }
         .note-extra-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1);
         }
         .note-extra-content.expanded { max-height: 2000px; }
-        .note-source-link {
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 0.68rem;
-            color: rgba(255,255,255,0.25);
-            text-decoration: none;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            transition: color 0.2s;
-        }
-        .note-source-link:hover { color: rgba(255,255,255,0.5); }
-
-        /* BOTÓN VIBRA ANIMADO */
-        @keyframes vibe-color-fade {
-            0%, 100% { background-color: #d4e157; }
-            25%       { background-color: #00ced1; }
-            50%       { background-color: #c0c0c0; }
-            75%       { background-color: #ff8a00; }
-        }
-        #btn-vibe {
-            animation: vibe-color-fade 12s infinite ease-in-out !important;
-            transition: background-color 2s ease;
-        }
-
-        /* =============================================
-           FADE IN ANIMATION (FIX CSS #4: un solo @keyframes fadeIn)
-        ============================================= */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* =============================================
-           RESPONSIVE
-        ============================================= */
-        @media (max-width: 768px) {
-            .timeline-container { margin-left: 20px; }
-            .note-title { font-size: 1.6rem; }
-            #vibe-sidebar { width: 45%; right: -50%; }
-            #vibe-sidebar.open { right: 0; }
-            .vibe-sidebar-close { width: 35px; height: 50px; left: -35px; font-size: 1rem; }
-            #btn-ranking-modal { width: 46px; height: 46px; font-size: 1.2rem; }
-            .feed-master-access { flex: 1; }
-        }
-
-        /* =============================================
-           CARRUSEL DE RANKINGS — OVERLAY SOBRE MAIN-STAGE
-        ============================================= */
-        #ranking-carousel {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 50;
-            pointer-events: none;
-            overflow: hidden;
-            /* Invisible e inactivo por defecto — solo aparece cuando hay un slide activo */
-            opacity: 0;
-            transition: opacity 0.35s ease;
-        }
-        #ranking-carousel.has-active {
-            opacity: 1;
-        }
-        #ranking-carousel.carousel-hidden {
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }
-
-        .carousel-slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: rgba(5, 10, 5, 0.93);
-            transform: translateX(100%);
-            transition: none;
-            pointer-events: none;
-            z-index: 1;
-        }
-        .carousel-slide.active {
-            transform: translateX(0%);
-            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: all;
-            z-index: 2;
-        }
-        .carousel-slide.from-right {
-            transform: translateX(100%);
-            transition: none;
-        }
-        .carousel-slide.from-left {
-            transform: translateX(-100%);
-            transition: none;
-        }
-        .carousel-slide.hidden {
-            transform: translateX(100%);
-            transition: none;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .carousel-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-        .carousel-badge-icon {
-            font-size: 1.1rem;
-        }
-        .carousel-badge-label {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
-            color: var(--highlight);
-            opacity: 0.8;
-        }
-
-        .carousel-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: clamp(1.2rem, 3vw, 2rem);
-            color: #fff;
-            letter-spacing: 2px;
-            margin: 0 0 4px;
-            text-align: center;
-            line-height: 1;
-        }
-
-        .carousel-preview {
-            font-size: clamp(0.68rem, 1.5vw, 0.82rem);
-            color: var(--accent-green);
-            font-weight: 300;
-            margin: 0 0 8px;
-            text-align: center;
-            opacity: 0.8;
-            max-width: 80%;
-        }
-
-        .carousel-top3 {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            width: 88%;
-            max-width: 400px;
-            margin-bottom: 10px;
-        }
-
-        .carousel-top3-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,255,255,0.04);
-            border-radius: 6px;
-            padding: 5px 10px;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-
-        .carousel-top3-num {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 0.85rem;
-            color: var(--highlight);
-            min-width: 20px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        .carousel-top3-num.gold   { color: #FFD700; }
-        .carousel-top3-num.silver { color: #C0C0C0; }
-        .carousel-top3-num.bronze { color: #CD7F32; }
-
-        .carousel-top3-text {
-            font-size: 0.67rem;
-            color: var(--white-bone);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            opacity: 0.82;
-        }
-
-        .carousel-cta {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 1.1rem;
-            letter-spacing: 2.5px;
-            color: #000;
-            background: var(--highlight);
-            border: none;
-            padding: 12px 36px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.15s;
-            box-shadow: 0 0 20px rgba(212,225,87,0.4);
-            margin-bottom: 28px;
-        }
-        .carousel-cta:hover  { opacity: 0.9; }
-        .carousel-cta:active { transform: scale(0.97); }
-
-        /* Carrusel visible/oculto */
-        #ranking-carousel {
-            transition: opacity 0.4s ease;
-        }
-        #ranking-carousel.carousel-hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        #carousel-dots {
-            transition: opacity 0.4s ease;
-            position: absolute;
-            bottom: 72px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-            z-index: 60;
-            pointer-events: all;
-        }
-        #carousel-dots.carousel-hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-        .carousel-dot {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: rgba(212, 225, 87, 0.3);
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            transition: background 0.3s, transform 0.3s;
-        }
-        .carousel-dot.active {
-            background: var(--highlight);
-            transform: scale(1.35);
-        }
 
         /* MODAL DE LISTA COMPLETA */
         #ranking-modal {
@@ -1044,13 +763,6 @@
             letter-spacing: 1px;
             line-height: 1;
         }
-        .ranking-modal-subtitle {
-            font-size: 0.72rem;
-            color: var(--accent-green);
-            font-weight: 300;
-            margin: 2px 0 0;
-            letter-spacing: 1px;
-        }
 
         .ranking-list {
             display: flex;
@@ -1066,9 +778,7 @@
             border-radius: 8px;
             background: rgba(255,255,255,0.03);
             border: 1px solid rgba(255,255,255,0.05);
-            transition: background 0.2s;
         }
-        .ranking-row:hover { background: rgba(212,225,87,0.07); }
 
         .ranking-pos {
             font-family: 'Bebas Neue', cursive;
@@ -1144,11 +854,22 @@
             transition: color 0.2s;
         }
         .ranking-external-link:hover { color: var(--highlight); }
+
+        @media (max-width: 768px) {
+            .timeline-container { margin-left: 20px; }
+            .note-title { font-size: 1.6rem; }
+            #vibe-sidebar { width: 45%; right: -50%; }
+            #vibe-sidebar.open { right: 0; }
+            .vibe-sidebar-close { width: 35px; height: 50px; left: -35px; font-size: 1rem; }
+            #btn-ranking-modal { width: 46px; height: 46px; font-size: 1.2rem; }
+            .feed-master-access { flex: 1; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- TOAST (FIX #7) -->
     <div id="toast"></div>
 
     <header>
@@ -1157,18 +878,14 @@
             <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')">
                 <span id="live-dot" class="dot"></span> STREAM
             </button>
-            <!-- FIX #2 UX: el texto del botón es más neutro, el título "SELECCIONA TU VIBRA"
-                 solo aparece dentro del sidebar, sin repetirse -->
             <button id="btn-vibe" class="btn-signal active" onclick="toggleVibeMenu()">▶ VIBRA</button>
         </div>
     </header>
 
-    <!-- SIDEBAR DE VIBRAS -->
     <div id="vibe-sidebar">
         <button class="vibe-sidebar-close" onclick="toggleVibeMenu()" title="Cerrar menú">▶</button>
         <div class="vibe-header">SELECCIONA TU VIBRA</div>
         <div class="vibe-container">
-            <!-- FIX CSS #2: todos los changeVibe con 2 parámetros consistentes (videoId, vibeName) -->
             <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
             <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
             <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
@@ -1193,10 +910,7 @@
         </div>
     </div>
 
-    <!-- PLAYER PRINCIPAL -->
     <div class="main-stage">
-        <!-- FIX CSS #6: object-fit:cover solo en <video>, no en iframe -->
-        <!-- BOTÓN PLAY/PAUSA CUSTOM (controla YouTube sin activar su UI) -->
         <button id="btn-yt-control" onclick="toggleYtPlay()">
             <span id="yt-icon">⏸</span>
         </button>
@@ -1208,24 +922,19 @@
         <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
 
-        <!-- OVERLAY SEÑAL EN ESPERA -->
         <div id="no-signal-msg">
             <div class="no-signal-card">
                 <button class="no-signal-close" onclick="closeNoSignal()">×</button>
-
                 <div class="no-signal-badge">
                     <span class="dot-red"></span>
                     <span>SEÑAL EN ESPERA</span>
                 </div>
-
                 <p class="no-signal-title">EVENTOS EN VIVO,<br>PODCAST Y MÁS</p>
-
                 <p class="no-signal-body">
                     Cuando el indicador se ponga verde,<br>
                     nos encontramos acá — en vivo, sin filtros.<br>
                     Todo lo que pasa en La Nube.
                 </p>
-
                 <div class="no-signal-hint">
                     <span class="dot-green"></span>
                     <p>Cuando veas esto — estamos en vivo</p>
@@ -1236,60 +945,8 @@
         <audio id="bg-audio" loop>
             <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
         </audio>
-
-        <!-- ==========================================
-             CARRUSEL DE RANKINGS
-        ========================================== -->
-        <div id="ranking-carousel">
-
-            <!-- SLIDE 1: YouTube Global -->
-            <div class="carousel-slide" id="slide-yt" data-source="yt">
-                <div class="carousel-badge">
-                    <span class="carousel-badge-icon">▶</span>
-                    <span class="carousel-badge-label">YOUTUBE · MUNDIAL · 24HS</span>
-                </div>
-                <h2 class="carousel-title">TOP TENDENCIAS</h2>
-                <p class="carousel-preview" id="preview-yt">Cargando ranking...</p>
-                <div class="carousel-top3" id="top3-yt"></div>
-                <button class="carousel-cta" onclick="openRankingModal('yt')">VER TOP 20 COMPLETO</button>
-            </div>
-
-            <!-- SLIDE 2: Spotify Global -->
-            <div class="carousel-slide" id="slide-sp-global" data-source="sp-global">
-                <div class="carousel-badge">
-                    <span class="carousel-badge-icon">♫</span>
-                    <span class="carousel-badge-label">SPOTIFY · GLOBAL DAILY</span>
-                </div>
-                <h2 class="carousel-title">MÁS ESCUCHADO HOY</h2>
-                <p class="carousel-preview" id="preview-sp-global">Cargando ranking...</p>
-                <div class="carousel-top3" id="top3-sp-global"></div>
-                <button class="carousel-cta" onclick="openRankingModal('sp-global')">VER TOP 20 COMPLETO</button>
-            </div>
-
-            <!-- SLIDE 3: Spotify Argentina -->
-            <div class="carousel-slide" id="slide-sp-ar" data-source="sp-ar">
-                <div class="carousel-badge">
-                    <span class="carousel-badge-icon">♫</span>
-                    <span class="carousel-badge-label">SPOTIFY · ARGENTINA DAILY</span>
-                </div>
-                <h2 class="carousel-title">LO MÁS ESCUCHADO EN AR</h2>
-                <p class="carousel-preview" id="preview-sp-ar">Cargando ranking...</p>
-                <div class="carousel-top3" id="top3-sp-ar"></div>
-                <button class="carousel-cta" onclick="openRankingModal('sp-ar')">VER TOP 20 COMPLETO</button>
-            </div>
-
-        </div>
-
-        <!-- DOTS de navegación -->
-        <div id="carousel-dots">
-            <button class="carousel-dot active" data-idx="0" onclick="goToSlide(0, true, 0 < carouselIdx ? -1 : 1)" title="Video La Nube"></button>
-            <button class="carousel-dot" data-idx="1" onclick="goToSlide(1, true, 1 < carouselIdx ? -1 : 1)" title="Spotify Argentina"></button>
-            <button class="carousel-dot" data-idx="2" onclick="goToSlide(2, true, 2 < carouselIdx ? -1 : 1)" title="Spotify Global"></button>
-            <button class="carousel-dot" data-idx="3" onclick="goToSlide(3, true, 3 < carouselIdx ? -1 : 1)" title="YouTube Tendencias"></button>
-        </div>
     </div>
 
-    <!-- MODAL DE LISTA COMPLETA — con tabs para los 3 rankings -->
     <div id="ranking-modal">
         <div class="ranking-modal-inner">
             <button class="ranking-modal-close" onclick="closeRankingModal()">×</button>
@@ -1300,7 +957,6 @@
                     <p class="ranking-modal-subtitle" id="modal-subtitle">TOP 20 GLOBAL</p>
                 </div>
             </div>
-            <!-- TABS de navegación entre los 3 rankings -->
             <div class="ranking-tabs">
                 <button class="ranking-tab active" onclick="switchRankingTab('sp-ar', this)">♫ Spotify AR</button>
                 <button class="ranking-tab" onclick="switchRankingTab('sp-global', this)">♫ Spotify Global</button>
@@ -1318,17 +974,14 @@
         </div>
     </div>
 
-    <!-- TICKER -->
-    <!-- FIX #5 UX: spinner de carga visible mientras llegan los datos -->
     <div class="ticker-wrap">
         <div id="ticker-loading" class="ticker-loading">
             <div class="ticker-spinner"></div>
-            CONECTANDO CON MERCADOS...
+            CONECTANDO con MERCADOS...
         </div>
         <div class="ticker" id="main-ticker" style="display:none;"></div>
     </div>
 
-    <!-- FILA: BOTÓN RANKINGS CIRCULAR + FEED DE LA NUBE -->
     <div class="feed-row">
         <button id="btn-ranking-modal" onclick="openRankingModalDirect()" title="Ver Rankings Top 20">📊</button>
         <div class="feed-master-access" onclick="openTimeline('all')">
@@ -1340,8 +993,6 @@
         </div>
     </div>
 
-    <!-- SPONSORS -->
-    <!-- FIX #6 UX: placeholder animado en lugar de texto estático -->
     <div class="sponsor-footer">
         <div id="sponsor-ad">
             <div class="sponsor-placeholder">
@@ -1352,7 +1003,6 @@
         </div>
     </div>
 
-    <!-- TIMELINE OVERLAY -->
     <div id="timeline-overlay">
         <span class="close-timeline" onclick="closeTimeline()">×</span>
         <div class="timeline-container" id="timeline-content"></div>
@@ -1363,34 +1013,6 @@
         let sponsors = [];
         const bgAudio = document.getElementById('bg-audio');
 
-        function hideCarousel() {
-            const carousel = document.getElementById('ranking-carousel');
-            carousel.classList.remove('has-active');
-            carousel.classList.add('carousel-hidden');
-            document.getElementById('carousel-dots').classList.add('carousel-hidden');
-            /* Resetear todos los slides fuera de pantalla */
-            Object.values(slideEls).forEach(el => {
-                if (el) {
-                    el.style.transition    = 'none';
-                    el.style.transform     = 'translateX(100%)';
-                    el.style.pointerEvents = 'none';
-                    el.style.zIndex        = '1';
-                }
-            });
-            carouselIdx = 0;
-            updateDots(0);
-            killTimer();
-        }
-
-        function showCarousel() {
-            const carousel = document.getElementById('ranking-carousel');
-            carousel.classList.remove('carousel-hidden');
-            document.getElementById('carousel-dots').classList.remove('carousel-hidden');
-            carouselPaused = true;
-        }
-
-        /* =============================================
-        ============================================= */
         function switchSignal(type) {
             const pk        = document.getElementById('player-kick');
             const py        = document.getElementById('player-yt');
@@ -1411,7 +1033,6 @@
                     bk.classList.add('active');
                     bgAudio.pause();
                     py.src = '';
-                    hideCarousel();
                 } else {
                     loop.classList.add('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
@@ -1421,27 +1042,20 @@
                 bv.classList.add('active');
                 customBtn.style.display = 'flex';
                 bgAudio.pause();
-                hideCarousel();
             } else {
                 loop.classList.add('active');
                 bgAudio.play().catch(() => {});
-                showCarousel();
             }
         }
 
         function closeNoSignal() {
             document.getElementById('no-signal-msg').classList.remove('visible');
-            showCarousel();
         }
 
-        /* =============================================
-           changeVibe: toast + estado activo + delay cierre
-        ============================================= */
         let isYtPlaying = true;
 
         function changeVibe(videoId, vibeName, clickedElement) {
-            showToast(`🎧 Sintonizando: ${vibeName}...`);
-
+            showToast(`📻 Sintonizando: ${vibeName}...`);
             document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
             if (clickedElement) clickedElement.classList.add('active-vibe');
 
@@ -1453,7 +1067,6 @@
 
             showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
             switchSignal('yt');
-            hideCarousel();
 
             setTimeout(() => {
                 const sidebar = document.getElementById('vibe-sidebar');
@@ -1479,9 +1092,6 @@
             if (sidebar) sidebar.classList.toggle('open');
         }
 
-        /* =============================================
-           TICKER (FIX #5 UX: spinner mientras carga, luego aparece el ticker)
-        ============================================= */
         function showTicker(text) {
             const loading = document.getElementById('ticker-loading');
             const ticker  = document.getElementById('main-ticker');
@@ -1498,158 +1108,79 @@
                     fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r => r.json()),
                     fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r => r.json())
                 ]);
-
                 const r       = c.rates;
                 const blue    = b.blue.value_sell;
                 const oficial = b.oficial.value_sell;
                 const tarjeta = (oficial * 1.60).toFixed(2);
-
-                showTicker(
-                    `DÓLAR BLUE: $${blue} • ` +
-                    `OFICIAL: $${oficial} • ` +
-                    `TARJETA: $${tarjeta} • ` +
-                    `EURO BLUE: $${b.blue_euro.value_sell} • ` +
-                    `REAL (BR): $${(blue/r.BRL).toFixed(2)} • ` +
-                    `P.CHILENO: $${(blue/r.CLP).toFixed(2)} • ` +
-                    `P.URUGUAYO: $${(blue/r.UYU).toFixed(2)} • ` +
-                    `GUARANÍ (PY): $${(blue/r.PYG).toFixed(2)} • ` +
-                    `BOLIVIANO: $${(blue/r.BOB).toFixed(2)} • ` +
-                    `SOL PERUANO: $${(blue/r.PEN).toFixed(2)} • ` +
-                    `P.COLOMBIANO: $${(blue/r.COP).toFixed(2)} • ` +
-                    `BOLÍVAR (VE): $${(blue/r.VES).toFixed(2)} • ` +
-                    `P.MEXICANO: $${(blue/r.MXN).toFixed(2)} • ` +
-                    `WON COREANO (KRW): ₩${r.KRW} • ` +
-                    `YEN JAPONÉS (JPY): ¥${r.JPY} • ` +
-                    `DÓLAR AUSTRALIANO: $${(blue/r.AUD).toFixed(2)} • ` +
-                    `BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ` +
-                    `ETH: U$D ${parseFloat(et.price).toLocaleString()} • ` +
-                    `LA NUBE DE WILSON • `
-                );
+                showTicker(`DÓLAR BLUE: $${blue} • OFICIAL: $${oficial} • TARJETA: $${tarjeta} • BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ETH: U$D ${parseFloat(et.price).toLocaleString()} • LA NUBE DE WILSON • `);
             } catch (e) {
                 showTicker('ERROR DE CONEXIÓN CON MERCADOS • LA NUBE DE WILSON • ');
             }
         }
 
-        /* =============================================
-           SPONSORS (FIX #6 UX: placeholder elegante ya está en el HTML,
-           acá reemplazamos cuando los datos llegan)
-        ============================================= */
         let sponsorInterval = null;
-
         function startSponsors() {
             const box = document.getElementById('sponsor-ad');
             let idx = 0;
-
-            if (sponsors.length === 0) {
-                box.innerHTML = '';
-                return;
-            }
-
+            if (sponsors.length === 0) { box.innerHTML = ''; return; }
             if (sponsorInterval) clearInterval(sponsorInterval);
-
             const show = () => {
                 const col = sponsors[idx].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 const url = col[0].replace(/"/g, '').trim();
-                if (url) {
-                    box.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:contain;animation:fadeIn 1s">`;
-                }
+                if (url) { box.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:contain;animation:fadeIn 1s">`; }
                 idx = (idx + 1) % sponsors.length;
             };
-
             show();
             sponsorInterval = setInterval(show, 10000);
         }
 
-        /* =============================================
-           CARGA DE DATOS DESDE GOOGLE SHEETS
-        ============================================= */
         async function fetchData() {
-            const now        = Date.now();
-            const newsUrl    = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+            const now = Date.now();
+            const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
             const sponsorsUrl= `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
-
             try {
-                const res  = await fetch(newsUrl);
+                const res = await fetch(newsUrl);
                 const text = await res.text();
                 allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
-
-                const resSpo  = await fetch(sponsorsUrl);
+                const resSpo = await fetch(sponsorsUrl);
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
-
                 startSponsors();
-
                 const isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
                 document.getElementById('live-dot').classList.toggle('live', isLive);
-
                 checkDeepLinking();
-            } catch (e) {
-                console.error('Error cargando la Nube:', e);
-            }
+            } catch (e) { console.error('Error cargando:', e); }
         }
 
-        /* =============================================
-           TIMELINE
-        ============================================= */
         function openTimeline(category) {
             const container = document.getElementById('timeline-content');
             container.innerHTML = '';
-
             allNews.forEach((row, index) => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length < 4) return;
-
-                const title   = col[0].replace(/"/g, '');
+                const title = col[0].replace(/"/g, '');
                 const content = col[1].replace(/"/g, '');
-                const author  = (col[2] || 'Redacción').replace(/"/g, '').trim();
-                const status  = col[3].trim().toLowerCase();
-                const cat     = (col[4] || 'data').trim().toLowerCase()
-                                .normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s/g, '');
-                const img     = (col[5] || '').trim().replace(/"/g, '');
-                const date    = (col[6] || '').replace(/"/g, '').trim();
-                const link    = (col[7] || '').replace(/"/g, '').trim();
-                const noteId  = `nota-${allNews.length - index}`;
-
+                const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
+                const status = col[3].trim().toLowerCase();
+                const cat = (col[4] || 'data').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s/g, '');
+                const img = (col[5] || '').trim().replace(/"/g, '');
+                const date = (col[6] || '').replace(/"/g, '').trim();
+                const link = (col[7] || '').replace(/"/g, '').trim();
+                const noteId = `nota-${allNews.length - index}`;
                 if (status === 'publicar') {
-                    /* Dividimos el contenido: primero ~300 chars como preview, el resto oculto */
                     const previewLen = 300;
-                    const preview    = content.length > previewLen ? content.slice(0, previewLen) + '…' : content;
-                    const extra      = content.length > previewLen ? content.slice(previewLen) : '';
-                    const hasExtra   = extra.length > 0;
-                    const extraId    = `extra-${noteId}`;
-                    const btnId      = `btn-${noteId}`;
-
+                    const preview = content.length > previewLen ? content.slice(0, previewLen) + '…' : content;
+                    const extra = content.length > previewLen ? content.slice(previewLen) : '';
+                    const hasExtra = extra.length > 0;
+                    const extraId = `extra-${noteId}`;
+                    const btnId = `btn-${noteId}`;
                     const card = document.createElement('div');
                     card.className = `note-card cat-${cat}`;
                     card.id = noteId;
-                    card.innerHTML = `
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <span style="color:var(--highlight);font-size:0.7rem;font-weight:bold;opacity:0.8;white-space:nowrap;flex-shrink:0;">[ ${cat.toUpperCase()} ]</span>
-                            <div style="text-align:right;">
-                                <span style="color:var(--accent-green);font-size:0.7rem;font-style:italic;display:block;">✍️ ${author}</span>
-                                <span style="color:gray;font-size:0.6rem;display:block;">📅 ${date}</span>
-                            </div>
-                        </div>
-                        ${img ? `<img src="${img}" class="note-img">` : ''}
-                        <h2 class="note-title">${title}</h2>
-                        <div class="note-content">${preview}</div>
-                        ${hasExtra ? `
-                        <div class="note-extra-content" id="${extraId}">
-                            <div class="note-content" style="padding-top:6px;">${extra}</div>
-                            ${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}
-                        </div>
-                        <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
-                            LEER MÁS <span>↓</span>
-                        </button>` : `${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}`}
-                        <div class="share-bar">
-                            <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
-                            <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
-                        </div>
-                    `;
+                    card.innerHTML = `<h2 class="note-title">${title}</h2><div class="note-content">${preview}</div>${hasExtra ? `<div class="note-extra-content" id="${extraId}"><div class="note-content">${extra}</div></div><button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">LEER MÁS</button>` : ''}<div class="share-bar"><button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲</button></div>`;
                     container.appendChild(card);
                 }
             });
-
             document.getElementById('timeline-overlay').classList.add('open');
         }
 
@@ -1657,97 +1188,55 @@
             const extra = document.getElementById(extraId);
             const btn   = document.getElementById(btnId);
             const isOpen = extra.classList.toggle('expanded');
-            btn.innerHTML = isOpen ? 'LEER MENOS <span>↑</span>' : 'LEER MÁS <span>↓</span>';
+            btn.innerText = isOpen ? 'LEER MENOS' : 'LEER MÁS';
         }
 
-        function closeTimeline() {
-            document.getElementById('timeline-overlay').classList.remove('open');
-            window.history.pushState(null, null, ' ');
-        }
+        function closeTimeline() { document.getElementById('timeline-overlay').classList.remove('open'); window.history.pushState(null, null, ' '); }
 
-        /* =============================================
-           DEEP LINKING
-        ============================================= */
         function checkDeepLinking() {
             const hash = window.location.hash;
             if (hash && hash.startsWith('#nota-')) {
                 openTimeline('all');
-                setTimeout(() => {
-                    const el = document.getElementById(hash.substring(1));
-                    if (el) el.scrollIntoView({ behavior: 'smooth' });
-                }, 800);
+                setTimeout(() => { const el = document.getElementById(hash.substring(1)); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 800);
             }
         }
 
-        /* =============================================
-           COMPARTIR
-        ============================================= */
         function shareNote(id, title) {
-            const url  = `${window.location.origin}${window.location.pathname}#${id}`;
+            const url = `${window.location.origin}${window.location.pathname}#${id}`;
             const text = `Visto en La Nube de Wilson: ${title}`;
-            if (navigator.share) {
-                navigator.share({ title: 'La Nube de Wilson', text, url });
-            } else {
-                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`);
-            }
+            if (navigator.share) { navigator.share({ title: 'La Nube de Wilson', text, url }); } else { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`); }
         }
 
-        /* =============================================
-           TOAST (FIX #7: reemplaza alert() bloqueante)
-        ============================================= */
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.classList.add('show');
+            toast.innerText = msg; toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
         function copyLink(id) {
             const url = `${window.location.origin}${window.location.pathname}#${id}`;
-            navigator.clipboard.writeText(url).then(() => {
-                showToast('¡Link copiado! 🔗');
-            }).catch(() => {
-                showToast('No se pudo copiar');
-            });
+            navigator.clipboard.writeText(url).then(() => { showToast('¡Link copiado! 🔗'); });
         }
 
-        /* =============================================
-           AUDIO MOBILE
-        ============================================= */
-        const unlockAudio = () => {
-            if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) {
-                bgAudio.play().catch(() => {});
-            }
-        };
+        const unlockAudio = () => { if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) { bgAudio.play().catch(() => {}); } };
 
-        /* =============================================
-           CARRUSEL DE RANKINGS
-        ============================================= */
-        /* URLs CSV desde Google Sheets — sin proxy, carga directa */
         const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHX6di9e13j4thMxs-fdrylfVDym1b_61DgSNleLZ613EWYOe1VJqGSv4wlSKAo3LxdqlsykYJmAKU/pub?output=csv';
-
         const CAROUSEL_SOURCES = {
             'sp-ar':     { csvUrl: `${SHEET_BASE}&gid=0`,         label: 'Spotify · Argentina Daily',      icon: '♫', mode: 'spotify' },
             'sp-global': { csvUrl: `${SHEET_BASE}&gid=134572978`, label: 'Spotify · Global Daily',         icon: '♫', mode: 'spotify' },
             'yt':        { csvUrl: `${SHEET_BASE}&gid=839811863`, label: 'YouTube · Videos Globales 24hs', icon: '▶', mode: 'youtube' }
         };
-
         const carouselCache = {};
 
         function parseCSV(text) {
-            return text.split('\n')
-                .map(line => {
-                    const cols = [];
-                    let cur = '', inQ = false;
-                    for (let i = 0; i < line.length; i++) {
-                        const ch = line[i];
-                        if (ch === '"') { inQ = !inQ; }
-                        else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
-                        else { cur += ch; }
-                    }
-                    cols.push(cur.trim());
-                    return cols;
-                });
+            return text.split('\n').map(line => {
+                const cols = []; let cur = '', inQ = false;
+                for (let i = 0; i < line.length; i++) {
+                    const ch = line[i];
+                    if (ch === '"') { inQ = !inQ; } else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; } else { cur += ch; }
+                }
+                cols.push(cur.trim()); return cols;
+            });
         }
 
         async function loadRanking(sourceKey) {
@@ -1755,76 +1244,22 @@
             const src = CAROUSEL_SOURCES[sourceKey];
             try {
                 const res = await fetch(src.csvUrl + '&t=' + Date.now());
-                if (!res.ok) return null;
                 const text = await res.text();
-                const rows = parseCSV(text).slice(1); /* saltar header */
+                const rows = parseCSV(text).slice(1);
                 const items = [];
                 rows.forEach(cols => {
-                    if (!cols[0]) return;
                     const pos = parseInt(cols[0]);
                     if (isNaN(pos)) return;
-                    if (src.mode === 'spotify') {
-                        const artist = (cols[1] || '').replace(/"/g,'').trim();
-                        const title  = (cols[2] || '').replace(/"/g,'').trim();
-                        if (title) items.push({ pos, artist, title, change: '' });
-                    } else {
-                        /* YouTube: col B tiene "Artista - Canción" o solo título */
-                        const full = (cols[1] || '').replace(/"/g,'').trim();
-                        const dash = full.indexOf(' - ');
-                        let artist = '', title = full;
-                        if (dash > -1) { artist = full.slice(0, dash); title = full.slice(dash + 3); }
-                        if (title) items.push({ pos, artist, title, change: '' });
-                    }
+                    if (src.mode === 'spotify') { items.push({ pos, artist: (cols[1]||'').replace(/"/g,''), title: (cols[2]||'').replace(/"/g,''), change: '' }); }
+                    else { const full = (cols[1]||'').replace(/"/g,''); const dash = full.indexOf(' - '); items.push({ pos, artist: dash > -1 ? full.slice(0,dash) : '', title: dash > -1 ? full.slice(dash+3) : full, change: '' }); }
                 });
-                const sorted = items.sort((a,b) => a.pos - b.pos).slice(0,20);
-                carouselCache[sourceKey] = sorted;
-                return sorted;
-            } catch(e) {
-                console.error('Error cargando ranking', sourceKey, e);
-                return null;
-            }
-        }
-
-        function posClass(n) {
-            if (n===1) return 'p1'; if (n===2) return 'p2'; if (n===3) return 'p3';
-            return 'pn';
-        }
-
-        function renderTop3(containerId, items) {
-            const el = document.getElementById(containerId);
-            if (!el) return;
-            const colors = ['gold','silver','bronze'];
-            el.innerHTML = items.slice(0,3).map((it,i) => `
-                <div class="carousel-top3-item">
-                    <span class="carousel-top3-num ${colors[i]}">${it.pos}</span>
-                    <span class="carousel-top3-text">${it.artist ? it.artist + ' – ' : ''}${it.title}</span>
-                </div>`).join('');
-        }
-
-        async function prefetchAllRankings() {
-            for (const key of ['sp-ar','sp-global','yt']) {
-                const items = await loadRanking(key);
-                if (!items || items.length === 0) continue;
-                const previewEl = document.getElementById(`preview-${key}`);
-                if (previewEl) previewEl.textContent = `Top ${items.length} · actualizado hoy`;
-                renderTop3(`top3-${key}`, items);
-            }
-        }
-
-        function trendBadge(change) {
-            if (!change) return '';
-            const c = change.toUpperCase().trim();
-            if (c === 'NEW')  return '<span class="ranking-trend trend-new">NEW</span>';
-            if (c === '=')    return '<span class="ranking-trend trend-same">—</span>';
-            if (c.startsWith('+')) return `<span class="ranking-trend trend-up">${c}</span>`;
-            if (c.startsWith('-')) return `<span class="ranking-trend trend-down">${c}</span>`;
-            return '';
+                carouselCache[sourceKey] = items.sort((a,b)=>a.pos-b.pos).slice(0,20);
+                return carouselCache[sourceKey];
+            } catch(e) { return null; }
         }
 
         let currentRankingTab = 'sp-ar';
-
         function openRankingModalDirect() {
-            /* Abre el modal directo con el tab activo por defecto */
             document.getElementById('ranking-modal').classList.add('visible');
             document.body.style.overflow = 'hidden';
             switchRankingTab(currentRankingTab, document.querySelector(`.ranking-tab[onclick*="${currentRankingTab}"]`));
@@ -1832,178 +1267,28 @@
 
         async function switchRankingTab(sourceKey, tabEl) {
             currentRankingTab = sourceKey;
-            /* Actualizar tabs visuales */
             document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
             if (tabEl) tabEl.classList.add('active');
-
             const src = CAROUSEL_SOURCES[sourceKey];
-            document.getElementById('modal-icon').textContent     = src.icon;
-            document.getElementById('modal-title').textContent    = 'TOP 20';
-            document.getElementById('modal-subtitle').textContent = src.label.toUpperCase();
-            document.getElementById('modal-list').innerHTML = `
-                <div class="ranking-loading">
-                    <div class="ranking-loading-spinner"></div>
-                    CARGANDO RANKING...
-                </div>`;
-
-            let items = carouselCache[sourceKey] || await loadRanking(sourceKey);
-            if (!items || items.length === 0) {
-                document.getElementById('modal-list').innerHTML = `<div class="ranking-loading">No se pudo cargar el ranking.<br>Intentá de nuevo en un momento.</div>`;
-                return;
-            }
-
-            document.getElementById('modal-list').innerHTML = items.slice(0,20).map(it => `
-                <div class="ranking-row">
-                    <span class="ranking-pos ${posClass(it.pos)}">${it.pos}</span>
-                    <div class="ranking-info">
-                        <div class="ranking-song">${it.title}</div>
-                        ${it.artist ? `<div class="ranking-artist">${it.artist}</div>` : ''}
-                    </div>
-                    ${trendBadge(it.change)}
-                </div>`).join('');
+            document.getElementById('modal-icon').innerText = src.icon;
+            document.getElementById('modal-subtitle').innerText = src.label.toUpperCase();
+            document.getElementById('modal-list').innerHTML = '<div class="ranking-loading">CARGANDO...</div>';
+            let items = await loadRanking(sourceKey);
+            if (!items) { document.getElementById('modal-list').innerHTML = 'Error'; return; }
+            document.getElementById('modal-list').innerHTML = items.map(it => `<div class="ranking-row"><span class="ranking-pos ${it.pos<=3?'p'+it.pos:'pn'}">${it.pos}</span><div class="ranking-info"><div class="ranking-song">${it.title}</div><div class="ranking-artist">${it.artist}</div></div></div>`).join('');
         }
 
-        async function openRankingModal(sourceKey) {
-            /* Compatibilidad con los botones del carrusel */
-            document.getElementById('ranking-modal').classList.add('visible');
-            document.body.style.overflow = 'hidden';
-            const tabEl = document.querySelector(`.ranking-tab[onclick*="${sourceKey}"]`);
-            switchRankingTab(sourceKey, tabEl);
-        }
+        function closeRankingModal() { document.getElementById('ranking-modal').classList.remove('visible'); document.body.style.overflow = ''; }
+        document.getElementById('ranking-modal').addEventListener('click', function(e) { if (e.target === this) closeRankingModal(); });
 
-        function closeRankingModal() {
-            document.getElementById('ranking-modal').classList.remove('visible');
-            document.body.style.overflow = '';
-        }
-
-        document.getElementById('ranking-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeRankingModal();
-        });
-
-        const SLIDES = [null, 'sp-ar', 'sp-global', 'yt'];
-        let carouselIdx = 0;
-        let carouselTimer = null;
-        let carouselPaused = false;
-        let resumeTimeout = null;
-
-        const slideEls = {
-            1: document.getElementById('slide-sp-ar'),
-            2: document.getElementById('slide-sp-global'),
-            3: document.getElementById('slide-yt')
-        };
-
-        /* Al inicio todos los slides están fuera de pantalla (translateX 100% por CSS),
-           el video La Nube.mp4 es visible porque es el video del main-stage, no un slide */
-
-        function updateDots(idx) {
-            document.querySelectorAll('.carousel-dot').forEach((d, i) => {
-                d.classList.toggle('active', i === idx);
-            });
-        }
-
-        function killTimer() {
-            if (carouselTimer)  { clearInterval(carouselTimer);  carouselTimer  = null; }
-            if (resumeTimeout)  { clearTimeout(resumeTimeout);   resumeTimeout  = null; }
-            carouselPaused = true;
-        }
-
-        function goToSlide(idx, manual, direction) {
-            if (idx === carouselIdx) return;
-            const prev = carouselIdx;
-            carouselIdx = idx;
-            const dir = (direction === -1) ? -1 : 1;
-            const carousel = document.getElementById('ranking-carousel');
-
-            /* Saliente: sacarlo fuera de pantalla sin animación */
-            if (prev > 0 && slideEls[prev]) {
-                slideEls[prev].style.transition   = 'none';
-                slideEls[prev].style.transform    = dir === 1 ? 'translateX(-100%)' : 'translateX(100%)';
-                slideEls[prev].style.pointerEvents = 'none';
-                slideEls[prev].style.zIndex       = '1';
-            }
-
-            /* Índice 0 = volver al video La Nube */
-            if (idx === 0) {
-                carousel.classList.remove('has-active');
-                updateDots(0);
-                if (manual) killTimer();
-                return;
-            }
-
-            /* Índice > 0 = slide de ranking */
-            carousel.classList.add('has-active');
-            const el = slideEls[idx];
-            el.style.transition    = 'none';
-            el.style.transform     = dir === 1 ? 'translateX(100%)' : 'translateX(-100%)';
-            el.style.pointerEvents = 'none';
-            el.style.zIndex        = '2';
-            void el.offsetWidth; /* reflow */
-            el.style.transition    = 'transform 0.42s cubic-bezier(0.4, 0, 0.2, 1)';
-            el.style.transform     = 'translateX(0%)';
-            el.style.pointerEvents = 'all';
-
-            updateDots(idx);
-            if (manual) killTimer();
-        }
-
-        function nextSlide() {
-            if (!carouselPaused) goToSlide((carouselIdx + 1) % SLIDES.length, false, 1);
-        }
-
-        function resetCarouselTimer() {
-            if (carouselTimer) clearInterval(carouselTimer);
-            carouselTimer = setInterval(nextSlide, 5000);
-        }
-
-        function startCarousel() {
-            resetCarouselTimer();
-            prefetchAllRankings();
-            initSwipe();
-        }
-
-        /* ---- Swipe táctil ---- */
-        function initSwipe() {
-            const stage = document.querySelector('.main-stage');
-            let touchStartX = 0;
-            let touchStartY = 0;
-
-            stage.addEventListener('touchstart', e => {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-
-            stage.addEventListener('touchend', e => {
-                const dx = e.changedTouches[0].clientX - touchStartX;
-                const dy = e.changedTouches[0].clientY - touchStartY;
-                if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return;
-                if (dx < 0) {
-                    goToSlide((carouselIdx + 1) % SLIDES.length, true, 1);
-                } else {
-                    goToSlide((carouselIdx - 1 + SLIDES.length) % SLIDES.length, true, -1);
-                }
-            }, { passive: true });
-        }
-
-        /* =============================================
-           INIT
-        ============================================= */
         window.onload = () => {
             fetchData();
             updateTicker();
             setInterval(updateTicker, 60000);
             setInterval(fetchData, 15000);
-            setTimeout(startCarousel, 5000);
         };
-
         window.addEventListener('click', unlockAudio, { once: true });
         window.addEventListener('touchstart', unlockAudio, { once: true });
-
-        // Loader (si lo usás en tu HTML)
-        setTimeout(() => {
-            const loader = document.getElementById('loader-wrapper') || document.getElementById('loader');
-            if (loader) loader.style.display = 'none';
-        }, 6000);
     </script>
-
 </body>
 </html>
