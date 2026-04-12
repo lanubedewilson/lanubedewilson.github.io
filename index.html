@@ -1141,7 +1141,7 @@
             try {
                 const res = await fetch(newsUrl);
                 const text = await res.text();
-                allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse();
+                allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse().slice(0, 70);
                 const resSpo = await fetch(sponsorsUrl);
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
