@@ -1108,11 +1108,33 @@
                     fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r => r.json()),
                     fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r => r.json())
                 ]);
+                
                 const r       = c.rates;
                 const blue    = b.blue.value_sell;
                 const oficial = b.oficial.value_sell;
                 const tarjeta = (oficial * 1.60).toFixed(2);
-                showTicker(`DÓLAR BLUE: $${blue} • OFICIAL: $${oficial} • TARJETA: $${tarjeta} • BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ETH: U$D ${parseFloat(et.price).toLocaleString()} • LA NUBE DE WILSON • `);
+                
+                showTicker(
+                    `DÓLAR BLUE: $${blue} • ` +
+                    `OFICIAL: $${oficial} • ` +
+                    `TARJETA: $${tarjeta} • ` +
+                    `EURO BLUE: $${b.blue_euro.value_sell} • ` +
+                    `REAL (BR): $${(blue/r.BRL).toFixed(2)} • ` +
+                    `P.CHILENO: $${(blue/r.CLP).toFixed(2)} • ` +
+                    `P.URUGUAYO: $${(blue/r.UYU).toFixed(2)} • ` +
+                    `GUARANÍ (PY): ₲${(blue/r.PYG).toFixed(2)} • ` +
+                    `BOLIVIANO: $b${(blue/r.BOB).toFixed(2)} • ` +
+                    `SOL PERUANO: S/${(blue/r.PEN).toFixed(2)} • ` +
+                    `P.COLOMBIANO: $${(blue/r.COP).toFixed(2)} • ` +
+                    `BOLÍVAR (VE): Bs${(blue/r.VES).toFixed(2)} • ` +
+                    `P.MEXICANO: $${(blue/r.MXN).toFixed(2)} • ` +
+                    `WON COREANO (KRW): ₩${r.KRW} • ` +
+                    `YEN JAPONÉS (JPY): ¥${r.JPY} • ` +
+                    `DÓLAR AUSTRALIANO: $${(blue/r.AUD).toFixed(2)} • ` +
+                    `BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ` +
+                    `ETH: U$D ${parseFloat(et.price).toLocaleString()} • ` +
+                    `LA NUBE DE WILSON • `
+                );
             } catch (e) {
                 showTicker('ERROR DE CONEXIÓN CON MERCADOS • LA NUBE DE WILSON • ');
             }
