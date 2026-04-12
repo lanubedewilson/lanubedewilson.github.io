@@ -296,14 +296,18 @@
             justify-content: center;
             background: rgba(255,255,255,0.05);
             border: 2px solid var(--capsula-blue);
-            padding: 20px;
-            margin: 10px auto;
+            padding: 15px 20px; /* Reduje un poco el padding vertical para que no sea tan alto */
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 90%;
-            max-width: 600px;
+            width: 100%; /* Ocupa el 100% del espacio que le deja el botón de ranking */
+            max-width: 400px; /* Limitamos el ancho máximo para que no se estire de más en PC */
             gap: 15px;
+        }
+        .feed-master-access:hover {
+            background: rgba(0,212,255,0.1);
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0,212,255,0.2);
         }
         .feed-master-access:hover {
             background: rgba(0,212,255,0.1);
@@ -1250,6 +1254,7 @@
                     container.appendChild(card);
                 }
             });
+            document.getElementById('timeline-overlay').scrollTo(0, 0);
             document.getElementById('timeline-overlay').classList.add('open');
         }
 
