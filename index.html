@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Nube de Wilson | v2.0 Timeline</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
     <style>
         /* =============================================
            VARIABLES Y RESET
@@ -947,7 +946,19 @@
             <source src="la nube.mp4" type="video/mp4">
         </video>
 
-        <div id="player" class="player-frame"></div>
+        <!-- Player de Vibras: iframe de YouTube con overlay para ocultar controles -->
+        <div id="player" class="player-frame" style="position:relative;overflow:hidden;">
+            <iframe
+                id="yt-iframe"
+                style="position:absolute;top:-60px;left:0;width:100%;height:calc(100% + 120px);border:none;pointer-events:none;"
+                src="about:blank"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+            </iframe>
+            <!-- Overlay para bloquear click derecho / logo de YT -->
+            <div style="position:absolute;inset:0;z-index:2;pointer-events:none;"></div>
+        </div>
+
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
 
         <div id="no-signal-msg">
@@ -1086,15 +1097,14 @@
     document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
     if (clickedElement) clickedElement.classList.add('active-vibe');
 
-    // CONEXIÓN AL WORKER: Usamos el objeto 'player' de Clappr que inicializamos arriba
-    player.load(workerUrl + videoId);
-    player.play();
+    // Cargamos el video en el iframe de YouTube (sin mostrar interfaz de YT)
+    document.getElementById('yt-iframe').src = buildYtSrc(videoId);
 
     isYtPlaying = true;
     document.getElementById('yt-icon').innerText = '⏸';
 
     showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
-    switchSignal('yt'); // Esto ahora activa el div de Clappr correctamente
+    switchSignal('yt');
 
     setTimeout(() => {
         const sidebar = document.getElementById('vibe-sidebar');
@@ -1281,7 +1291,11 @@
             navigator.clipboard.writeText(url).then(() => { showToast('¡Link copiado! 🔗'); });
         }
 
-        const unlockAudio = () => { if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) { bgAudio.play().catch(() => {}); } };
+        const unlockAudio = () => {
+            if (bgAudio && bgAudio.paused && !document.getElementById('player').classList.contains('active')) {
+                bgAudio.play().catch(() => {});
+            }
+        };
 
         const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHX6di9e13j4thMxs-fdrylfVDym1b_61DgSNleLZ613EWYOe1VJqGSv4wlSKAo3LxdqlsykYJmAKU/pub?output=csv';
         const CAROUSEL_SOURCES = {
@@ -1344,31 +1358,22 @@
         function closeRankingModal() { document.getElementById('ranking-modal').classList.remove('visible'); document.body.style.overflow = ''; }
         document.getElementById('ranking-modal').addEventListener('click', function(e) { if (e.target === this) closeRankingModal(); });
 
-        // ── WORKER DE CLOUDFLARE ──────────────────────────────────────────
-        const workerUrl = "https://extractor-en-vivo.smurua4.workers.dev/?id=";
+        // ── PLAYER DE VIBRAS con iframe de YouTube ────────────────────────
+        // Usamos el iframe embed de YouTube con parámetros que ocultan la UI:
+        // autoplay=1, controls=0, modestbranding=1, rel=0, iv_load_policy=3
+        // El overlay CSS encima impide que se vea el logo/botones de YouTube.
+        function buildYtSrc(videoId) {
+            return `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&rel=0&iv_load_policy=3&disablekb=1&fs=0&loop=1&playlist=${videoId}&enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}`;
+        }
 
-        // Inicializamos Clappr con la primera vibra por defecto
-        var player = new Clappr.Player({
-            source: workerUrl + '36YnV9STBqc',
-            parentId: '#player',
-            width: '100%',
-            height: '100%',
-            autoPlay: false,
-            mute: true,
-            actualLiveTime: true,
-            mediacontrol: { seekbar: '#E1103A', buttons: '#E1103A' }
-        });
-
-        // ── PLAY/PAUSA con API de Clappr ─────────────────────────────────
         function toggleYtPlay() {
-            const icon = document.getElementById('yt-icon');
-            if (isYtPlaying) {
-                player.pause();
-                icon.innerText = '▶';
-            } else {
-                player.play();
-                icon.innerText = '⏸';
-            }
+            const iframe = document.getElementById('yt-iframe');
+            const icon   = document.getElementById('yt-icon');
+            const msg    = isYtPlaying
+                ? '{"event":"command","func":"pauseVideo","args":""}'
+                : '{"event":"command","func":"playVideo","args":""}';
+            iframe.contentWindow.postMessage(msg, '*');
+            icon.innerText = isYtPlaying ? '▶' : '⏸';
             isYtPlaying = !isYtPlaying;
         }
 
