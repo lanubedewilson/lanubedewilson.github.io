@@ -939,40 +939,7 @@
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
 
-<script>
-    // Configuración del Worker de Cloudflare
-    const workerUrl = "https://extractor-en-vivo.smurua4.workers.dev/?id=";
 
-    // Inicializamos el player con la primera vibra por defecto (La Buena Vida)
-    var player = new Clappr.Player({
-        source: workerUrl + '36YnV9STBqc',
-        parentId: "#player", // Asegurate de tener un div con id="player" en tu HTML
-        width: '100%',
-        height: '100%',
-        autoPlay: true,
-        mute: true, // Muchos navegadores exigen mute para el autoplay
-        actualLiveTime: true,
-        mediacontrol: {seekbar: "#E1103A", buttons: "#E1103A"}
-    });
-
-    // Función que se ejecuta al hacer clic en un ítem de la sidebar
-    function changeVibe(videoId, vibeName, element) {
-        console.log("Cambiando a: " + vibeName + " (ID: " + videoId + ")");
-        
-        // 1. Cargamos el nuevo stream a través del Worker
-        player.load(workerUrl + videoId);
-        player.play();
-
-        // 2. Feedback visual (Opcional: resaltar el ítem activo)
-        document.querySelectorAll('.vibe-item').forEach(item => {
-            item.style.background = "transparent";
-        });
-        element.style.background = "rgba(255, 255, 255, 0.1)";
-
-        // 3. Cerrar el menú automáticamente si lo deseás
-        // toggleVibeMenu(); 
-    }
-</script>
 
     <div class="main-stage">
         <button id="btn-yt-control" onclick="toggleYtPlay()">
@@ -983,7 +950,7 @@
             <source src="la nube.mp4" type="video/mp4">
         </video>
 
-        <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <div id="player" class="player-frame"></div>
         <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
 
         <div id="no-signal-msg">
@@ -1078,39 +1045,38 @@
         const bgAudio = document.getElementById('bg-audio');
 
         function switchSignal(type) {
-            const pk        = document.getElementById('player-kick');
-            const py        = document.getElementById('player-yt');
-            const loop      = document.getElementById('initial-loop');
-            const bk        = document.getElementById('btn-kick');
-            const bv        = document.getElementById('btn-vibe');
-            const customBtn = document.getElementById('btn-yt-control');
+    const pk = document.getElementById('player-kick');
+    const py = document.getElementById('player'); // Ahora apunta al div de Clappr
+    const loop = document.getElementById('initial-loop');
+    const bk = document.getElementById('btn-kick');
+    const bv = document.getElementById('btn-vibe');
+    const customBtn = document.getElementById('btn-yt-control');
 
-            [pk, py, loop].forEach(el => el.classList.remove('active'));
-            bk.classList.remove('active');
-            bv.classList.remove('active');
-            customBtn.style.display = 'none';
+    [pk, py, loop].forEach(el => el.classList.remove('active'));
+    bk.classList.remove('active');
+    bv.classList.remove('active');
+    customBtn.style.display = 'none';
 
-            if (type === 'kick') {
-                const isLive = document.getElementById('live-dot').classList.contains('live');
-                if (isLive) {
-                    pk.classList.add('active');
-                    bk.classList.add('active');
-                    bgAudio.pause();
-                    py.src = '';
-                } else {
-                    loop.classList.add('active');
-                    document.getElementById('no-signal-msg').classList.add('visible');
-                }
-            } else if (type === 'yt') {
-                py.classList.add('active');
-                bv.classList.add('active');
-                customBtn.style.display = 'flex';
-                bgAudio.pause();
-            } else {
-                loop.classList.add('active');
-                bgAudio.play().catch(() => {});
-            }
+    if (type === 'kick') {
+        const isLive = document.getElementById('live-dot').classList.contains('live');
+        if (isLive) {
+            pk.classList.add('active');
+            bk.classList.add('active');
+            bgAudio.pause();
+        } else {
+            loop.classList.add('active');
+            document.getElementById('no-signal-msg').classList.add('visible');
         }
+    } else if (type === 'yt') {
+        py.classList.add('active'); // Activamos el div de Clappr
+        bv.classList.add('active');
+        customBtn.style.display = 'flex';
+        bgAudio.pause();
+    } else {
+        loop.classList.add('active');
+        bgAudio.play().catch(() => {});
+    }
+}
 
         function closeNoSignal() {
             document.getElementById('no-signal-msg').classList.remove('visible');
@@ -1119,24 +1085,25 @@
         let isYtPlaying = true;
 
         function changeVibe(videoId, vibeName, clickedElement) {
-            showToast(`📻 Sintonizando: ${vibeName}...`);
-            document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
-            if (clickedElement) clickedElement.classList.add('active-vibe');
+    showToast(`📻 Sintonizando: ${vibeName}...`);
+    document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
+    if (clickedElement) clickedElement.classList.add('active-vibe');
 
-            const player = document.getElementById('player-yt');
-            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
+    // CONEXIÓN AL WORKER: Usamos el objeto 'player' de Clappr que inicializamos arriba
+    player.load(workerUrl + videoId);
+    player.play();
 
-            isYtPlaying = true;
-            document.getElementById('yt-icon').innerText = '⏸';
+    isYtPlaying = true;
+    document.getElementById('yt-icon').innerText = '⏸';
 
-            showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
-            switchSignal('yt');
+    showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
+    switchSignal('yt'); // Esto ahora activa el div de Clappr correctamente
 
-            setTimeout(() => {
-                const sidebar = document.getElementById('vibe-sidebar');
-                if (sidebar.classList.contains('open')) toggleVibeMenu();
-            }, 500);
-        }
+    setTimeout(() => {
+        const sidebar = document.getElementById('vibe-sidebar');
+        if (sidebar.classList.contains('open')) toggleVibeMenu();
+    }, 500);
+}
 
         function toggleYtPlay() {
             const iframe = document.getElementById('player-yt');
@@ -1392,7 +1359,40 @@
 
         function closeRankingModal() { document.getElementById('ranking-modal').classList.remove('visible'); document.body.style.overflow = ''; }
         document.getElementById('ranking-modal').addEventListener('click', function(e) { if (e.target === this) closeRankingModal(); });
+<script>
+    // Configuración del Worker de Cloudflare
+    const workerUrl = "https://extractor-en-vivo.smurua4.workers.dev/?id=";
 
+    // Inicializamos el player con la primera vibra por defecto (La Buena Vida)
+    var player = new Clappr.Player({
+        source: workerUrl + '36YnV9STBqc',
+        parentId: "#player", // Asegurate de tener un div con id="player" en tu HTML
+        width: '100%',
+        height: '100%',
+        autoPlay: true,
+        mute: true, // Muchos navegadores exigen mute para el autoplay
+        actualLiveTime: true,
+        mediacontrol: {seekbar: "#E1103A", buttons: "#E1103A"}
+    });
+
+    // Función que se ejecuta al hacer clic en un ítem de la sidebar
+    function changeVibe(videoId, vibeName, element) {
+        console.log("Cambiando a: " + vibeName + " (ID: " + videoId + ")");
+        
+        // 1. Cargamos el nuevo stream a través del Worker
+        player.load(workerUrl + videoId);
+        player.play();
+
+        // 2. Feedback visual (Opcional: resaltar el ítem activo)
+        document.querySelectorAll('.vibe-item').forEach(item => {
+            item.style.background = "transparent";
+        });
+        element.style.background = "rgba(255, 255, 255, 0.1)";
+
+        // 3. Cerrar el menú automáticamente si lo deseás
+        // toggleVibeMenu(); 
+    }
+</script>
         window.onload = () => {
             fetchData();
             updateTicker();
