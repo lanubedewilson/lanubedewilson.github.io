@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Nube de Wilson | v2.0 Timeline</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
     <style>
         /* =============================================
            VARIABLES Y RESET
@@ -937,10 +938,6 @@
     </div>
 </div>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
-
-
-
     <div class="main-stage">
         <button id="btn-yt-control" onclick="toggleYtPlay()">
             <span id="yt-icon">⏸</span>
@@ -1104,19 +1101,6 @@
         if (sidebar.classList.contains('open')) toggleVibeMenu();
     }, 500);
 }
-
-        function toggleYtPlay() {
-            const iframe = document.getElementById('player-yt');
-            const icon   = document.getElementById('yt-icon');
-            if (isYtPlaying) {
-                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-                icon.innerText = '▶';
-            } else {
-                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-                icon.innerText = '⏸';
-            }
-            isYtPlaying = !isYtPlaying;
-        }
 
         function toggleVibeMenu() {
             const sidebar = document.getElementById('vibe-sidebar');
@@ -1359,40 +1343,35 @@
 
         function closeRankingModal() { document.getElementById('ranking-modal').classList.remove('visible'); document.body.style.overflow = ''; }
         document.getElementById('ranking-modal').addEventListener('click', function(e) { if (e.target === this) closeRankingModal(); });
-<script>
-    // Configuración del Worker de Cloudflare
-    const workerUrl = "https://extractor-en-vivo.smurua4.workers.dev/?id=";
 
-    // Inicializamos el player con la primera vibra por defecto (La Buena Vida)
-    var player = new Clappr.Player({
-        source: workerUrl + '36YnV9STBqc',
-        parentId: "#player", // Asegurate de tener un div con id="player" en tu HTML
-        width: '100%',
-        height: '100%',
-        autoPlay: true,
-        mute: true, // Muchos navegadores exigen mute para el autoplay
-        actualLiveTime: true,
-        mediacontrol: {seekbar: "#E1103A", buttons: "#E1103A"}
-    });
+        // ── WORKER DE CLOUDFLARE ──────────────────────────────────────────
+        const workerUrl = "https://extractor-en-vivo.smurua4.workers.dev/?id=";
 
-    // Función que se ejecuta al hacer clic en un ítem de la sidebar
-    function changeVibe(videoId, vibeName, element) {
-        console.log("Cambiando a: " + vibeName + " (ID: " + videoId + ")");
-        
-        // 1. Cargamos el nuevo stream a través del Worker
-        player.load(workerUrl + videoId);
-        player.play();
-
-        // 2. Feedback visual (Opcional: resaltar el ítem activo)
-        document.querySelectorAll('.vibe-item').forEach(item => {
-            item.style.background = "transparent";
+        // Inicializamos Clappr con la primera vibra por defecto
+        var player = new Clappr.Player({
+            source: workerUrl + '36YnV9STBqc',
+            parentId: '#player',
+            width: '100%',
+            height: '100%',
+            autoPlay: false,
+            mute: true,
+            actualLiveTime: true,
+            mediacontrol: { seekbar: '#E1103A', buttons: '#E1103A' }
         });
-        element.style.background = "rgba(255, 255, 255, 0.1)";
 
-        // 3. Cerrar el menú automáticamente si lo deseás
-        // toggleVibeMenu(); 
-    }
-</script>
+        // ── PLAY/PAUSA con API de Clappr ─────────────────────────────────
+        function toggleYtPlay() {
+            const icon = document.getElementById('yt-icon');
+            if (isYtPlaying) {
+                player.pause();
+                icon.innerText = '▶';
+            } else {
+                player.play();
+                icon.innerText = '⏸';
+            }
+            isYtPlaying = !isYtPlaying;
+        }
+
         window.onload = () => {
             fetchData();
             updateTicker();
