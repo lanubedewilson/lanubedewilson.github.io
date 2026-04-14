@@ -881,6 +881,161 @@
         }
         .ranking-external-link:hover { color: var(--highlight); }
 
+        /* =============================================
+           BOTÓN RADIO CIRCULAR
+        ============================================= */
+        #btn-radio-modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid #ff8c00;
+            color: #ff8c00;
+            font-size: 1.4rem;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(255,140,0,0.15);
+        }
+        #btn-radio-modal:hover {
+            background: rgba(255,140,0,0.15);
+            transform: scale(1.08);
+            box-shadow: 0 0 20px rgba(255,140,0,0.35);
+        }
+        #btn-radio-modal.radio-active {
+            background: rgba(255,140,0,0.2);
+            box-shadow: 0 0 18px rgba(255,140,0,0.5);
+            animation: radio-pulse 2s infinite ease-in-out;
+        }
+        @keyframes radio-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255,140,0,0.3); }
+            50%       { box-shadow: 0 0 25px rgba(255,140,0,0.7); }
+        }
+
+        /* =============================================
+           SIDEBAR DE RADIO
+        ============================================= */
+        #radio-sidebar {
+            position: fixed;
+            top: 0; right: -40%;
+            width: 33.33%;
+            height: 100%;
+            background: rgba(5,10,5,0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 1000;
+            transition: 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            border-left: 1px solid rgba(255,140,0,0.25);
+        }
+        #radio-sidebar.open { right: 0; }
+
+        .radio-header {
+            font-family: 'Bebas Neue';
+            font-size: 1.5rem;
+            color: #ff8c00;
+            padding: 80px 20px 20px;
+            background: rgba(5,10,5,0.2);
+            text-align: center;
+            border-bottom: 1px solid rgba(255,140,0,0.15);
+        }
+        .radio-header small {
+            display: block;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            color: rgba(255,140,0,0.5);
+            font-weight: 300;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .radio-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .radio-container::-webkit-scrollbar { display: none; }
+
+        .radio-item {
+            padding: 12px 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid transparent;
+        }
+        .radio-item:hover { background: rgba(255,140,0,0.12); border-color: #ff8c00; }
+        .radio-item .radio-dot {
+            width: 4px;
+            height: 20px;
+            border-radius: 2px;
+            flex-shrink: 0;
+            background: #ff8c00;
+            opacity: 0.6;
+        }
+        .radio-item span.radio-name {
+            font-family: 'Bebas Neue';
+            font-size: 1rem;
+            color: #ccc;
+            letter-spacing: 1px;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .radio-item.active-radio {
+            background: rgba(255,140,0,0.18) !important;
+            border-color: #ff8c00 !important;
+            box-shadow: inset 0 0 10px rgba(255,140,0,0.1);
+        }
+        .radio-item.active-radio span.radio-name { color: #ff8c00; }
+        .radio-item .radio-speaker {
+            font-size: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            animation: pulse-fade 1.5s infinite ease-in-out;
+            flex-shrink: 0;
+        }
+        .radio-item.active-radio .radio-speaker { opacity: 1; }
+
+        .radio-sidebar-close {
+            position: absolute;
+            top: 50%;
+            left: -40px;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 60px;
+            background: rgba(5,10,5,0.9);
+            border: 1px solid rgba(255,140,0,0.3);
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            color: #ff8c00;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+        .radio-sidebar-close:hover,
+        .radio-sidebar-close:active {
+            background: rgba(255,140,0,0.2);
+            color: #fff;
+        }
+
         @media (max-width: 768px) {
             .timeline-container { margin-left: 20px; }
             .note-title { font-size: 1.6rem; }
@@ -888,7 +1043,11 @@
             #vibe-sidebar.open { right: 0; }
             .vibe-sidebar-close { width: 35px; height: 50px; left: -35px; font-size: 1rem; }
             #btn-ranking-modal { width: 46px; height: 46px; font-size: 1.2rem; }
+            #btn-radio-modal   { width: 46px; height: 46px; font-size: 1.2rem; }
             .feed-master-access { flex: 1; }
+            #radio-sidebar { width: 45%; right: -50%; }
+            #radio-sidebar.open { right: 0; }
+            .radio-sidebar-close { width: 35px; height: 50px; left: -35px; font-size: 1rem; }
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -935,6 +1094,18 @@
             <button onclick="toggleVibeMenu()" style="width:100%;margin-top:30px;background:none;border:1px solid #444;color:#888;padding:12px;cursor:pointer;font-size:0.8rem;border-radius:4px;font-family:'Bebas Neue';letter-spacing:1px;">CERRAR DIAL</button>
         </div>
     </div>
+
+    <!-- SIDEBAR DE RADIO -->
+    <div id="radio-sidebar">
+        <button class="radio-sidebar-close" onclick="toggleRadioSidebar()" title="Cerrar radio">◀</button>
+        <div class="radio-header">
+            📻 EMISORAS DE RADIO
+            <small id="radio-now-playing-label">SELECCIONA UNA EMISORA</small>
+        </div>
+        <div class="radio-container" id="radio-list"></div>
+    </div>
+
+    <audio id="radio-audio"></audio>
 
     <div class="main-stage">
         <button id="btn-yt-control" onclick="toggleYtPlay()">
@@ -1017,6 +1188,7 @@
                 <span class="feed-description">Notas, articulos y data al instante</span>
             </div>
         </div>
+        <button id="btn-radio-modal" onclick="toggleRadioSidebar()" title="Emisoras de Radio">📻</button>
     </div>
 
     <div class="sponsor-footer">
@@ -1355,9 +1527,182 @@
         function closeRankingModal() { document.getElementById('ranking-modal').classList.remove('visible'); document.body.style.overflow = ''; }
         document.getElementById('ranking-modal').addEventListener('click', function(e) { if (e.target === this) closeRankingModal(); });
 
+        /* =============================================
+           RADIO SIDEBAR LOGIC
+        ============================================= */
+        const RADIO_STATIONS = [
+            { name: 'Radio Paradise · Global',       url: 'http://stream.radioparadise.com/global-flacm' },
+            { name: 'Radio Paradise · Mellow',       url: 'http://stream.radioparadise.com/mellow-flacm' },
+            { name: 'Radio Paradise · Rock',         url: 'http://stream.radioparadise.com/rock-flacm' },
+            { name: 'Radio Paradise · Main Mix',     url: 'http://stream.radioparadise.com/flacm' },
+            { name: 'Radio Paradise · Beyond',       url: 'http://stream.radioparadise.com/beyond-flacm' },
+            { name: 'Radio Paradise · 2050',         url: 'http://stream.radioparadise.com/radio2050-flacm' },
+            { name: 'Radio Paradise · Serenity',     url: 'http://stream.radioparadise.com/serenity' },
+            { name: 'NCRadio 320',                   url: 'http://live.ncradio.fm/320' },
+            { name: 'NME Radio 1',                   url: 'http://listen-nme.sharp-stream.com/nme1high.mp3' },
+            { name: 'NME Radio 2',                   url: 'http://listen-nme.sharp-stream.com/nme2high.mp3' },
+            { name: 'Linn Radio 1',                  url: 'http://radio.linn.co.uk:8003/stream' },
+            { name: 'SomaFM · Folk Forward',         url: 'http://ice2.somafm.com/folkfwd-128-aac' },
+            { name: 'SomaFM · Groove Salad FLAC',   url: 'https://hls.somafm.com/hls/groovesalad/FLAC/program.m3u8' },
+            { name: 'SomaFM · GS Unprocessed',      url: 'https://hls.somafm.com/hls/gs-unprocessed/FLAC/program.m3u8' },
+            { name: 'SomaFM · Groove Salad 320',    url: 'https://hls.somafm.com/hls/groovesalad/320k/program.m3u8' },
+            { name: 'SomaFM · Reggae',              url: 'http://ice6.somafm.com/reggae-256-mp3' },
+            { name: 'SomaFM · Seventies',           url: 'http://ice4.somafm.com/seventies-320-mp3' },
+            { name: 'SomaFM · Underground 80s',     url: 'http://ice6.somafm.com/u80s-256-mp3' },
+            { name: 'SomaFM · Boot Liquor',         url: 'http://ice2.somafm.com/bootliquor-320-mp3' },
+            { name: 'SomaFM · Lush',               url: 'http://ice5.somafm.com/lush-128-aac' },
+            { name: 'SomaFM · Covers',             url: 'http://ice4.somafm.com/covers-128-aac' },
+            { name: 'SomaFM · Indie Pop',          url: 'http://ice4.somafm.com/indiepop-128-aac' },
+            { name: 'SomaFM · Thistle',            url: 'http://ice6.somafm.com/thistle-128-aac' },
+            { name: 'SomaFM · Dubstep',            url: 'http://ice1.somafm.com/dubstep-128-aac' },
+            { name: 'SomaFM · 7Soul',              url: 'http://ice4.somafm.com/7soul-128-aac' },
+            { name: 'SomaFM · Bossa Nova',         url: 'http://ice2.somafm.com/bossa-256-mp3' },
+            { name: 'SomaFM · Tiki Time',          url: 'http://ice6.somafm.com/tikitime-256-mp3' },
+            { name: 'SomaFM · DEF CON',            url: 'http://ice2.somafm.com/defcon-256-mp3' },
+            { name: 'SomaFM · Synphaera',          url: 'http://ice6.somafm.com/synphaera-256-mp3' },
+            { name: 'SomaFM · Drone Zone',         url: 'http://ice2.somafm.com/dronezone-256-mp3' },
+            { name: 'SomaFM · Dark Zone',          url: 'http://ice2.somafm.com/darkzone-256-mp3' },
+            { name: 'SomaFM · Sonic Universe',     url: 'http://ice6.somafm.com/sonicuniverse-256-mp3' },
+            { name: 'SomaFM · Insound',            url: 'http://ice4.somafm.com/insound-256-mp3' },
+            { name: 'BBC Radio 1',                  url: 'http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d320000.norewind.m3u8/bbc_radio_one-audio%3d320000.norewind.m3u8' },
+            { name: 'BBC Radio 2',                  url: 'http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d320000.norewind.m3u8' },
+            { name: 'BBC Radio 3',                  url: 'http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d320000.norewind.m3u8' },
+            { name: 'BBC Radio 4 FM',               url: 'http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d320000.norewind.m3u8' },
+            { name: 'BBC Radio 5 Live',             url: 'http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d320000.norewind.m3u8' },
+            { name: 'BBC 6 Music',                  url: 'http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d320000.norewind.m3u8' },
+            { name: 'BBC Radio Norfolk',            url: 'http://as-hls-ww-live.akamaized.net/pool_61510571/live/ww/bbc_radio_norfolk/bbc_radio_norfolk.isml/bbc_radio_norfolk-audio%3d96000.norewind.m3u8' },
+            { name: 'Radio Calico HTTPS',          url: 'https://radio3.radio-calico.com:8443/calico' },
+            { name: 'The Cheese NZ FLAC',          url: 'https://station.thecheese.co.nz/listen/the_cheese/flac' },
+            { name: 'Magic Radio FLAC',            url: 'http://flac.magic-radio.net/flac' },
+            { name: 'Linn Radio 2',                url: 'http://radio.linn.co.uk:8000/stream' },
+            { name: 'LBC UK',                      url: 'http://icecast.thisisdax.com/LBCUK' },
+            { name: 'TalkSport 1',                 url: 'http://radio.talksport.com/stream' },
+            { name: 'TalkSport 2',                 url: 'http://radio.talksport.com/stream2' },
+            { name: 'Insanity Radio FLAC',         url: 'https://stream.cor.insanityradio.com/insanity.flac' },
+            { name: 'Frequence 3 FLAC',            url: 'http://master.net-radio.fr:80/frequence3.flac' },
+            { name: 'Space FLAC',                  url: 'http://89.223.45.5:8000/space-flac' },
+            { name: 'Progressive FLAC',            url: 'http://89.223.45.5:8000/progressive-flac' },
+            { name: 'Jazz FLAC',                   url: 'http://89.223.45.5:8000/jazz-flac' },
+            { name: 'Nota FLAC',                   url: 'http://89.223.45.5:8000/nota-flac' },
+            { name: 'Indigo FLAC',                 url: 'http://89.223.45.5:8000/indigo-flac' },
+            { name: 'CRo Jazz FLAC',               url: 'http://amp.cesnet.cz:8000/cro-jazz.flac' },
+            { name: 'CRo 3 FLAC',                  url: 'http://amp.cesnet.cz:8000/cro3.flac' },
+            { name: 'Radio Jackie',                url: 'http://media.radiojackie.com:5873/;' },
+            { name: 'KRUI Iowa',                   url: 'http://krui.student-services.uiowa.edu:8000/listen' },
+            { name: 'Organ Live',                  url: 'https://play.organlive.com:7010/320' },
+            { name: 'WCRB Classical Boston',       url: 'http://wgbh.streamguys.com:80/wcrb-omnia' },
+            { name: 'Radio Caroline Oldies',       url: 'https://happy.radiocaroline319.nl/listen/caroline_oldies/radio320.mp3' },
+            { name: 'Radio Monster · Top Hits',    url: 'http://tophits.radiomonster.fm/320.mp3' },
+            { name: 'Radio Monster · Evergreens',  url: 'http://evergreens.radiomonster.fm/320.mp3' },
+            { name: 'Radio Monster · Dance',       url: 'http://dance.radiomonster.fm/320.mp3' },
+            { name: 'Folk Alley 128',              url: 'http://freshgrass.streamguys1.com/folkalley-128mp3' },
+            { name: 'Centreforce 320',             url: 'http://centreforce.streamgb.com:8830/320' },
+            { name: 'Easy Radio BG FLAC',          url: 'http://live.easyradio.bg/flac' },
+            { name: 'Kronehit Ultra HD',          url: 'https://secureonair.krone.at/kronehit-ultra-hd.aac' },
+            { name: 'DanceWave FLAC',             url: 'http://dancewave.online/dance.flac.ogg' },
+            { name: 'Retro DanceWave FLAC',       url: 'http://retro.dancewave.online/retrodance.flac.ogg' },
+            { name: 'Jazz FLAC NL',               url: 'http://mscp3.live-streams.nl:8340/jazz-flac.flac' },
+            { name: 'JoyHits FLAC',               url: 'http://joyhits.online/joyhits.flac.ogg' },
+            { name: 'Mother Earth Jazz',          url: 'https://motherearth.streamserver24.com/listen/motherearth_jazz/motherearth.jazz' },
+            { name: 'Mother Earth · Main',        url: 'https://motherearth.streamserver24.com/listen/motherearth/motherearth' },
+            { name: 'Budapest Rock FLAC',         url: 'http://s2.audiostream.hu:8091/bdpstrock_FLAC' },
+            { name: 'Danubius HiFi',              url: 'http://stream.danubiusradio.hu:8091/danubius_HiFi' },
+            { name: 'Juventus FLAC',              url: 'http://s2.audiostream.hu:8090/juventus_FLAC' },
+            { name: 'Radio X OGG',                url: 'https://mp3.radiox.ch/standard.ogg' },
+            { name: 'OpenSky Radio FLAC',         url: 'https://audio.opensky.radio:8082/flac?_res_tag_=audio' },
+            { name: 'Zappa FLAC',                url: 'https://streams.norbert.de/zappa.flac' },
+            { name: 'Piano Stream',              url: 'http://stream.p-node.org/piano' },
+            { name: 'Lapfox Radio FLAC',         url: 'https://radio.lapfoxradio.com/radio/8000/stream-flac.flac' },
+            { name: 'Le Son Parisien FLAC',     url: 'http://stream.lesonparisien.com/live.flac' },
+            { name: 'Punk Rockers FLAC',        url: 'https://stream.punkrockers-radio.de:8443/prr.flac' },
+            { name: 'SceneSat Max',             url: 'http://oscar.scenesat.com:8000/scenesatmax' },
+            { name: 'Retro Ultra HQ',           url: 'http://66.94.113.88:8000/retro_ultra_hq' },
+            { name: 'Sweet FM FLAC',            url: 'http://stream.sweetfm.fr:8000/flac-forever-bdx' },
+            { name: 'Nation 60s',               url: 'http://listen-nation.sharp-stream.com/nation60sdab.mp3' },
+            { name: 'Nation 70s',               url: 'http://listen-nation.sharp-stream.com/nationradio70s-dab.mp3' },
+            { name: 'Nation 80s',               url: 'http://listen-nation.sharp-stream.com/nationradio80s-dab.mp3' },
+            { name: 'Nation 90s',               url: 'http://listen-nation.sharp-stream.com/nationradio90s-dab.mp3' },
+            { name: 'Nation 00s',               url: 'http://listen-nation.sharp-stream.com/nationradio00sdab.mp3' },
+            { name: 'Nation Hits',              url: 'http://listen-nation.sharp-stream.com/nationhitsdab.mp3' },
+            { name: 'Love Nation',              url: 'http://listen-nation.sharp-stream.com/lovenationdab.mp3' },
+            { name: 'Radio 90 FM',             url: 'http://stream.radio90.fm:2000/stream' },
+            { name: 'Frequence 3 HTTPS',       url: 'https://frequence3.net-radio.fr/frequence3.flac' },
+            { name: 'Haarlem Shuffle FLAC',    url: 'https://stream.tbmp.nl:8000/haarlemshuffle.flac' },
+            { name: 'Beer Radio Classics',     url: 'http://stream.beeradio.nl/classics' },
+            { name: 'TNM Radio Ultra',         url: 'http://stream.tnm-radio.eu/ultra' },
+            { name: 'RadioMast Stream',        url: 'https://audio-edge-cmc51.fra.h.radiomast.io/2b410ada-8653-40aa-a654-3e8954cf4a4d' },
+        ];
+
+        let radioAudio = document.getElementById('radio-audio');
+        let activeRadioIndex = -1;
+        let activeRadioEl = null;
+
+        function buildRadioList() {
+            const container = document.getElementById('radio-list');
+            if (!container) return;
+            container.innerHTML = '';
+            RADIO_STATIONS.forEach((station, idx) => {
+                const item = document.createElement('div');
+                item.className = 'radio-item';
+                item.id = `radio-item-${idx}`;
+                item.innerHTML = `
+                    <div class="radio-dot"></div>
+                    <span class="radio-name">${station.name}</span>
+                    <span class="radio-speaker">\uD83D\uDD0A</span>
+                `;
+                item.onclick = () => playRadioStation(idx, item);
+                container.appendChild(item);
+            });
+        }
+
+        function playRadioStation(idx, el) {
+            if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
+            activeRadioIndex = idx;
+            activeRadioEl = el;
+            el.classList.add('active-radio');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            const station = RADIO_STATIONS[idx];
+            radioAudio.pause();
+            radioAudio.src = station.url;
+            radioAudio.load();
+            radioAudio.play().catch(() => {});
+
+            document.getElementById('radio-now-playing-label').innerText = '\u25B6 ' + station.name.toUpperCase();
+            document.getElementById('btn-radio-modal').classList.add('radio-active');
+            showToast(`\uD83D\uDCFB Sintonizando: ${station.name}...`);
+        }
+
+        function stopRadioIfActive() {
+            if (radioAudio && !radioAudio.paused) {
+                radioAudio.pause();
+                radioAudio.src = '';
+                if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
+                activeRadioEl = null;
+                activeRadioIndex = -1;
+                const btn = document.getElementById('btn-radio-modal');
+                if (btn) btn.classList.remove('radio-active');
+                const lbl = document.getElementById('radio-now-playing-label');
+                if (lbl) lbl.innerText = 'SELECCIONA UNA EMISORA';
+            }
+        }
+
+        function toggleRadioSidebar() {
+            const sidebar = document.getElementById('radio-sidebar');
+            if (sidebar) sidebar.classList.toggle('open');
+        }
+
+        // Parchear changeVibe para detener radio al activar vibra
+        const _origChangeVibe = changeVibe;
+        changeVibe = function(videoId, vibeName, clickedElement) {
+            stopRadioIfActive();
+            _origChangeVibe(videoId, vibeName, clickedElement);
+        };
+
         window.onload = () => {
             fetchData();
             updateTicker();
+            buildRadioList();
             setInterval(updateTicker, 60000);
             setInterval(fetchData, 15000);
         };
