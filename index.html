@@ -1569,6 +1569,137 @@
            RADIO SIDEBAR LOGIC
         ============================================= */
         const RADIO_STATIONS = [
+            // ==========================================
+            // SAN JUAN - CAPITAL Y GRAN SAN JUAN
+            // ==========================================
+            { name: 'LV5 Radio Sarmiento (FM 104.7)', url: 'https://server.laradio.online/proxy/sarmiento?mp=/stream' }, // Reemplazar con URL final
+            { name: 'Estación Claridad (FM 97.1)', url: 'https://01.solumedia.com.ar:8432/stream' }, // Reemplazar con URL final
+            { name: 'Radio La Voz (FM 100.5)', url: 'https://cdn.instream.audio:9000/stream' }, // Reemplazar con URL final
+            { name: 'Cosmos FM', url: 'http://s28.myradiostream.com:28240/listen.m3u' }, 
+            { name: 'Antena 1 - Antena Uno', url: 'https://stream.zeno.fm/antena1sj' }, // Reemplazar con URL final
+            { name: 'CNN Radio San Juan (FM 94.1)', url: 'https://unlimited2-ar.dps.live/cnn-sj/aac/icecast.audio' },
+            { name: 'Radio La Red San Juan (FM 89.3)', url: 'https://server.laradio.online/proxy/laredsj?mp=/stream' },
+            { name: 'Radio Metro San Juan', url: 'https://stream.zeno.fm/metrosj' }, // Reemplazar con URL final
+            { name: 'Radio Perfil AM 1190 San Juan', url: 'https://jireh-1-hls-audio-br-isp.dps.live/hls-audio/4e252a65837b69e349d5d8c1033152b4/perfil/playlist/manifest/gotardisz/audio/now/livestream1.m3u8' },
+            { name: 'Light FM (FM 97.3)', url: 'https://stream.zeno.fm/lightfmsj' }, // Reemplazar con URL final
+            { name: 'Master Classics', url: 'https://stream.zeno.fm/masterclassics' }, // Reemplazar con URL final
+            { name: 'Rock and Play', url: 'https://stream.zeno.fm/rockandplaysj' }, // Reemplazar con URL final
+            { name: 'Cristal Radio (FM 100.3)', url: 'https://stream.zeno.fm/cristal1003' }, // Reemplazar con URL final
+
+            // ==========================================
+            // SAN JUAN - OTRAS LOCALIDADES / ONLINE
+            // ==========================================
+            { name: 'FM San Antonio (FM 92.9)', url: 'https://stream.zeno.fm/sanantonio929' }, // Reemplazar con URL final
+            { name: 'FM 107.7 Pop Life', url: 'https://stream.zeno.fm/poplife1077' }, // Reemplazar con URL final
+            { name: 'Radio Santa Cecilia (FM 91.7)', url: 'https://stream.zeno.fm/santacecilia' }, // Reemplazar con URL final
+            { name: 'Radio Alas (FM 101.7)', url: 'https://stream.zeno.fm/radioalas' }, // Reemplazar con URL final
+            { name: 'Radio Libre', url: 'https://stream.zeno.fm/radiolibre' }, // Reemplazar con URL final
+            { name: 'Radio Manantial', url: 'https://stream.zeno.fm/radiomanantial' }, // Reemplazar con URL final
+            { name: 'Radio Axon San Juan', url: 'https://stream.zeno.fm/radioaxon' }, // Reemplazar con URL final
+            { name: 'La Radio Del Alma', url: 'https://stream.zeno.fm/radiodelalma' }, // Reemplazar con URL final
+            { name: 'Armonía FM (FM 96.7)', url: 'https://stream.zeno.fm/armonia967' }, // Reemplazar con URL final
+            { name: 'Radio HDS', url: 'https://stream.zeno.fm/radiohds' }, // Reemplazar con URL final
+            { name: 'Radio Arroba', url: 'https://stream.zeno.fm/radioarroba' }, // Reemplazar con URL final
+            { name: 'Estereo Fortaleza', url: 'https://stream.zeno.fm/fortaleza' }, // Reemplazar con URL final
+            { name: 'VESTITE con Ramón Benitez Radio', url: 'https://stream.zeno.fm/ramonbenitez' } // Reemplazar con URL final
+            // ==========================================
+            // AMs NACIONALES Y CABA (BUENOS AIRES)
+            // ==========================================
+            { name: 'Radio Madre', url: 'http://cdn.instream.audio:9288/stream' },
+            { name: 'Radio Argentina', url: 'https://server.laradio.online:15224/live.mp3' },
+            { name: 'Continental', url: 'https://edge05.radiohdvivo.com/continental' },
+            { name: 'Radio 10', url: 'https://radio10.stweb.tv/radio10/live/chunks.m3u8' },
+            { name: 'Cooperativa', url: 'https://cdn.instream.audio:9582/stream' },
+            { name: 'Radio Zónica', url: 'https://streamlky.alsolnet.com/radiozonica' },
+            { name: 'Del Pueblo', url: 'https://streaming6.locucionar.com:24248/stream' },
+            { name: 'Radio Nacional', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad1' },
+            { name: 'CNN Radio', url: 'https://unlimited2-ar.dps.live/cnn-ar/aac/icecast.audio' },
+            { name: 'Radio Génesis', url: 'https://01.solumedia.com.ar:8216/;' },
+            { name: 'Onda Latina', url: 'https://streaming2.locucionar.com/proxy/ondalatina?mp=/stream' },
+            { name: 'Del Plata', url: 'https://streaming01.shockmedia.com.ar:10217/stream' },
+            { name: 'Güemes', url: 'https://server.radiostreaming.com.ar/8564/stream' },
+            { name: 'De la ciudad', url: 'https://radio01.ferozo.com/proxy/ra01001160?mp=/stream' },
+            { name: 'Radio La Luna', url: 'http://ohradio.cc:9344/;' },
+            { name: 'Radio Federal', url: 'https://sonic.host-live.com/8176/stream' },
+            { name: 'Radio Perfil', url: 'https://jireh-1-hls-audio-br-isp.dps.live/hls-audio/4e252a65837b69e349d5d8c1033152b4/perfil/playlist/manifest/gotardisz/audio/now/livestream1.m3u8' },
+            { name: 'Radio Sur', url: 'https://stream.xweb.ar:8008/;' },
+            { name: 'Eco medios', url: 'https://stream-159.zeno.fm/uv3vkhw2qvduv' },
+            { name: 'Radio Buenos Aires', url: 'https://nl.digitalrm.pt:8052/stream' },
+            
+            // ==========================================
+            // FMs CABA (BUENOS AIRES)
+            // ==========================================
+            { name: 'La Tribu', url: 'https://radio01.ferozo.com/proxy/ra01000659?mp=/;' },
+            { name: 'Arpeggio', url: 'https://cloudstream2032.conectarhosting.com/8074/stream' },
+            { name: 'Radio con vos', url: 'https://server1.stweb.tv/rcvos/live/chunks.m3u8' },
+            { name: 'La Boca', url: 'https://s24.myradiostream.com/14984/listen.mp3' },
+            { name: 'Delta', url: 'https://cdn.instream.audio//:9069//stream' },
+            { name: 'Zero', url: 'https://radiozero.fm/reproductor/proxy/' },
+            { name: 'Nacional Rock', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad1' },
+            { name: 'Concepto', url: 'https://radios.solumedia.com:6002/stream' },
+            { name: 'Nacional Clásica', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad37' },
+            { name: 'Vale', url: 'https://vale.stweb.tv/vale/live/chunks.m3u8' },
+            { name: 'Cultura', url: 'https://usa5.fastcast4u.com/proxy/radiocultura?mp=/1' },
+            { name: 'Mega', url: 'https://mega.stweb.tv/mega983/live/chunks.m3u8' },
+            { name: 'Nacional Folklorica', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38' },
+            { name: 'Latina', url: 'http://streaming.latina101.com.ar:9000/Repetidoras' },
+            { name: 'Radio Pop', url: 'https://popradio.stweb.tv/popradio/live/chunks.m3u8' },
+            { name: 'Sonido', url: 'https://streaming.radiosenlinea.com.ar/8780/stream/1/' },
+            { name: 'One', url: 'https://one.stweb.tv/one/live/playlist.m3u8' },
+            { name: 'Urbana Play', url: 'https://cdn.instream.audio:9660/stream' },
+            { name: 'La Nación + Música', url: 'https://stream.radio.co/s2ed3bec0a/listen' },
+            { name: 'Los 40', url: 'https://radios.solumedia.com:6158/stream?icy=http' },
+            { name: 'Milenium', url: 'http://23.111.184.195:8020/mileniumrosario.mp3' },
+
+            // ==========================================
+            // RADIOS GENERALES
+            // ==========================================
+            { name: 'Radio Pasión', url: 'https://cdn.instream.audio/stream/9790' },
+            { name: 'Radio Berlín', url: 'https://unlimited5-us.dps.live/berlin/aac/icecast.audio' },
+            { name: 'Radio María', url: 'https://play1.radiomaria.org.ar/' },
+            { name: 'Radio Universidad', url: 'https://radios.solumedia.com:10976/stream' },
+
+            // ==========================================
+            // PROVINCIA DE BUENOS AIRES
+            // ==========================================
+            { name: 'LU9 (Mar del Plata)', url: 'https://servidor1.hostradios.com:8110/stream' },
+            { name: 'LU6 Atlántica (Mar del Plata)', url: 'https://streaming.escuchanosonline.com:7056/stream' },
+            { name: 'LU2 (Bahía Blanca)', url: 'https://streaming6.locucionar.com:24228/stream?ver=22915' },
+
+            // ==========================================
+            // CÓRDOBA
+            // ==========================================
+            { name: 'Cadena Heat', url: 'https://liveradio.mediainbox.net/fmcordoba.mp3' },
+            { name: 'Radio Suquía', url: 'https://streaming01.shockmedia.com.ar:10945/;' },
+            { name: 'Cadena 3 (FM)', url: 'https://liveradio.mediainbox.net/radio3.mp3' },
+
+            // ==========================================
+            // MENDOZA
+            // ==========================================
+            { name: 'Estación del Sol', url: 'https://estaciondelsolonline.com.ar:8000/radio.aac' },
+
+            // ==========================================
+            // SANTA FE
+            // ==========================================
+            { name: 'Aire de Santa Fe', url: 'https://unlimited1-us.dps.live/airedesantafetv/airedesantafetv.smil/playlist.m3u8' },
+            { name: 'LT10 (Radio UNL)', url: 'https://radio.arcast.net:1060/stream' },
+            { name: 'LT2 Radio 2 (Rosario)', url: 'https://streaming320tb.locucionar.com/proxy/radio2?mp=/stream/1/' },
+
+            // ==========================================
+            // NEUQUÉN Y RÍO NEGRO
+            // ==========================================
+            { name: 'LU5 (Neuquén)', url: 'http://live.lu5am.com:8000/LU5' },
+            { name: 'La Red (Neuquén)', url: 'https://server.laradio.online/proxy/julian_liyo?mp=/stream' },
+            { name: 'LU19 (Cipolletti)', url: 'https://sonic.host-live.com/8064/stream' },
+            { name: 'Río Negro Radio', url: 'https://01.solumedia.com.ar:7004/stream' },
+
+            
+
+            // ==========================================
+            // CHUBUT
+            // ==========================================
+            { name: 'Radio 3 (Trelew)', url: 'https://radio01.ferozo.com/proxy/ra01000981?mp=/stream' },
+            { name: 'FM Del Mar (Comodoro Riv.)', url: 'https://icecast.gesatel.com.ar:8443/vivo' }
             { name: 'Radio Paradise · Global',       url: 'http://stream.radioparadise.com/global-flacm' },
             { name: 'Radio Paradise · Mellow',       url: 'http://stream.radioparadise.com/mellow-flacm' },
             { name: 'Radio Paradise · Rock',         url: 'http://stream.radioparadise.com/rock-flacm' },
