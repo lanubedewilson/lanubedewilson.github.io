@@ -1095,7 +1095,6 @@
         </div>
     </div>
 
-    <!-- SIDEBAR DE RADIO -->
     <div id="radio-sidebar">
         <button class="radio-sidebar-close" onclick="toggleRadioSidebar()" title="Cerrar radio">◀</button>
         <div class="radio-header">
@@ -1211,6 +1210,39 @@
         let sponsors = [];
         const bgAudio = document.getElementById('bg-audio');
 
+        /* =============================================
+           LÓGICA DE CONTROL GLOBAL DE MEDIOS
+           ============================================= */
+
+        function stopAllMedia() {
+            // Detener Audio de Fondo
+            bgAudio.pause();
+
+            // Detener Radio
+            const radioAudio = document.getElementById('radio-audio');
+            radioAudio.pause();
+            radioAudio.src = ''; 
+            document.getElementById('btn-radio-modal').classList.remove('radio-active');
+            const radioLabel = document.getElementById('radio-now-playing-label');
+            if(radioLabel) radioLabel.innerText = 'SELECCIONA UNA EMISORA';
+            if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
+            activeRadioIndex = -1;
+            activeRadioEl = null;
+
+            // Detener YouTube (limpiando src para matar el audio)
+            const py = document.getElementById('player-yt');
+            py.src = ''; 
+            isYtPlaying = false;
+            const ytIcon = document.getElementById('yt-icon');
+            if (ytIcon) ytIcon.innerText = '▶';
+
+            // Detener Kick (ocultando audio si es necesario reseteando src)
+            const pk = document.getElementById('player-kick');
+            const currentKickSrc = pk.src;
+            pk.src = '';
+            pk.src = currentKickSrc; // Reset para detener flujo
+        }
+
         function switchSignal(type) {
             const pk        = document.getElementById('player-kick');
             const py        = document.getElementById('player-yt');
@@ -1227,9 +1259,9 @@
             if (type === 'kick') {
                 const isLive = document.getElementById('live-dot').classList.contains('live');
                 if (isLive) {
+                    stopAllMedia(); // Detener otros antes de entrar a Kick
                     pk.classList.add('active');
                     bk.classList.add('active');
-                    bgAudio.pause();
                     py.src = '';
                 } else {
                     loop.classList.add('active');
@@ -1239,10 +1271,9 @@
                 py.classList.add('active');
                 bv.classList.add('active');
                 customBtn.style.display = 'flex';
-                bgAudio.pause();
+                // bgAudio.pause(); // Ya lo maneja stopAllMedia
             } else {
                 loop.classList.add('active');
-                bgAudio.play().catch(() => {});
             }
         }
 
@@ -1250,9 +1281,11 @@
             document.getElementById('no-signal-msg').classList.remove('visible');
         }
 
-        let isYtPlaying = true;
+        let isYtPlaying = false;
 
         function changeVibe(videoId, vibeName, clickedElement) {
+            stopAllMedia(); // Detener radio o audio de fondo antes de la vibra
+            
             showToast(`📻 Sintonizando: ${vibeName}...`);
             document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
             if (clickedElement) clickedElement.classList.add('active-vibe');
@@ -1464,7 +1497,12 @@
             navigator.clipboard.writeText(url).then(() => { showToast('¡Link copiado! 🔗'); });
         }
 
-        const unlockAudio = () => { if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) { bgAudio.play().catch(() => {}); } };
+        const unlockAudio = () => { 
+            // Iniciar audio ambiental solo si nada más está sonando
+            if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) { 
+                bgAudio.play().catch(() => {}); 
+            } 
+        };
 
         const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHX6di9e13j4thMxs-fdrylfVDym1b_61DgSNleLZ613EWYOe1VJqGSv4wlSKAo3LxdqlsykYJmAKU/pub?output=csv';
         const CAROUSEL_SOURCES = {
@@ -1656,48 +1694,37 @@
         }
 
         function playRadioStation(idx, el) {
-            if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
+            // DETENER TODO ANTES DE INICIAR RADIO
+            stopAllMedia();
+
+            // Configurar radio actual
             activeRadioIndex = idx;
             activeRadioEl = el;
             el.classList.add('active-radio');
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             const station = RADIO_STATIONS[idx];
-            radioAudio.pause();
             radioAudio.src = station.url;
             radioAudio.load();
             radioAudio.play().catch(() => {});
 
+            // VOLVER AL VIDEO DE INICIO (la nube.mp4) CON EL AUDIO DE RADIO
+            switchSignal('default');
+
             document.getElementById('radio-now-playing-label').innerText = '\u25B6 ' + station.name.toUpperCase();
             document.getElementById('btn-radio-modal').classList.add('radio-active');
-            showToast(`\uD83D\uDCFB Sintonizando: ${station.name}...`);
+            showToast(`\uD83D\uDCFB Radio: ${station.name}...`);
         }
 
         function stopRadioIfActive() {
-            if (radioAudio && !radioAudio.paused) {
-                radioAudio.pause();
-                radioAudio.src = '';
-                if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
-                activeRadioEl = null;
-                activeRadioIndex = -1;
-                const btn = document.getElementById('btn-radio-modal');
-                if (btn) btn.classList.remove('radio-active');
-                const lbl = document.getElementById('radio-now-playing-label');
-                if (lbl) lbl.innerText = 'SELECCIONA UNA EMISORA';
-            }
+            // Este método ahora es redundante con stopAllMedia, pero lo mantengo por compatibilidad
+            stopAllMedia();
         }
 
         function toggleRadioSidebar() {
             const sidebar = document.getElementById('radio-sidebar');
             if (sidebar) sidebar.classList.toggle('open');
         }
-
-        // Parchear changeVibe para detener radio al activar vibra
-        const _origChangeVibe = changeVibe;
-        changeVibe = function(videoId, vibeName, clickedElement) {
-            stopRadioIfActive();
-            _origChangeVibe(videoId, vibeName, clickedElement);
-        };
 
         window.onload = () => {
             fetchData();
