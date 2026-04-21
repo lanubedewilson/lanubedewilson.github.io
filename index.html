@@ -164,6 +164,12 @@
             align-items: center;
             justify-content: center;
             z-index: 800;
+            overflow-y: auto;
+            /* Espacio seguro para notch/barra de navegación en iOS */
+            padding: max(env(safe-area-inset-top, 20px), 24px)
+                     env(safe-area-inset-right, 16px)
+                     max(env(safe-area-inset-bottom, 20px), 24px)
+                     env(safe-area-inset-left, 16px);
         }
         #no-signal-msg.visible { display: flex; }
 
@@ -178,6 +184,8 @@
             position: relative;
             box-shadow: 0 0 0 1px var(--border), 0 24px 60px rgba(0,0,0,0.6);
             animation: fadeIn 0.35s ease;
+            /* Evitar que la tarjeta quede pegada al borde */
+            margin: auto;
         }
 
         .no-signal-close {
@@ -473,7 +481,7 @@
         }
 
         /* =============================================
-           SPONSORS
+           SPONSORS — sistema mejorado
         ============================================= */
         .sponsor-footer {
             padding: 5px var(--gap);
@@ -488,6 +496,24 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
+        }
+        /* Barra de progreso del sponsor */
+        #sponsor-progress {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 2px;
+            background: var(--accent);
+            width: 0%;
+            transition: width linear;
+            opacity: 0.6;
+            border-radius: 0 2px 2px 0;
+        }
+        #sponsor-ad img,
+        #sponsor-ad video {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            animation: fadeIn 0.6s ease;
         }
         .sponsor-placeholder { display: flex; flex-direction: column; align-items: center; gap: 6px; }
         .sponsor-placeholder-bar {
@@ -1140,6 +1166,7 @@
 
     <div class="sponsor-footer">
         <div id="sponsor-ad">
+            <div id="sponsor-progress"></div>
             <div class="sponsor-placeholder">
                 <div class="sponsor-placeholder-bar"></div>
                 <div class="sponsor-placeholder-bar"></div>
@@ -1320,19 +1347,76 @@
         }
 
         let sponsorInterval = null;
+        let sponsorProgressTimer = null;
+
         function startSponsors() {
             const box = document.getElementById('sponsor-ad');
+            const progressBar = document.getElementById('sponsor-progress');
             let idx = 0;
             if (sponsors.length === 0) { box.innerHTML = ''; return; }
             if (sponsorInterval) clearInterval(sponsorInterval);
+            if (sponsorProgressTimer) clearInterval(sponsorProgressTimer);
+
+            const DEFAULT_DURATION = 10000; // 10s por defecto
+
             const show = () => {
                 const col = sponsors[idx].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                const url = col[0].replace(/"/g, '').trim();
-                if (url) { box.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:contain;animation:fadeIn 1s">`; }
+                // Columnas del sheet: url, link, duracion_ms, tipo (imagen|gif|video)
+                const url      = (col[0] || '').replace(/"/g, '').trim();
+                const linkUrl  = (col[1] || '').replace(/"/g, '').trim();
+                const durMs    = parseInt((col[2] || '').replace(/"/g, '').trim(), 10) || DEFAULT_DURATION;
+                // tipo: 'video' para mp4/webm, cualquier otra cosa = imagen o gif
+                const rawTipo  = (col[3] || '').replace(/"/g, '').trim().toLowerCase();
+                const isVideo  = rawTipo === 'video' || /\.(mp4|webm|ogg)$/i.test(url);
+
+                if (!url) { idx = (idx + 1) % sponsors.length; return; }
+
+                // Limpiar contenido previo (mantener barra)
+                // Eliminar solo hijos que no sean #sponsor-progress
+                Array.from(box.children).forEach(c => { if (c.id !== 'sponsor-progress') c.remove(); });
+
+                let media;
+                if (isVideo) {
+                    media = document.createElement('video');
+                    media.src = url;
+                    media.autoplay = true;
+                    media.loop = true;
+                    media.muted = true;
+                    media.playsInline = true;
+                } else {
+                    media = document.createElement('img');
+                    media.src = url;
+                    media.alt = 'Sponsor';
+                }
+
+                if (linkUrl) {
+                    const a = document.createElement('a');
+                    a.href = linkUrl;
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                    a.style.cssText = 'display:flex;width:100%;height:100%;align-items:center;justify-content:center;';
+                    a.appendChild(media);
+                    box.appendChild(a);
+                } else {
+                    box.appendChild(media);
+                }
+
+                // Barra de progreso animada
+                if (progressBar) {
+                    progressBar.style.transition = 'none';
+                    progressBar.style.width = '0%';
+                    // Forzar reflow
+                    void progressBar.offsetWidth;
+                    progressBar.style.transition = `width ${durMs}ms linear`;
+                    progressBar.style.width = '100%';
+                }
+
                 idx = (idx + 1) % sponsors.length;
+                // Programar el siguiente con la duración de este sponsor
+                sponsorInterval = setTimeout(show, durMs);
             };
+
             show();
-            sponsorInterval = setInterval(show, 10000);
         }
 
         async function fetchData() {
@@ -1371,8 +1455,21 @@
                 
                 if (status === 'publicar') {
                     const previewLen = 300;
-                    const preview = content.length > previewLen ? content.slice(0, previewLen) + '…' : content;
-                    const extra = content.length > previewLen ? content.slice(previewLen) : '';
+                    // Cortar en la última palabra completa antes de previewLen
+                    let cutAt = previewLen;
+                    if (content.length > previewLen) {
+                        // Buscar el último punto, punto y coma, o salto de línea antes del límite
+                        const punctMatch = content.slice(0, previewLen).search(/[.!?\n][^.!?\n]*$/);
+                        if (punctMatch > previewLen * 0.5) {
+                            cutAt = punctMatch + 1; // incluir el signo de puntuación
+                        } else {
+                            // Si no hay puntuación cerca, cortar en la última palabra completa
+                            const lastSpace = content.lastIndexOf(' ', previewLen);
+                            cutAt = lastSpace > previewLen * 0.7 ? lastSpace : previewLen;
+                        }
+                    }
+                    const preview = content.length > cutAt ? content.slice(0, cutAt).trimEnd() + '…' : content;
+                    const extra = content.length > cutAt ? content.slice(cutAt).trimStart() : '';
                     const hasExtra = extra.length > 0;
                     const extraId = `extra-${noteId}`;
                     const btnId = `btn-${noteId}`;
