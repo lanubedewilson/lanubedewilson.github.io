@@ -343,118 +343,254 @@
         .filter-card h3 { font-family: 'Bebas Neue'; margin: 0; font-size: 1.2rem; letter-spacing: 1px; }
 
         /* =============================================
-           FEED ROW Y BOTONES
+           BARRA DE 5 BOTONES
         ============================================= */
         .feed-row {
             display: flex;
-            align-items: center;
+            align-items: stretch;
             justify-content: center;
             gap: var(--gap);
             padding: 0 var(--gap) var(--gap);
             background: transparent;
         }
 
-        /* BOTÓN FEED PRINCIPAL */
-        .feed-master-access {
+        /* BASE — todos los botones de la barra comparten esto */
+        .nav-btn {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 4px;
             background: var(--surface-1);
-            border: 1px solid rgba(0,212,255,0.30);
-            padding: 14px 20px;
+            border: 1px solid var(--border);
             border-radius: var(--radius-card);
             cursor: pointer;
             transition: background 0.2s, border-color 0.2s, transform 0.15s;
             flex: 1;
-            max-width: 400px;
-            gap: 14px;
-            box-shadow: inset 0 1px 0 rgba(0,212,255,0.15);
+            min-width: 0;
+            padding: 12px 6px;
+            font-family: 'DM Sans', sans-serif;
         }
-        .feed-master-access:hover {
-            background: var(--surface-2);
-            border-color: rgba(0,212,255,0.50);
-            transform: translateY(-1px);
-        }
-        .feed-master-access:active { transform: scale(0.98); }
+        .nav-btn:hover  { background: var(--surface-2); border-color: var(--border-h); transform: translateY(-1px); }
+        .nav-btn:active { transform: scale(0.94); }
 
-        .feed-icon { font-size: 2rem; line-height: 1; flex-shrink: 0; }
-
-        .feed-text-group {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
-        .feed-main-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.6rem;
-            color: var(--white-bone);
-            line-height: 1.1;
-            letter-spacing: 0.04em;
-        }
-        .feed-description {
-            font-size: 0.7rem;
-            font-weight: 500;
+        .nav-btn .nb-emoji { font-size: 1.4rem; line-height: 1; }
+        .nav-btn .nb-label {
+            font-size: 0.55rem;
+            font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: var(--accent);
-            margin-top: 1px;
+            color: #555;
+            white-space: nowrap;
         }
 
-        /* BOTÓN RANKINGS */
-        #btn-ranking-modal {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 54px;
-            height: 54px;
-            border-radius: var(--radius-card);
-            background: var(--surface-1);
-            border: 1px solid var(--border);
-            color: var(--accent);
-            font-size: 1.3rem;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+        /* FEED — botón central destacado */
+        #btn-feed-main {
+            border-color: rgba(0,212,255,0.30);
+            box-shadow: inset 0 1px 0 rgba(0,212,255,0.12);
+            flex: 1.6; /* un poco más ancho */
         }
-        #btn-ranking-modal:hover {
-            background: var(--surface-2);
-            border-color: var(--border-h);
-            transform: translateY(-1px);
-        }
-        #btn-ranking-modal:active { transform: scale(0.94); }
+        #btn-feed-main .nb-label { color: var(--accent); }
+        #btn-feed-main:hover { border-color: rgba(0,212,255,0.55); }
 
-        /* BOTÓN RADIO */
-        #btn-radio-modal {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 54px;
-            height: 54px;
-            border-radius: var(--radius-card);
-            background: var(--surface-1);
-            border: 1px solid var(--border);
-            color: #cc7700;
-            font-size: 1.3rem;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: background 0.2s, border-color 0.2s, transform 0.15s;
-        }
-        #btn-radio-modal:hover {
-            background: var(--surface-2);
-            border-color: rgba(200,120,0,0.35);
-            transform: translateY(-1px);
-        }
-        #btn-radio-modal:active { transform: scale(0.94); }
+        /* RANKING */
+        #btn-ranking-modal .nb-label { color: #444; }
+        #btn-ranking-modal:hover .nb-label { color: var(--accent); }
+
+        /* CLIMA */
+        #btn-clima .nb-label { color: #444; }
+        #btn-clima:hover     { border-color: rgba(255,200,40,0.4); }
+        #btn-clima:hover .nb-label { color: #ffcc28; }
+
+        /* TENDENCIAS X */
+        #btn-trends .nb-label { color: #444; }
+        #btn-trends:hover     { border-color: rgba(255,255,255,0.18); }
+        #btn-trends:hover .nb-label { color: var(--white-bone); }
+
+        /* RADIO */
+        #btn-radio-modal .nb-emoji { color: #cc7700; }
+        #btn-radio-modal .nb-label { color: #444; }
+        #btn-radio-modal:hover { border-color: rgba(200,120,0,0.35); }
+        #btn-radio-modal:hover .nb-label { color: #cc7700; }
         #btn-radio-modal.radio-active {
             border-color: rgba(200,120,0,0.5);
             background: rgba(200,100,0,0.12);
-            color: #e08800;
             box-shadow: 0 0 18px rgba(200,120,0,0.2);
             animation: radio-pulse 2s infinite ease-in-out;
         }
+        #btn-radio-modal.radio-active .nb-label { color: #e08800; }
         @keyframes radio-pulse {
             0%, 100% { box-shadow: 0 0 8px rgba(200,120,0,0.2); }
             50%       { box-shadow: 0 0 22px rgba(200,120,0,0.45); }
+        }
+
+        /* =============================================
+           MODAL CLIMA
+        ============================================= */
+        #clima-modal {
+            position: fixed; inset: 0;
+            background: rgba(8,8,8,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: max(env(safe-area-inset-top,20px),24px) 16px 24px;
+            overflow-y: auto;
+        }
+        #clima-modal.visible { display: flex; }
+
+        .clima-card {
+            width: 92%; max-width: 420px;
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            padding: 28px 24px 32px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            margin: auto;
+        }
+        .clima-close {
+            position: absolute; top: 14px; right: 18px;
+            background: none; border: none;
+            color: rgba(255,255,255,0.25); font-size: 1.6rem;
+            cursor: pointer; line-height: 1; padding: 0;
+            transition: color 0.2s;
+        }
+        .clima-close:hover { color: var(--white-bone); }
+
+        .clima-header {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.72rem; letter-spacing: 3px;
+            color: #ffcc28; margin-bottom: 18px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .clima-city {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.6rem; color: var(--white-bone);
+            margin: 0 0 4px; letter-spacing: 1px; line-height: 1.1;
+        }
+        .clima-temp {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 4rem; color: var(--white-bone);
+            line-height: 1; margin: 10px 0 4px;
+        }
+        .clima-desc {
+            font-size: 0.9rem; color: #666; font-weight: 300;
+            text-transform: capitalize; margin-bottom: 20px;
+        }
+        .clima-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 8px; margin-top: 16px;
+        }
+        .clima-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px; padding: 10px 14px;
+        }
+        .clima-item-label {
+            font-size: 0.62rem; color: #444; font-weight: 500;
+            letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 3px;
+        }
+        .clima-item-val {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.2rem; color: var(--white-bone); letter-spacing: 1px;
+        }
+        .clima-loading {
+            text-align: center; padding: 30px 0;
+            color: #333; font-size: 0.82rem; letter-spacing: 0.08em;
+        }
+        .clima-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid #1a1a1a; border-top-color: #ffcc28;
+            border-radius: 50%; animation: spin 0.9s linear infinite;
+            margin: 0 auto 12px;
+        }
+        .clima-error { text-align:center; color:#555; font-size:0.85rem; padding:24px 0; }
+
+        /* =============================================
+           MODAL TENDENCIAS X
+        ============================================= */
+        #trends-modal {
+            position: fixed; inset: 0;
+            background: rgba(8,8,8,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 900;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: max(env(safe-area-inset-top,20px),24px) 16px 24px;
+            overflow-y: auto;
+        }
+        #trends-modal.visible { display: flex; }
+
+        .trends-card {
+            width: 92%; max-width: 480px;
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            padding: 28px 24px 32px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            margin: auto;
+        }
+        .trends-close {
+            position: absolute; top: 14px; right: 18px;
+            background: none; border: none;
+            color: rgba(255,255,255,0.25); font-size: 1.6rem;
+            cursor: pointer; line-height: 1; padding: 0;
+            transition: color 0.2s;
+        }
+        .trends-close:hover { color: var(--white-bone); }
+
+        .trends-header {
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 20px; padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+        .trends-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.4rem; color: var(--white-bone);
+            margin: 0; letter-spacing: 1px; line-height: 1;
+        }
+        .trends-subtitle {
+            font-size: 0.68rem; color: #444; font-weight: 300;
+            letter-spacing: 0.1em; text-transform: uppercase; margin: 0;
+        }
+        .trends-list { display: flex; flex-direction: column; gap: 5px; }
+        .trends-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 9px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.025);
+            border: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        .trends-row:hover { background: rgba(255,255,255,0.045); }
+        .trends-pos {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.05rem; min-width: 26px;
+            text-align: center; flex-shrink: 0;
+            color: #333;
+        }
+        .trends-pos.t1 { color: #FFD700; }
+        .trends-pos.t2 { color: #C0C0C0; }
+        .trends-pos.t3 { color: #CD7F32; }
+        .trends-text {
+            font-size: 0.88rem; font-weight: 500;
+            color: var(--white-bone); flex: 1;
+        }
+        .trends-loading {
+            text-align: center; padding: 30px 0;
+            color: #333; font-size: 0.82rem; letter-spacing: 0.08em;
+        }
+        .trends-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid #1a1a1a; border-top-color: var(--white-bone);
+            border-radius: 50%; animation: spin 0.9s linear infinite;
+            margin: 0 auto 12px;
         }
 
         /* BOTÓN PLAY/PAUSA CUSTOM */
@@ -1005,8 +1141,8 @@
             #radio-sidebar { width: 80%; right: -85%; }
             #radio-sidebar.open { right: 0; }
             .radio-sidebar-close { width: 35px; height: 50px; left: -35px; font-size: 1rem; }
-            #btn-ranking-modal { width: 48px; height: 48px; font-size: 1.1rem; }
-            #btn-radio-modal   { width: 48px; height: 48px; font-size: 1.1rem; }
+            .nav-btn .nb-emoji { font-size: 1.2rem; }
+            .nav-btn .nb-label { font-size: 0.5rem; }
         }
 
         /* =============================================
@@ -1153,15 +1289,60 @@
     </div>
 
     <div class="feed-row">
-        <button id="btn-ranking-modal" onclick="openRankingModalDirect()" title="Ver Rankings Top 20">📊</button>
-        <div class="feed-master-access" onclick="openTimeline('all')">
-            <div class="feed-icon">☁️</div>
-            <div class="feed-text-group">
-                <span class="feed-main-title">EL FEED DE LA NUBE</span>
-                <span class="feed-description">Notas, articulos y data al instante</span>
+        <button id="btn-ranking-modal" class="nav-btn" onclick="openRankingModalDirect()" title="Rankings Top 20">
+            <span class="nb-emoji">📊</span>
+            <span class="nb-label">Ranking</span>
+        </button>
+        <button id="btn-clima" class="nav-btn" onclick="openClimaModal()" title="Clima según tu ubicación">
+            <span class="nb-emoji">🌤️</span>
+            <span class="nb-label">Clima</span>
+        </button>
+        <button id="btn-feed-main" class="nav-btn" onclick="openTimeline('all')" title="El Feed de la Nube">
+            <span class="nb-emoji">☁️</span>
+            <span class="nb-label">Feed</span>
+        </button>
+        <button id="btn-trends" class="nav-btn" onclick="openTrendsModal()" title="Tendencias en X">
+            <span class="nb-emoji">𝕏</span>
+            <span class="nb-label">Tendencias</span>
+        </button>
+        <button id="btn-radio-modal" class="nav-btn" onclick="toggleRadioSidebar()" title="Emisoras de Radio">
+            <span class="nb-emoji">📻</span>
+            <span class="nb-label">Radio</span>
+        </button>
+    </div>
+
+    <!-- MODAL CLIMA -->
+    <div id="clima-modal">
+        <div class="clima-card">
+            <button class="clima-close" onclick="closeClimaModal()">×</button>
+            <div class="clima-header">☀ CLIMA EN TU ZONA</div>
+            <div id="clima-content">
+                <div class="clima-loading">
+                    <div class="clima-spinner"></div>
+                    OBTENIENDO UBICACIÓN...
+                </div>
             </div>
         </div>
-        <button id="btn-radio-modal" onclick="toggleRadioSidebar()" title="Emisoras de Radio">📻</button>
+    </div>
+
+    <!-- MODAL TENDENCIAS X -->
+    <div id="trends-modal">
+        <div class="trends-card">
+            <button class="trends-close" onclick="closeTrendsModal()">×</button>
+            <div class="trends-header">
+                <span style="font-size:1.3rem">𝕏</span>
+                <div>
+                    <p class="trends-title">TENDENCIAS</p>
+                    <p class="trends-subtitle">Lo que se habla ahora</p>
+                </div>
+            </div>
+            <div id="trends-list" class="trends-list">
+                <div class="trends-loading">
+                    <div class="trends-spinner"></div>
+                    CARGANDO TENDENCIAS...
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="sponsor-footer">
@@ -1183,6 +1364,7 @@
     <script>
         let allNews  = [];
         let sponsors = [];
+        let trendsData = [];
         const bgAudio = document.getElementById('bg-audio');
 
         /* =============================================
@@ -1421,8 +1603,11 @@
 
         async function fetchData() {
             const now = Date.now();
-            const newsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
-            const sponsorsUrl= `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
+            const newsUrl     = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+            const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
+            // ⚠️ Reemplazá TRENDS_GID con el gid real de tu pestaña de tendencias
+            const TRENDS_GID  = 'TRENDS_GID';
+            const trendsUrl   = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=${TRENDS_GID}&single=true&output=csv&t=${now}`;
             try {
                 const res = await fetch(newsUrl);
                 const text = await res.text();
@@ -1431,6 +1616,12 @@
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
                 startSponsors();
+                // Cargar tendencias (silencioso si falla)
+                try {
+                    const resTr = await fetch(trendsUrl);
+                    const textTr = await resTr.text();
+                    trendsData = textTr.split('\n').slice(1).filter(r => r.trim() !== '').slice(0, 40);
+                } catch(e) { trendsData = []; }
                 const isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
                 document.getElementById('live-dot').classList.toggle('live', isLive);
                 checkDeepLinking();
@@ -1903,6 +2094,129 @@
         function toggleRadioSidebar() {
             const sidebar = document.getElementById('radio-sidebar');
             if (sidebar) sidebar.classList.toggle('open');
+        }
+
+        /* =============================================
+           CLIMA
+        ============================================= */
+        const WMO_CODES = {
+            0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',
+            45:'Niebla',48:'Niebla con escarcha',51:'Llovizna leve',53:'Llovizna moderada',
+            55:'Llovizna intensa',61:'Lluvia leve',63:'Lluvia moderada',65:'Lluvia intensa',
+            71:'Nieve leve',73:'Nieve moderada',75:'Nieve intensa',80:'Chubascos leves',
+            81:'Chubascos moderados',82:'Chubascos fuertes',95:'Tormenta',96:'Tormenta con granizo',
+            99:'Tormenta fuerte con granizo'
+        };
+        const WMO_EMOJI = {
+            0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
+            51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
+            71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌦️',82:'⛈️',
+            95:'⛈️',96:'⛈️',99:'⛈️'
+        };
+
+        function openClimaModal() {
+            document.getElementById('clima-modal').classList.add('visible');
+            document.getElementById('clima-content').innerHTML =
+                '<div class="clima-loading"><div class="clima-spinner"></div>OBTENIENDO UBICACIÓN...</div>';
+            if (!navigator.geolocation) {
+                document.getElementById('clima-content').innerHTML =
+                    '<div class="clima-error">Tu navegador no soporta geolocalización.</div>';
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                async pos => {
+                    const { latitude: lat, longitude: lon } = pos.coords;
+                    document.getElementById('clima-content').innerHTML =
+                        '<div class="clima-loading"><div class="clima-spinner"></div>CARGANDO DATOS...</div>';
+                    try {
+                        const [wRes, gRes] = await Promise.all([
+                            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,precipitation&wind_speed_unit=kmh`),
+                            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`)
+                        ]);
+                        const w = await wRes.json();
+                        const g = await gRes.json();
+                        const c = w.current;
+                        const code = c.weathercode;
+                        const city = g.address?.city || g.address?.town || g.address?.village || g.address?.county || 'Tu ubicación';
+                        const country = g.address?.country || '';
+                        const emoji = WMO_EMOJI[code] || '🌡️';
+                        const desc  = WMO_CODES[code]  || 'Sin datos';
+                        document.getElementById('clima-content').innerHTML = `
+                            <p class="clima-city">${city}</p>
+                            <p style="font-size:0.72rem;color:#444;margin-bottom:6px;letter-spacing:0.06em;">${country.toUpperCase()}</p>
+                            <div style="display:flex;align-items:center;gap:14px;">
+                                <span style="font-size:3.5rem;line-height:1">${emoji}</span>
+                                <div>
+                                    <p class="clima-temp">${Math.round(c.temperature_2m)}°</p>
+                                    <p class="clima-desc">${desc}</p>
+                                </div>
+                            </div>
+                            <div class="clima-grid">
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Sensación</p>
+                                    <p class="clima-item-val">${Math.round(c.apparent_temperature)}°C</p>
+                                </div>
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Humedad</p>
+                                    <p class="clima-item-val">${c.relative_humidity_2m}%</p>
+                                </div>
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Viento</p>
+                                    <p class="clima-item-val">${Math.round(c.wind_speed_10m)} km/h</p>
+                                </div>
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Precipit.</p>
+                                    <p class="clima-item-val">${c.precipitation} mm</p>
+                                </div>
+                            </div>
+                        `;
+                    } catch(e) {
+                        document.getElementById('clima-content').innerHTML =
+                            '<div class="clima-error">No se pudo cargar el clima. Verificá tu conexión.</div>';
+                    }
+                },
+                err => {
+                    document.getElementById('clima-content').innerHTML =
+                        '<div class="clima-error">Permiso de ubicación denegado.<br><span style="font-size:0.75rem;color:#333">Habilitalo en la configuración del navegador.</span></div>';
+                },
+                { timeout: 8000 }
+            );
+        }
+
+        function closeClimaModal() {
+            document.getElementById('clima-modal').classList.remove('visible');
+        }
+
+        /* =============================================
+           TENDENCIAS X
+        ============================================= */
+        function openTrendsModal() {
+            document.getElementById('trends-modal').classList.add('visible');
+            const list = document.getElementById('trends-list');
+            if (trendsData.length === 0) {
+                list.innerHTML = '<div class="trends-loading" style="color:#444">Sin tendencias cargadas aún.<br><span style="font-size:0.75rem">Completá la hoja "Tendencias" en el Sheets.</span></div>';
+                return;
+            }
+            list.innerHTML = '';
+            trendsData.forEach((row, i) => {
+                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const pos  = (col[0] || '').replace(/"/g,'').trim();
+                const text = (col[1] || '').replace(/"/g,'').trim();
+                if (!text) return;
+                const posNum = parseInt(pos, 10) || (i + 1);
+                const posClass = posNum === 1 ? 't1' : posNum === 2 ? 't2' : posNum === 3 ? 't3' : '';
+                const div = document.createElement('div');
+                div.className = 'trends-row';
+                div.innerHTML = `
+                    <span class="trends-pos ${posClass}">${posNum}</span>
+                    <span class="trends-text">${text}</span>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function closeTrendsModal() {
+            document.getElementById('trends-modal').classList.remove('visible');
         }
 
         window.onload = () => {
