@@ -1828,8 +1828,8 @@
             // ==========================================
             { name: 'FM San Antonio (FM 92.9)', url: 'https://host.serviceinfinito.com.ar:7005/;stream' }, // Reemplazar con URL final
            
-            { name: 'Radio Santa Cecilia (FM 91.7)', url: 'https://01.solumedia.com.ar:8492/stream\" type=\"audio/mpeg' }, // Reemplazar con URL final
-           
+            { name: 'Radio Santa Cecilia (FM 91.7)', url: 'https://stream.zeno.fm/santacecilia' }, // Reemplazar con URL final
+            { name: 'Radio Alas (FM 101.7)', url: 'https://stream.zeno.fm/radioalas' }, // Reemplazar con URL final
             { name: 'Radio Libre', url: 'https://stream.zeno.fm/radiolibre' }, // Reemplazar con URL final
             { name: 'Radio Manantial', url: 'https://stream.zeno.fm/radiomanantial' }, // Reemplazar con URL final
             { name: 'Radio Axon San Juan', url: 'https://stream.zeno.fm/radioaxon' }, // Reemplazar con URL final
