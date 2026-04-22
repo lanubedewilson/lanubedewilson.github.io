@@ -1611,7 +1611,14 @@
             try {
                 const res = await fetch(newsUrl);
                 const text = await res.text();
-                allNews = text.split('\n').slice(1).filter(r => r.trim() !== '').reverse().slice(0, 70);
+                const allRows = text.split('\n').filter(r => r.trim() !== '');
+                // Fila 0 = encabezados, Fila 1 = D2 control de stream (on/off), Fila 2+ = noticias
+                const controlRow = allRows[1] || '';
+                const controlCols = controlRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const streamState = (controlCols[3] || '').replace(/"/g, '').trim().toLowerCase();
+                const isLive = streamState === 'on';
+                // Las noticias reales arrancan desde la fila 3 (índice 2 del array)
+                allNews = allRows.slice(2).filter(r => r.trim() !== '').reverse().slice(0, 70);
                 const resSpo = await fetch(sponsorsUrl);
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
@@ -1622,32 +1629,14 @@
                     const textTr = await resTr.text();
                     trendsData = textTr.split('\n').slice(1).filter(r => r.trim() !== '').slice(0, 40);
                 } catch(e) { trendsData = []; }
-                const isLive = allNews.some(row => row.split(',')[3]?.trim().toUpperCase() === 'VIVO');
                 document.getElementById('live-dot').classList.toggle('live', isLive);
                 checkDeepLinking();
             } catch (e) { console.error('Error cargando:', e); }
         }
 
-        // Parsea fecha en formato DD/MM/YYYY → objeto Date (medianoche local)
-        function parseFecha(str) {
-            if (!str) return null;
-            const parts = str.trim().split('/');
-            if (parts.length !== 3) return null;
-            const [d, m, y] = parts.map(Number);
-            if (!d || !m || !y) return null;
-            return new Date(y, m - 1, d);
-        }
-
         function openTimeline(category) {
             const container = document.getElementById('timeline-content');
             container.innerHTML = '';
-
-            // Límite: medianoche de hace 3 días
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-            const limite = new Date(hoy);
-            limite.setDate(hoy.getDate() - 3);
-
             allNews.forEach((row, index) => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length < 4) return;
@@ -1660,11 +1649,7 @@
                 const date = (col[6] || '').replace(/"/g, '').trim();
                 const link = (col[7] || '').replace(/"/g, '').trim();
                 const noteId = `nota-${allNews.length - index}`;
-
-                // Filtro de fecha: solo mostrar noticias de los últimos 3 días
-                const fechaNota = parseFecha(date);
-                if (fechaNota && fechaNota < limite) return;
-
+                
                 if (status === 'publicar') {
                     const previewLen = 300;
                     // Cortar en la última palabra completa antes de previewLen
