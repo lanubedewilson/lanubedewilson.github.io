@@ -1226,7 +1226,9 @@
         </video>
 
         <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson" allowfullscreen="true"></iframe>
+        <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson?muted=true" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
+        <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
 
         <div id="no-signal-msg">
             <div class="no-signal-card">
@@ -1393,11 +1395,14 @@
             const ytIcon = document.getElementById('yt-icon');
             if (ytIcon) ytIcon.innerText = '▶';
 
-            // Detener Kick (ocultando audio si es necesario reseteando src)
+            // Detener Kick: vaciar src para cortar el stream completamente
             const pk = document.getElementById('player-kick');
-            const currentKickSrc = pk.src;
             pk.src = '';
-            pk.src = currentKickSrc; // Reset para detener flujo
+            // Ocultar botones de unmute y compartir
+            const unmuteBtn = document.getElementById('kick-unmute-btn');
+            if (unmuteBtn) unmuteBtn.style.display = 'none';
+            const shareBtn = document.getElementById('kick-share-btn');
+            if (shareBtn) shareBtn.style.display = 'none';
         }
 
         function switchSignal(type) {
@@ -1416,10 +1421,17 @@
             if (type === 'kick') {
                 const isLive = document.getElementById('live-dot').classList.contains('live');
                 if (isLive) {
-                    stopAllMedia(); // Detener otros antes de entrar a Kick
+                    stopAllMedia(); // Detener todos antes de entrar a Kick
+                    // Recargar el iframe de Kick (silenciado por defecto para evitar bloqueo mobile)
+                    pk.src = 'https://player.kick.com/lanubedewilson?muted=true';
                     pk.classList.add('active');
                     bk.classList.add('active');
                     py.src = '';
+                    // Mostrar botones de unmute y compartir
+                    const unmuteBtn = document.getElementById('kick-unmute-btn');
+                    if (unmuteBtn) unmuteBtn.style.display = 'block';
+                    const shareBtn = document.getElementById('kick-share-btn');
+                    if (shareBtn) shareBtn.style.display = 'block';
                 } else {
                     loop.classList.add('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
@@ -1716,9 +1728,27 @@
 
         function checkDeepLinking() {
             const hash = window.location.hash;
-            if (hash && hash.startsWith('#nota-')) {
+            if (hash === '#stream') {
+                // Alguien abrió el link de invitación al stream en vivo
+                const isLive = document.getElementById('live-dot').classList.contains('live');
+                if (isLive) {
+                    setTimeout(() => switchSignal('kick'), 400);
+                    // Limpiar el hash de la URL sin recargar la página
+                    history.replaceState(null, '', window.location.pathname);
+                }
+            } else if (hash && hash.startsWith('#nota-')) {
                 openTimeline('all');
                 setTimeout(() => { const el = document.getElementById(hash.substring(1)); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 800);
+            }
+        }
+
+        function shareStream() {
+            const url = `${window.location.origin}${window.location.pathname}#stream`;
+            const text = '📡 ¡Estamos en vivo en La Nube de Wilson! Entrá acá:';
+            if (navigator.share) {
+                navigator.share({ title: 'La Nube de Wilson — EN VIVO', text, url });
+            } else {
+                navigator.clipboard.writeText(url).then(() => showToast('🔗 Link del stream copiado'));
             }
         }
 
@@ -1740,11 +1770,24 @@
         }
 
         const unlockAudio = () => { 
-            // Iniciar audio ambiental solo si nada más está sonando
-            if (bgAudio && bgAudio.paused && !document.getElementById('player-yt').classList.contains('active')) { 
+            // Iniciar audio ambiental solo si nada más está sonando (ni YT ni Kick activos)
+            const ytActive   = document.getElementById('player-yt').classList.contains('active');
+            const kickActive = document.getElementById('player-kick').classList.contains('active');
+            if (bgAudio && bgAudio.paused && !ytActive && !kickActive) { 
                 bgAudio.play().catch(() => {}); 
             } 
         };
+
+        function kickUnmute() {
+            // El usuario hizo tap/click explícito — el navegador mobile ya permite el audio
+            const pk = document.getElementById('player-kick');
+            // Recargar sin muted=true para activar el audio
+            pk.src = 'https://player.kick.com/lanubedewilson';
+            // Ocultar el botón una vez activado
+            const unmuteBtn = document.getElementById('kick-unmute-btn');
+            if (unmuteBtn) unmuteBtn.style.display = 'none';
+            showToast('🔊 Audio del stream activado');
+        }
 
         const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHX6di9e13j4thMxs-fdrylfVDym1b_61DgSNleLZ613EWYOe1VJqGSv4wlSKAo3LxdqlsykYJmAKU/pub?output=csv';
         const CAROUSEL_SOURCES = {
