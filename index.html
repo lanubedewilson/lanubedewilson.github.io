@@ -1641,7 +1641,17 @@
                     const textTr = await resTr.text();
                     trendsData = textTr.split('\n').slice(1).filter(r => r.trim() !== '').slice(0, 40);
                 } catch(e) { trendsData = []; }
-                document.getElementById('live-dot').classList.toggle('live', isLive);
+                const liveDot = document.getElementById('live-dot');
+                const wasLive = liveDot.classList.contains('live');
+                liveDot.classList.toggle('live', isLive);
+                // Si el stream pasó de ON a OFF mientras el usuario lo estaba viendo → cortar y mostrar cartel
+                if (wasLive && !isLive && document.getElementById('player-kick').classList.contains('active')) {
+                    stopAllMedia();
+                    document.getElementById('player-kick').classList.remove('active');
+                    document.getElementById('initial-loop').classList.add('active');
+                    document.getElementById('btn-kick').classList.remove('active');
+                    document.getElementById('no-signal-msg').classList.add('visible');
+                }
                 checkDeepLinking();
             } catch (e) { console.error('Error cargando:', e); }
         }
