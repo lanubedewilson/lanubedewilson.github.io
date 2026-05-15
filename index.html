@@ -393,19 +393,25 @@
         #btn-feed-main .nb-label { color: var(--accent); }
         #btn-feed-main:hover { border-color: rgba(0,212,255,0.55); }
 
-        /* RANKING */
-        #btn-ranking-modal .nb-label { color: #444; }
-        #btn-ranking-modal:hover .nb-label { color: var(--accent); }
-
         /* CLIMA */
         #btn-clima .nb-label { color: #444; }
         #btn-clima:hover     { border-color: rgba(255,200,40,0.4); }
         #btn-clima:hover .nb-label { color: #ffcc28; }
 
-        /* TENDENCIAS X */
-        #btn-trends .nb-label { color: #444; }
-        #btn-trends:hover     { border-color: rgba(255,255,255,0.18); }
-        #btn-trends:hover .nb-label { color: var(--white-bone); }
+        /* VIBRAS */
+        #btn-vibras .nb-label { color: #444; }
+        #btn-vibras:hover     { border-color: rgba(0,212,255,0.35); }
+        #btn-vibras:hover .nb-label { color: var(--accent); }
+
+        /* STREAM */
+        #btn-stream .nb-label { color: #444; }
+        #btn-stream:hover { border-color: rgba(255,51,51,0.4); }
+        #btn-stream:hover .nb-label { color: #ff4444; }
+        #btn-stream.live-on {
+            border-color: rgba(0,255,136,0.4);
+            background: rgba(0,255,136,0.06);
+        }
+        #btn-stream.live-on .nb-label { color: #00ff88; }
 
         /* RADIO */
         #btn-radio-modal .nb-emoji { color: #cc7700; }
@@ -1167,12 +1173,8 @@
 
     <header>
         <h1 class="logo" onclick="location.reload()">LA NUBE <span>DE WILSON</span></h1>
-        <div class="signal-selector">
-            <button id="btn-kick" class="btn-signal" onclick="switchSignal('kick')">
-                <span id="live-dot" class="dot"></span> STREAM
-            </button>
-            <button id="btn-vibe" class="btn-signal active" onclick="toggleVibeMenu()">▶ VIBRA</button>
-        </div>
+        <!-- live-dot oculto: mantiene la lógica JS de detección de señal -->
+        <span id="live-dot" class="dot" style="display:none"></span>
     </header>
 
     <div id="vibe-sidebar">
@@ -1293,9 +1295,9 @@
     </div>
 
     <div class="feed-row">
-        <button id="btn-ranking-modal" class="nav-btn" onclick="openRankingModalDirect()" title="Rankings Top 20">
-            <span class="nb-emoji">📊</span>
-            <span class="nb-label">Ranking</span>
+        <button id="btn-stream" class="nav-btn" onclick="switchSignal('kick')" title="Stream en vivo">
+            <span class="nb-emoji"><span id="stream-dot-feed" class="dot" style="width:10px;height:10px;margin:0"></span></span>
+            <span class="nb-label">Stream</span>
         </button>
         <button id="btn-clima" class="nav-btn" onclick="openClimaModal()" title="Clima según tu ubicación">
             <span class="nb-emoji">🌤️</span>
@@ -1305,9 +1307,9 @@
             <span class="nb-emoji">☁️</span>
             <span class="nb-label">Feed</span>
         </button>
-        <button id="btn-trends" class="nav-btn" onclick="openTrendsModal()" title="Tendencias en X">
-            <span class="nb-emoji">𝕏</span>
-            <span class="nb-label">Tendencias</span>
+        <button id="btn-vibras" class="nav-btn" onclick="toggleVibeMenu()" title="Seleccioná tu vibra">
+            <span class="nb-emoji">🎛️</span>
+            <span class="nb-label">Vibras</span>
         </button>
         <button id="btn-radio-modal" class="nav-btn" onclick="toggleRadioSidebar()" title="Emisoras de Radio">
             <span class="nb-emoji">📻</span>
@@ -1411,13 +1413,9 @@
             const pk        = document.getElementById('player-kick');
             const py        = document.getElementById('player-yt');
             const loop      = document.getElementById('initial-loop');
-            const bk        = document.getElementById('btn-kick');
-            const bv        = document.getElementById('btn-vibe');
             const customBtn = document.getElementById('btn-yt-control');
 
             [pk, py, loop].forEach(el => el.classList.remove('active'));
-            bk.classList.remove('active');
-            bv.classList.remove('active');
             customBtn.style.display = 'none';
 
             if (type === 'kick') {
@@ -1427,7 +1425,6 @@
                     // Recargar el iframe de Kick (silenciado por defecto para evitar bloqueo mobile)
                     pk.src = 'https://player.kick.com/lanubedewilson?muted=true';
                     pk.classList.add('active');
-                    bk.classList.add('active');
                     py.src = '';
                     // Mostrar botones de unmute y compartir
                     const unmuteBtn = document.getElementById('kick-unmute-btn');
@@ -1440,7 +1437,6 @@
                 }
             } else if (type === 'yt') {
                 py.classList.add('active');
-                bv.classList.add('active');
                 customBtn.style.display = 'flex';
                 // bgAudio.pause(); // Ya lo maneja stopAllMedia
             } else {
@@ -1646,12 +1642,16 @@
                 const liveDot = document.getElementById('live-dot');
                 const wasLive = liveDot.classList.contains('live');
                 liveDot.classList.toggle('live', isLive);
+                // Sincronizar dot y clase del botón Stream en el feed-row
+                const streamDotFeed = document.getElementById('stream-dot-feed');
+                if (streamDotFeed) streamDotFeed.classList.toggle('live', isLive);
+                const btnStream = document.getElementById('btn-stream');
+                if (btnStream) btnStream.classList.toggle('live-on', isLive);
                 // Si el stream pasó de ON a OFF mientras el usuario lo estaba viendo → cortar y mostrar cartel
                 if (wasLive && !isLive && document.getElementById('player-kick').classList.contains('active')) {
                     stopAllMedia();
                     document.getElementById('player-kick').classList.remove('active');
                     document.getElementById('initial-loop').classList.add('active');
-                    document.getElementById('btn-kick').classList.remove('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
                 }
                 checkDeepLinking();
