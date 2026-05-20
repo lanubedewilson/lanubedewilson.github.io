@@ -2454,28 +2454,84 @@
 
         function getLocationSigla(loc) {
             const siglas = {
-                'San Juan':      'SJ',
-                'Buenos Aires':  'BA',
-                'Córdoba':       'CBA',
-                'Mendoza':       'MZA',
-                'Santa Fe':      'SF',
-                'San Luis':      'SL',
-                'Neuquén':       'NQN',
-                'Chubut':        'CHU',
-                'Chile':         'CL',
-                'Estados Unidos':'US',
-                'Gran Bretaña':  'UK',
-                'Alemania':      'DE',
-                'Francia':       'FR',
-                'Nueva Zelanda': 'NZ',
-                'Mónaco':        'MC',
-                'Bulgaria':      'BG',
-                'Austria':       'AT',
-                'Chipre':        'CY',
-                'Suiza':         'CH',
-                'Canadá':        'CA',
-                'Países Bajos':  'NL',
-                'Italia':        'IT'
+                // Argentina
+                'San Juan':         'SJ',
+                'Buenos Aires':     'BA',
+                'Córdoba':          'CBA',
+                'Mendoza':          'MZA',
+                'Santa Fe':         'SF',
+                'San Luis':         'SL',
+                'Neuquén':          'NQN',
+                'Chubut':           'CHU',
+                // Latinoamérica
+                'Chile':            'CL',
+                'Bolivia':          'BO',
+                'Brasil':           'BR',
+                'Colombia':         'CO',
+                'Ecuador':          'EC',
+                'Perú':             'PE',
+                'Uruguay':          'UY',
+                'Venezuela':        'VE',
+                // Norte y Centro América
+                'Estados Unidos':   'US',
+                'Canadá':           'CA',
+                'México':           'MX',
+                'Costa Rica':       'CR',
+                'El Salvador':      'SV',
+                'Guatemala':        'GT',
+                'Honduras':         'HN',
+                'Jamaica':          'JM',
+                'Nicaragua':        'NI',
+                'Puerto Rico':      'PR',
+                'Rep. Dominicana':  'DO',
+                'Trinidad y Tobago':'TT',
+                // Europa
+                'Alemania':         'DE',
+                'Austria':          'AT',
+                'Bélgica':          'BE',
+                'Bulgaria':         'BG',
+                'Rep. Checa':       'CZ',
+                'Chipre':           'CY',
+                'Croacia':          'HR',
+                'Dinamarca':        'DK',
+                'España':           'ES',
+                'Finlandia':        'FI',
+                'Francia':          'FR',
+                'Gran Bretaña':     'UK',
+                'Grecia':           'GR',
+                'Hungría':          'HU',
+                'Irlanda':          'IE',
+                'Italia':           'IT',
+                'Mónaco':           'MC',
+                'Noruega':          'NO',
+                'Nueva Zelanda':    'NZ',
+                'Países Bajos':     'NL',
+                'Polonia':          'PL',
+                'Portugal':         'PT',
+                'Rumanía':          'RO',
+                'Serbia':           'RS',
+                'Suecia':           'SE',
+                'Suiza':            'CH',
+                'Ucrania':          'UA',
+                // África
+                'Ghana':            'GH',
+                'Kenia':            'KE',
+                'Marruecos':        'MA',
+                'Nigeria':          'NG',
+                'Sudáfrica':        'ZA',
+                // Asia y Oriente Medio
+                'Corea del Sur':    'KR',
+                'Filipinas':        'PH',
+                'Hong Kong':        'HK',
+                'India':            'IN',
+                'Indonesia':        'ID',
+                'Israel':           'IL',
+                'Japón':            'JP',
+                'Malasia':          'MY',
+                'Singapur':         'SG',
+                'Tailandia':        'TH',
+                'Taiwán':           'TW',
+                'Turquía':          'TR',
             };
             return siglas[loc] || loc.substring(0,3).toUpperCase();
         }
@@ -2606,61 +2662,149 @@
         async function fetchRadiosFromAPI() {
             const container = document.getElementById('radio-list');
             if (container) {
-                container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:#cc7700;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">📡 SINTONIZANDO ANTENAS...</div>';
+                container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:#cc7700;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">📡 SINTONIZANDO ANTENAS...<br><span style="font-size:0.65rem;color:rgba(180,100,0,0.5);font-family:\'DM Sans\',sans-serif;font-weight:300;">Cargando emisoras de todo el mundo</span></div>';
             }
             try {
                 const base = await getRadioBrowserBaseUrl();
+                const q = (cc, lim=12) =>
+                    fetch(`${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`)
+                    .then(r => r.json()).catch(() => []);
 
-                // Consultas paralelas: radios argentinas + regionales San Juan/Mendoza/Córdoba
-                const [resAR, resMZA, resCBA, resCL] = await Promise.all([
-                    fetch(`${base}/json/stations/search?countrycode=AR&limit=40&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => []),
-                    fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=15&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => []),
-                    fetch(`${base}/json/stations/search?countrycode=AR&state=Córdoba&limit=15&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => []),
-                    fetch(`${base}/json/stations/search?countrycode=CL&limit=20&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => [])
+                // Países de la captura + los que ya teníamos, en lotes paralelos
+                const [
+                    resAR, resMZA, resCBA,
+                    resCL, resBO, resBR, resCO, resEC, resPE, resUY, resVE,
+                    resUS, resCA, resMX, resCR, resSV, resGT, resHN, resJM, resNI, resPR, resDO, resTT,
+                    resDE, resAT, resBE, resBG, resCZ, resDK, resES, resFI, resFR, resGB,
+                    resGR, resHR, resHU, resIE, resIT, resNL, resNO, resPL, resPT,
+                    resRO, resRS, resSE, resCH, resUA,
+                    resGH, resKE, resNG, resMA, resZA,
+                    resPH, resHK, resIN, resID, resIL, resJP, resMY, resKR, resSG, resTH, resTW, resTR
+                ] = await Promise.all([
+                    // Argentina (extra para filtrar provincias)
+                    fetch(`${base}/json/stations/search?countrycode=AR&limit=60&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
+                    fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=15&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
+                    fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=15&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
+                    // Latinoamérica
+                    q('CL',15), q('BO',12), q('BR',15), q('CO',12), q('EC',10),
+                    q('PE',10), q('UY',10), q('VE',10),
+                    // Norte y Centro América
+                    q('US',15), q('CA',12), q('MX',12), q('CR',10), q('SV',8),
+                    q('GT',8),  q('HN',8),  q('JM',8),  q('NI',8),  q('PR',8),
+                    q('DO',8),  q('TT',8),
+                    // Europa
+                    q('DE',12), q('AT',10), q('BE',10), q('BG',10), q('CZ',10),
+                    q('DK',10), q('ES',12), q('FI',10), q('FR',12), q('GB',12),
+                    q('GR',10), q('HR',8),  q('HU',10), q('IE',10), q('IT',12),
+                    q('NL',10), q('NO',10), q('PL',10), q('PT',10),
+                    q('RO',10), q('RS',8),  q('SE',10), q('CH',10), q('UA',10),
+                    // África
+                    q('GH',8),  q('KE',8),  q('NG',8),  q('MA',8),  q('ZA',10),
+                    // Asia y Oriente Medio
+                    q('PH',8),  q('HK',8),  q('IN',12), q('ID',10), q('IL',8),
+                    q('JP',12), q('MY',8),  q('KR',10), q('SG',8),  q('TH',8),
+                    q('TW',8),  q('TR',10)
                 ]);
 
-                // Mapeador genérico
-                const mapStation = (s, location) => ({
-                    name: (s.name || '').trim() || 'Radio',
-                    url: (s.url_resolved || s.url || '').trim(),
-                    location: location
-                });
+                const map = (arr, loc) => arr
+                    .map(s => ({
+                        name: (s.name||'').trim() || 'Radio',
+                        url:  (s.url_resolved || s.url || '').trim(),
+                        location: loc
+                    }))
+                    .filter(s => s.url);
 
-                // San Juan: filtrar desde el lote AR por state o nombre
-                const sjNames = new Set(['san juan','sanjuan','sj']);
+                // Separar Argentina por provincia vs. Buenos Aires
+                const argProvincias = new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé','san luis','neuquén','neuquen','chubut']);
                 const apiSJ = resAR
-                    .filter(s => (s.state||'').toLowerCase().includes('san juan') || sjNames.has((s.state||'').toLowerCase()))
-                    .map(s => mapStation(s, 'San Juan'));
-
-                // Buenos Aires: resto del lote AR que no son San Juan/Mendoza/Córdoba
-                const argProvincias = new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé']);
+                    .filter(s => (s.state||'').toLowerCase().includes('san juan'))
+                    .map(s => ({ name:(s.name||'').trim()||'Radio', url:(s.url_resolved||s.url||'').trim(), location:'San Juan' }))
+                    .filter(s=>s.url);
                 const apiBA = resAR
                     .filter(s => !argProvincias.has((s.state||'').toLowerCase()))
-                    .slice(0, 20)
-                    .map(s => mapStation(s, 'Buenos Aires'));
+                    .slice(0,20)
+                    .map(s => ({ name:(s.name||'').trim()||'Radio', url:(s.url_resolved||s.url||'').trim(), location:'Buenos Aires' }))
+                    .filter(s=>s.url);
 
-                const apiMZA = resMZA.map(s => mapStation(s, 'Mendoza'));
-                const apiCBA = resCBA.map(s => mapStation(s, 'Córdoba'));
-                const apiCL  = resCL.map(s => mapStation(s, 'Chile'));
+                // Mapa completo: código → nombre en español (para el acordeón)
+                const apiStations = [
+                    ...apiSJ,
+                    ...apiBA,
+                    ...map(resMZA, 'Mendoza'),
+                    ...map(resCBA, 'Córdoba'),
+                    ...map(resCL,  'Chile'),
+                    ...map(resBO,  'Bolivia'),
+                    ...map(resBR,  'Brasil'),
+                    ...map(resCO,  'Colombia'),
+                    ...map(resEC,  'Ecuador'),
+                    ...map(resPE,  'Perú'),
+                    ...map(resUY,  'Uruguay'),
+                    ...map(resVE,  'Venezuela'),
+                    ...map(resUS,  'Estados Unidos'),
+                    ...map(resCA,  'Canadá'),
+                    ...map(resMX,  'México'),
+                    ...map(resCR,  'Costa Rica'),
+                    ...map(resSV,  'El Salvador'),
+                    ...map(resGT,  'Guatemala'),
+                    ...map(resHN,  'Honduras'),
+                    ...map(resJM,  'Jamaica'),
+                    ...map(resNI,  'Nicaragua'),
+                    ...map(resPR,  'Puerto Rico'),
+                    ...map(resDO,  'Rep. Dominicana'),
+                    ...map(resTT,  'Trinidad y Tobago'),
+                    ...map(resDE,  'Alemania'),
+                    ...map(resAT,  'Austria'),
+                    ...map(resBE,  'Bélgica'),
+                    ...map(resBG,  'Bulgaria'),
+                    ...map(resCZ,  'Rep. Checa'),
+                    ...map(resDK,  'Dinamarca'),
+                    ...map(resES,  'España'),
+                    ...map(resFI,  'Finlandia'),
+                    ...map(resFR,  'Francia'),
+                    ...map(resGB,  'Gran Bretaña'),
+                    ...map(resGR,  'Grecia'),
+                    ...map(resHR,  'Croacia'),
+                    ...map(resHU,  'Hungría'),
+                    ...map(resIE,  'Irlanda'),
+                    ...map(resIT,  'Italia'),
+                    ...map(resNL,  'Países Bajos'),
+                    ...map(resNO,  'Noruega'),
+                    ...map(resPL,  'Polonia'),
+                    ...map(resPT,  'Portugal'),
+                    ...map(resRO,  'Rumanía'),
+                    ...map(resRS,  'Serbia'),
+                    ...map(resSE,  'Suecia'),
+                    ...map(resCH,  'Suiza'),
+                    ...map(resUA,  'Ucrania'),
+                    ...map(resGH,  'Ghana'),
+                    ...map(resKE,  'Kenia'),
+                    ...map(resNG,  'Nigeria'),
+                    ...map(resMA,  'Marruecos'),
+                    ...map(resZA,  'Sudáfrica'),
+                    ...map(resPH,  'Filipinas'),
+                    ...map(resHK,  'Hong Kong'),
+                    ...map(resIN,  'India'),
+                    ...map(resID,  'Indonesia'),
+                    ...map(resIL,  'Israel'),
+                    ...map(resJP,  'Japón'),
+                    ...map(resMY,  'Malasia'),
+                    ...map(resKR,  'Corea del Sur'),
+                    ...map(resSG,  'Singapur'),
+                    ...map(resTH,  'Tailandia'),
+                    ...map(resTW,  'Taiwán'),
+                    ...map(resTR,  'Turquía'),
+                ];
 
-                // Construir nuevas estaciones API solo si hay resultados útiles
-                const apiStations = [...apiSJ, ...apiBA, ...apiMZA, ...apiCBA, ...apiCL].filter(s => s.url);
-
-                if (apiStations.length > 0) {
-                    // Fusionar: mantener las estaciones locales hardcodeadas (más confiables)
-                    // y agregar las de la API como categoría "API" al final de cada región,
-                    // evitando duplicados por nombre.
-                    const existingNames = new Set(RADIO_STATIONS.map(s => s.name.trim().toLowerCase()));
-                    const newStations = apiStations.filter(s => !existingNames.has(s.name.toLowerCase()));
-                    RADIO_STATIONS.push(...newStations);
-                }
+                // Fusionar con las locales evitando duplicados por nombre
+                const existingNames = new Set(RADIO_STATIONS.map(s => s.name.trim().toLowerCase()));
+                const newStations = apiStations.filter(s => !existingNames.has(s.name.toLowerCase()));
+                RADIO_STATIONS.push(...newStations);
 
                 radioBrowserLoaded = true;
                 renderRadioAccordion();
 
             } catch(err) {
                 console.error('Radio Browser API error:', err);
-                // Fallback: mostrar las estaciones locales de siempre
                 radioBrowserLoaded = true;
                 renderRadioAccordion();
             }
