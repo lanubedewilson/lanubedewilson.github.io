@@ -1323,41 +1323,38 @@
         <button class="vibe-sidebar-close" onclick="toggleVibeMenu()" title="Cerrar menú">▶</button>
         <div class="vibe-header">SELECCIONA TU VIBRA</div>
         <div class="vibe-container">
-            <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
-            <div class="vibe-item" onclick="changeVibe('NJyCwdWT80c', 'Chill House', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>Chill House</span></div>
-            <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
-            <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
-            <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk', this)"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
-            <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urbano', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Urbano</span></div>
-            <div class="vibe-item" onclick="changeVibe('8zRR2_6aRNE', 'Fogón', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón</span></div>
-            <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop', this)"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
-            <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
-            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock & Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
-            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
-            <div class="vibe-item" onclick="changeVibe('fTb6yJ7AlT8', 'Relaxing Jazz', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Relaxing Jazz</span></div>
-            <div class="vibe-item" onclick="changeVibe('9UMxZofMNbA', 'Chillout Lounge', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Chillout Lounge</span></div>
-            <div class="vibe-item" onclick="changeVibe('4xDzrJKXOOY', 'Synthwave', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Synthwave</span></div>
-            <div class="vibe-item" onclick="changeVibe('28KRPhVzCus', 'Hip hop lofi ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Hip hop lofi</span></div>
-            <div class="vibe-item" onclick="changeVibe('TfWotiyXGfI', '1990s Lofi ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>1990s Lofi</span></div>
-            <div class="vibe-item" onclick="changeVibe('acjs8sDZDro', 'Focus Work ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Focus Work</span></div>
-            <div class="vibe-item" onclick="changeVibe('yT5Jx87JIGk', 'Cyberpunk ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Cyberpunk</span></div>
-            <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
-            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
-           
+
+            <div style="font-family:'Bebas Neue',cursive;font-size:0.62rem;letter-spacing:0.18em;color:rgba(180,100,0,0.4);padding:4px 6px 8px;text-transform:uppercase;">— Géneros —</div>
+
+            <div class="vibe-item" onclick="playVibeTag('lofi', 'Lo-Fi Chill', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Lo-Fi Chill</span></div>
+            <div class="vibe-item" onclick="playVibeTag('chillhop', 'Chillhop', this)"><div style="width:4px;height:20px;background:#b0b8ff"></div><span>Chillhop</span></div>
+            <div class="vibe-item" onclick="playVibeTag('jazz', 'Relaxing Jazz', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Relaxing Jazz</span></div>
+            <div class="vibe-item" onclick="playVibeTag('bossa nova', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
+            <div class="vibe-item" onclick="playVibeTag('blues', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="playVibeTag('funk', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Energy Funk</span></div>
+            <div class="vibe-item" onclick="playVibeTag('soul', 'Soul', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Soul</span></div>
+            <div class="vibe-item" onclick="playVibeTag('reggae', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
+            <div class="vibe-item" onclick="playVibeTag('pop', 'Radio Pop', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
+            <div class="vibe-item" onclick="playVibeTag('rock', 'Rock', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Rock</span></div>
+            <div class="vibe-item" onclick="playVibeTag('indie', 'Indie Folk', this)"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
+            <div class="vibe-item" onclick="playVibeTag('hip-hop', 'Hip Hop', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>Hip Hop</span></div>
+            <div class="vibe-item" onclick="playVibeTag('electronic', 'Electronic', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Electronic</span></div>
+            <div class="vibe-item" onclick="playVibeTag('synthwave', 'Synthwave', this)"><div style="width:4px;height:20px;background:#ff00cc"></div><span>Synthwave</span></div>
+            <div class="vibe-item" onclick="playVibeTag('ambient', 'Ambient', this)"><div style="width:4px;height:20px;background:#708090"></div><span>Ambient</span></div>
+            <div class="vibe-item" onclick="playVibeTag('classical', 'Clásica', this)"><div style="width:4px;height:20px;background:#d4af37"></div><span>Clásica</span></div>
+            <div class="vibe-item" onclick="playVibeTag('meditation', 'Meditación', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditación</span></div>
+            <div class="vibe-item" onclick="playVibeTag('country', 'Fogón / Country', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón / Country</span></div>
+            <div class="vibe-item" onclick="playVibeTag('latina', 'Latina', this)"><div style="width:4px;height:20px;background:#ff4444"></div><span>Latina</span></div>
+            <div class="vibe-item" onclick="playVibeTag('tango', 'Tango', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tango</span></div>
+            <div class="vibe-item" onclick="playVibeTag('christian', 'Música Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Música Cristiana</span></div>
+
+            <div style="font-family:'Bebas Neue',cursive;font-size:0.62rem;letter-spacing:0.18em;color:rgba(180,100,0,0.4);padding:14px 6px 8px;text-transform:uppercase;">— Noticias (YouTube) —</div>
+
             <div class="vibe-item" onclick="changeVibe('2u4GnVNtlsY', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
             <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
             <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
             <div class="vibe-item" onclick="changeVibe('nPgoqC-wv4s', 'CHV Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>CHV Noticias</span></div>
-            
-           
-            <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
-            <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
-            <div class="vibe-item" onclick="changeVibe('mKCieTImjvU', 'Fogón 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Fogón 24/7</span></div>
-            
-            
+
             <button onclick="toggleVibeMenu()" style="width:100%;margin-top:30px;background:none;border:1px solid #444;color:#888;padding:12px;cursor:pointer;font-size:0.8rem;border-radius:4px;font-family:'Bebas Neue';letter-spacing:1px;">CERRAR DIAL</button>
         </div>
     </div>
@@ -1603,26 +1600,83 @@
 
         let isYtPlaying = false;
 
+        // Mantener changeVibe por compatibilidad con items que no se migraron
         function changeVibe(videoId, vibeName, clickedElement) {
-            stopAllMedia(); // Detener radio o audio de fondo antes de la vibra
-            
-            showToast(`📻 Sintonizando: ${vibeName}...`);
+            stopAllMedia();
+            showToast(`📺 Sintonizando: ${vibeName}...`);
             document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
             if (clickedElement) clickedElement.classList.add('active-vibe');
-
             const player = document.getElementById('player-yt');
             player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
-
             isYtPlaying = true;
             document.getElementById('yt-icon').innerText = '⏸';
-
             showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
             switchSignal('yt');
-
             setTimeout(() => {
                 const sidebar = document.getElementById('vibe-sidebar');
                 if (sidebar.classList.contains('open')) toggleVibeMenu();
             }, 500);
+        }
+
+        // Nueva función: vibras vía Radio Browser con fallback automático
+        async function playVibeTag(tag, vibeName, clickedElement) {
+            stopAllMedia();
+            showToast(`📻 Sintonizando: ${vibeName}...`);
+            document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
+            if (clickedElement) clickedElement.classList.add('active-vibe');
+
+            try {
+                const baseUrl = await getRadioBrowserBaseUrl();
+                const res = await fetch(`${baseUrl}/json/stations/search?tag=${encodeURIComponent(tag)}&limit=10&order=votes&reverse=true&hidebroken=true`);
+                const data = await res.json();
+
+                if (!data || data.length === 0) {
+                    showToast(`❌ Sin señal para ${vibeName}`);
+                    return;
+                }
+
+                // Mezclar aleatoriamente para variar experiencia entre visitas
+                const shuffled = data.sort(() => Math.random() - 0.5);
+
+                // Fallback automático: intentar cada stream hasta que uno funcione
+                async function tryNext(idx) {
+                    if (idx >= shuffled.length) {
+                        showToast(`❌ Todas las señales de ${vibeName} están caídas`);
+                        return;
+                    }
+                    const station = shuffled[idx];
+                    const streamUrl = station.url_resolved || station.url;
+                    if (!streamUrl) { tryNext(idx + 1); return; }
+
+                    const audio = document.getElementById('radio-audio');
+                    audio.src = streamUrl;
+                    audio.load();
+
+                    try {
+                        await audio.play();
+                        // Éxito — actualizar interfaz
+                        switchSignal('default');
+                        showTicker(`VIBRA: ${vibeName.toUpperCase()} · ${station.name.toUpperCase()} · LA NUBE DE WILSON · `);
+                        document.getElementById('btn-radio-modal').classList.add('radio-active');
+                        const label = document.getElementById('radio-now-playing-label');
+                        if (label) label.innerText = `▶ ${vibeName.toUpperCase()} · ${station.name}`;
+                        setTimeout(() => {
+                            const sidebar = document.getElementById('vibe-sidebar');
+                            if (sidebar && sidebar.classList.contains('open')) toggleVibeMenu();
+                        }, 500);
+                    } catch(e) {
+                        // Este stream falló — intentar el siguiente silenciosamente
+                        console.warn(`Stream caído (${station.name}), probando siguiente...`);
+                        tryNext(idx + 1);
+                    }
+                }
+
+                tryNext(0);
+
+            } catch(err) {
+                console.error('playVibeTag error:', err);
+                showToast('❌ Error de conexión al sintonizar');
+            }
         }
 
         function toggleYtPlay() {
