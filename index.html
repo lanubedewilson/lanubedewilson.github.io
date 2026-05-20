@@ -365,13 +365,14 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-card);
             cursor: pointer;
-            transition: background 0.2s, border-color 0.2s, transform 0.15s;
+            transition: background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.3s;
             flex: 1;
             min-width: 0;
             padding: 12px 6px;
             font-family: 'DM Sans', sans-serif;
+            /* Glow apagado en reposo — sutil, elegante */
+            box-shadow: 0 0 8px -2px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-        .nav-btn:hover  { background: var(--surface-2); border-color: var(--border-h); transform: translateY(-1px); }
         .nav-btn:active { transform: scale(0.94); }
 
         .nav-btn .nb-emoji { font-size: 1.4rem; line-height: 1; }
@@ -386,48 +387,89 @@
 
         /* FEED — botón central destacado */
         #btn-feed-main {
-            border-color: rgba(0,212,255,0.30);
-            box-shadow: inset 0 1px 0 rgba(0,212,255,0.12);
-            flex: 1.6; /* un poco más ancho */
+            border-color: rgba(0,212,255,0.22);
+            box-shadow: 0 0 12px -3px rgba(0,212,255,0.18), inset 0 1px 0 rgba(0,212,255,0.08);
+            flex: 1.6;
         }
         #btn-feed-main .nb-label { color: var(--accent); }
-        #btn-feed-main:hover { border-color: rgba(0,212,255,0.55); }
+        #btn-feed-main:hover {
+            background: var(--surface-2);
+            border-color: rgba(0,212,255,0.65);
+            box-shadow: 0 0 22px -2px rgba(0,212,255,0.45), 0 0 48px -8px rgba(0,212,255,0.22), inset 0 1px 0 rgba(0,212,255,0.15);
+            transform: translateY(-1px);
+        }
 
         /* CLIMA */
+        #btn-clima {
+            border-color: rgba(255,200,40,0.10);
+            box-shadow: 0 0 10px -4px rgba(255,200,40,0.14), inset 0 1px 0 rgba(255,200,40,0.04);
+        }
         #btn-clima .nb-label { color: #444; }
-        #btn-clima:hover     { border-color: rgba(255,200,40,0.4); }
+        #btn-clima:hover {
+            background: var(--surface-2);
+            border-color: rgba(255,200,40,0.55);
+            box-shadow: 0 0 20px -2px rgba(255,200,40,0.40), 0 0 44px -8px rgba(255,200,40,0.18), inset 0 1px 0 rgba(255,200,40,0.12);
+            transform: translateY(-1px);
+        }
         #btn-clima:hover .nb-label { color: #ffcc28; }
 
         /* VIBRAS */
+        #btn-vibras {
+            border-color: rgba(0,212,255,0.08);
+            box-shadow: 0 0 10px -4px rgba(0,212,255,0.10), inset 0 1px 0 rgba(0,212,255,0.03);
+        }
         #btn-vibras .nb-label { color: #444; }
-        #btn-vibras:hover     { border-color: rgba(0,212,255,0.35); }
+        #btn-vibras:hover {
+            background: var(--surface-2);
+            border-color: rgba(0,212,255,0.50);
+            box-shadow: 0 0 20px -2px rgba(0,212,255,0.35), 0 0 44px -8px rgba(0,212,255,0.15), inset 0 1px 0 rgba(0,212,255,0.10);
+            transform: translateY(-1px);
+        }
         #btn-vibras:hover .nb-label { color: var(--accent); }
 
         /* STREAM */
+        #btn-stream {
+            border-color: rgba(255,51,51,0.10);
+            box-shadow: 0 0 10px -4px rgba(255,51,51,0.14), inset 0 1px 0 rgba(255,51,51,0.04);
+        }
         #btn-stream .nb-label { color: #444; }
-        #btn-stream:hover { border-color: rgba(255,51,51,0.4); }
+        #btn-stream:hover {
+            background: var(--surface-2);
+            border-color: rgba(255,51,51,0.55);
+            box-shadow: 0 0 20px -2px rgba(255,51,51,0.40), 0 0 44px -8px rgba(255,51,51,0.18), inset 0 1px 0 rgba(255,51,51,0.12);
+            transform: translateY(-1px);
+        }
         #btn-stream:hover .nb-label { color: #ff4444; }
         #btn-stream.live-on {
-            border-color: rgba(0,255,136,0.4);
+            border-color: rgba(0,255,136,0.35);
             background: rgba(0,255,136,0.06);
+            box-shadow: 0 0 14px -3px rgba(0,255,136,0.30), inset 0 1px 0 rgba(0,255,136,0.08);
         }
         #btn-stream.live-on .nb-label { color: #00ff88; }
 
         /* RADIO */
+        #btn-radio-modal {
+            border-color: rgba(200,120,0,0.12);
+            box-shadow: 0 0 10px -4px rgba(200,120,0,0.18), inset 0 1px 0 rgba(200,120,0,0.04);
+        }
         #btn-radio-modal .nb-emoji { color: #cc7700; }
         #btn-radio-modal .nb-label { color: #444; }
-        #btn-radio-modal:hover { border-color: rgba(200,120,0,0.35); }
+        #btn-radio-modal:hover {
+            background: var(--surface-2);
+            border-color: rgba(200,120,0,0.55);
+            box-shadow: 0 0 20px -2px rgba(200,120,0,0.40), 0 0 44px -8px rgba(200,120,0,0.18), inset 0 1px 0 rgba(200,120,0,0.10);
+            transform: translateY(-1px);
+        }
         #btn-radio-modal:hover .nb-label { color: #cc7700; }
         #btn-radio-modal.radio-active {
             border-color: rgba(200,120,0,0.5);
             background: rgba(200,100,0,0.12);
-            box-shadow: 0 0 18px rgba(200,120,0,0.2);
             animation: radio-pulse 2s infinite ease-in-out;
         }
         #btn-radio-modal.radio-active .nb-label { color: #e08800; }
         @keyframes radio-pulse {
-            0%, 100% { box-shadow: 0 0 8px rgba(200,120,0,0.2); }
-            50%       { box-shadow: 0 0 22px rgba(200,120,0,0.45); }
+            0%, 100% { box-shadow: 0 0 10px -3px rgba(200,120,0,0.25), inset 0 1px 0 rgba(200,120,0,0.06); }
+            50%       { box-shadow: 0 0 26px -2px rgba(200,120,0,0.55), 0 0 50px -8px rgba(200,120,0,0.25), inset 0 1px 0 rgba(200,120,0,0.10); }
         }
 
         /* =============================================
@@ -2545,6 +2587,85 @@
             stopAllMedia();
         }
 
+        /* =============================================
+           RADIO BROWSER API — carga dinámica
+        ============================================= */
+        let radioBrowserLoaded = false;
+
+        async function getRadioBrowserBaseUrl() {
+            try {
+                const res = await fetch('https://all.api.radio-browser.info/json/servers');
+                const servers = await res.json();
+                if (servers && servers.length > 0) {
+                    return 'https://' + servers[Math.floor(Math.random() * servers.length)].name;
+                }
+            } catch(e) { /* silencioso */ }
+            return 'https://de1.api.radio-browser.info';
+        }
+
+        async function fetchRadiosFromAPI() {
+            const container = document.getElementById('radio-list');
+            if (container) {
+                container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:#cc7700;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">📡 SINTONIZANDO ANTENAS...</div>';
+            }
+            try {
+                const base = await getRadioBrowserBaseUrl();
+
+                // Consultas paralelas: radios argentinas + regionales San Juan/Mendoza/Córdoba
+                const [resAR, resMZA, resCBA, resCL] = await Promise.all([
+                    fetch(`${base}/json/stations/search?countrycode=AR&limit=40&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => []),
+                    fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=15&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => []),
+                    fetch(`${base}/json/stations/search?countrycode=AR&state=Córdoba&limit=15&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => []),
+                    fetch(`${base}/json/stations/search?countrycode=CL&limit=20&order=votes&reverse=true&hidebroken=true`).then(r => r.json()).catch(() => [])
+                ]);
+
+                // Mapeador genérico
+                const mapStation = (s, location) => ({
+                    name: (s.name || '').trim() || 'Radio',
+                    url: (s.url_resolved || s.url || '').trim(),
+                    location: location
+                });
+
+                // San Juan: filtrar desde el lote AR por state o nombre
+                const sjNames = new Set(['san juan','sanjuan','sj']);
+                const apiSJ = resAR
+                    .filter(s => (s.state||'').toLowerCase().includes('san juan') || sjNames.has((s.state||'').toLowerCase()))
+                    .map(s => mapStation(s, 'San Juan'));
+
+                // Buenos Aires: resto del lote AR que no son San Juan/Mendoza/Córdoba
+                const argProvincias = new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé']);
+                const apiBA = resAR
+                    .filter(s => !argProvincias.has((s.state||'').toLowerCase()))
+                    .slice(0, 20)
+                    .map(s => mapStation(s, 'Buenos Aires'));
+
+                const apiMZA = resMZA.map(s => mapStation(s, 'Mendoza'));
+                const apiCBA = resCBA.map(s => mapStation(s, 'Córdoba'));
+                const apiCL  = resCL.map(s => mapStation(s, 'Chile'));
+
+                // Construir nuevas estaciones API solo si hay resultados útiles
+                const apiStations = [...apiSJ, ...apiBA, ...apiMZA, ...apiCBA, ...apiCL].filter(s => s.url);
+
+                if (apiStations.length > 0) {
+                    // Fusionar: mantener las estaciones locales hardcodeadas (más confiables)
+                    // y agregar las de la API como categoría "API" al final de cada región,
+                    // evitando duplicados por nombre.
+                    const existingNames = new Set(RADIO_STATIONS.map(s => s.name.trim().toLowerCase()));
+                    const newStations = apiStations.filter(s => !existingNames.has(s.name.toLowerCase()));
+                    RADIO_STATIONS.push(...newStations);
+                }
+
+                radioBrowserLoaded = true;
+                renderRadioAccordion();
+
+            } catch(err) {
+                console.error('Radio Browser API error:', err);
+                // Fallback: mostrar las estaciones locales de siempre
+                radioBrowserLoaded = true;
+                renderRadioAccordion();
+            }
+        }
+
         function toggleRadioSidebar() {
             const sidebar = document.getElementById('radio-sidebar');
             if (!sidebar) return;
@@ -2553,8 +2674,13 @@
                 sidebar.classList.remove('open');
             } else {
                 sidebar.classList.add('open');
-                // Redibujar el acordeón preservando qué secciones están abiertas
-                renderRadioAccordion();
+                if (!radioBrowserLoaded) {
+                    // Primera apertura: cargar desde la API (enriquece las estaciones locales)
+                    fetchRadiosFromAPI();
+                } else {
+                    // Ya cargado: solo redibujar
+                    renderRadioAccordion();
+                }
             }
         }
 
@@ -2684,7 +2810,7 @@
         window.onload = () => {
             fetchData();
             updateTicker();
-            buildRadioList();
+            // Radio carga de forma diferida al primer uso (no en onload)
             setInterval(updateTicker, 60000);
             setInterval(fetchData, 15000);
         };
