@@ -998,16 +998,12 @@
         }
 
         .radio-acc-sigla {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 0.72rem;
-            letter-spacing: 0.14em;
-            color: rgba(180,100,0,0.55);
-            min-width: 26px;
+            font-size: 1rem;
+            line-height: 1;
+            min-width: 24px;
             flex-shrink: 0;
             text-align: center;
-            line-height: 1;
         }
-        .radio-accordion-header.has-active .radio-acc-sigla { color: #cc7700; }
 
         .radio-acc-name {
             font-family: 'Bebas Neue', cursive;
@@ -1113,36 +1109,28 @@
         <div class="vibe-header">SELECCIONA TU VIBRA</div>
         <div class="vibe-container">
 
-            <div style="font-family:'Bebas Neue',cursive;font-size:0.62rem;letter-spacing:0.18em;color:rgba(180,100,0,0.4);padding:4px 6px 8px;text-transform:uppercase;">— Géneros —</div>
-
-            <div class="vibe-item" onclick="playVibeTag('lofi', 'Lo-Fi Chill', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Lo-Fi Chill</span></div>
-            <div class="vibe-item" onclick="playVibeTag('chillhop', 'Chillhop', this)"><div style="width:4px;height:20px;background:#b0b8ff"></div><span>Chillhop</span></div>
-            <div class="vibe-item" onclick="playVibeTag('jazz', 'Relaxing Jazz', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Relaxing Jazz</span></div>
-            <div class="vibe-item" onclick="playVibeTag('bossa nova', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
-            <div class="vibe-item" onclick="playVibeTag('blues', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
-            <div class="vibe-item" onclick="playVibeTag('funk', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Energy Funk</span></div>
-            <div class="vibe-item" onclick="playVibeTag('soul', 'Soul', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Soul</span></div>
-            <div class="vibe-item" onclick="playVibeTag('reggae', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
-            <div class="vibe-item" onclick="playVibeTag('pop', 'Radio Pop', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
-            <div class="vibe-item" onclick="playVibeTag('rock', 'Rock', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Rock</span></div>
-            <div class="vibe-item" onclick="playVibeTag('indie', 'Indie Folk', this)"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
-            <div class="vibe-item" onclick="playVibeTag('hip-hop', 'Hip Hop', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>Hip Hop</span></div>
-            <div class="vibe-item" onclick="playVibeTag('electronic', 'Electronic', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Electronic</span></div>
-            <div class="vibe-item" onclick="playVibeTag('synthwave', 'Synthwave', this)"><div style="width:4px;height:20px;background:#ff00cc"></div><span>Synthwave</span></div>
-            <div class="vibe-item" onclick="playVibeTag('ambient', 'Ambient', this)"><div style="width:4px;height:20px;background:#708090"></div><span>Ambient</span></div>
-            <div class="vibe-item" onclick="playVibeTag('classical', 'Clásica', this)"><div style="width:4px;height:20px;background:#d4af37"></div><span>Clásica</span></div>
-            <div class="vibe-item" onclick="playVibeTag('meditation', 'Meditación', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditación</span></div>
-            <div class="vibe-item" onclick="playVibeTag('country', 'Fogón / Country', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón / Country</span></div>
-            <div class="vibe-item" onclick="playVibeTag('latina', 'Latina', this)"><div style="width:4px;height:20px;background:#ff4444"></div><span>Latina</span></div>
-            <div class="vibe-item" onclick="playVibeTag('tango', 'Tango', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tango</span></div>
-            <div class="vibe-item" onclick="playVibeTag('christian', 'Música Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Música Cristiana</span></div>
-
-            <div style="font-family:'Bebas Neue',cursive;font-size:0.62rem;letter-spacing:0.18em;color:rgba(180,100,0,0.4);padding:14px 6px 8px;text-transform:uppercase;">— Noticias (YouTube) —</div>
-
+            <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
+            <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
+            <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
+            <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk', this)"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
+            <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urbano', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Urbano</span></div>
+            <div class="vibe-item" onclick="changeVibe('8zRR2_6aRNE', 'Fogón', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón</span></div>
+            <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop', this)"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
+            <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
+            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock &amp; Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock &amp; Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
+            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
+            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
             <div class="vibe-item" onclick="changeVibe('2u4GnVNtlsY', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
             <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
-            <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
-            <div class="vibe-item" onclick="changeVibe('nPgoqC-wv4s', 'CHV Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>CHV Noticias</span></div>
+            <div class="vibe-item" onclick="changeVibe('gE_G19reR8c', 'TeleSol', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TeleSol</span></div>
+            <div class="vibe-item" onclick="changeVibe('jIy9zt11Kn0', 'Meganoticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Meganoticias</span></div>
+            <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
+            <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
+            <div class="vibe-item" onclick="changeVibe('mKCieTImjvU', 'Fogón 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Fogón 24/7</span></div>
 
             <button onclick="toggleVibeMenu()" style="width:100%;margin-top:30px;background:none;border:1px solid #444;color:#888;padding:12px;cursor:pointer;font-size:0.8rem;border-radius:4px;font-family:'Bebas Neue';letter-spacing:1px;">CERRAR DIAL</button>
         </div>
@@ -1946,8 +1934,7 @@
 
            { name: 'FM Dos (FM 98.5)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
-           { name: 'Radio Festival (FM 93.7)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
-
+          
           
             // ==========================================
             // Estados Unidos
@@ -2179,88 +2166,88 @@
             return ordered;
         }
 
-        function getLocationSigla(loc) {
-            const siglas = {
-                // Argentina
-                'San Juan':         'SJ',
-                'Buenos Aires':     'BA',
-                'Córdoba':          'CBA',
-                'Mendoza':          'MZA',
-                'Santa Fe':         'SF',
-                'San Luis':         'SL',
-                'Neuquén':          'NQN',
-                'Chubut':           'CHU',
+        function getLocationFlag(loc) {
+            const flags = {
+                // Argentina — todas las provincias usan bandera AR
+                'San Juan':         '🇦🇷',
+                'Buenos Aires':     '🇦🇷',
+                'Córdoba':          '🇦🇷',
+                'Mendoza':          '🇦🇷',
+                'Santa Fe':         '🇦🇷',
+                'San Luis':         '🇦🇷',
+                'Neuquén':          '🇦🇷',
+                'Chubut':           '🇦🇷',
                 // Latinoamérica
-                'Chile':            'CL',
-                'Bolivia':          'BO',
-                'Brasil':           'BR',
-                'Colombia':         'CO',
-                'Ecuador':          'EC',
-                'Perú':             'PE',
-                'Uruguay':          'UY',
-                'Venezuela':        'VE',
+                'Chile':            '🇨🇱',
+                'Bolivia':          '🇧🇴',
+                'Brasil':           '🇧🇷',
+                'Colombia':         '🇨🇴',
+                'Ecuador':          '🇪🇨',
+                'Perú':             '🇵🇪',
+                'Uruguay':          '🇺🇾',
+                'Venezuela':        '🇻🇪',
                 // Norte y Centro América
-                'Estados Unidos':   'US',
-                'Canadá':           'CA',
-                'México':           'MX',
-                'Costa Rica':       'CR',
-                'El Salvador':      'SV',
-                'Guatemala':        'GT',
-                'Honduras':         'HN',
-                'Jamaica':          'JM',
-                'Nicaragua':        'NI',
-                'Puerto Rico':      'PR',
-                'Rep. Dominicana':  'DO',
-                'Trinidad y Tobago':'TT',
+                'Estados Unidos':   '🇺🇸',
+                'Canadá':           '🇨🇦',
+                'México':           '🇲🇽',
+                'Costa Rica':       '🇨🇷',
+                'El Salvador':      '🇸🇻',
+                'Guatemala':        '🇬🇹',
+                'Honduras':         '🇭🇳',
+                'Jamaica':          '🇯🇲',
+                'Nicaragua':        '🇳🇮',
+                'Puerto Rico':      '🇵🇷',
+                'Rep. Dominicana':  '🇩🇴',
+                'Trinidad y Tobago':'🇹🇹',
                 // Europa
-                'Alemania':         'DE',
-                'Austria':          'AT',
-                'Bélgica':          'BE',
-                'Bulgaria':         'BG',
-                'Rep. Checa':       'CZ',
-                'Chipre':           'CY',
-                'Croacia':          'HR',
-                'Dinamarca':        'DK',
-                'España':           'ES',
-                'Finlandia':        'FI',
-                'Francia':          'FR',
-                'Gran Bretaña':     'UK',
-                'Grecia':           'GR',
-                'Hungría':          'HU',
-                'Irlanda':          'IE',
-                'Italia':           'IT',
-                'Mónaco':           'MC',
-                'Noruega':          'NO',
-                'Nueva Zelanda':    'NZ',
-                'Países Bajos':     'NL',
-                'Polonia':          'PL',
-                'Portugal':         'PT',
-                'Rumanía':          'RO',
-                'Serbia':           'RS',
-                'Suecia':           'SE',
-                'Suiza':            'CH',
-                'Ucrania':          'UA',
+                'Alemania':         '🇩🇪',
+                'Austria':          '🇦🇹',
+                'Bélgica':          '🇧🇪',
+                'Bulgaria':         '🇧🇬',
+                'Rep. Checa':       '🇨🇿',
+                'Chipre':           '🇨🇾',
+                'Croacia':          '🇭🇷',
+                'Dinamarca':        '🇩🇰',
+                'España':           '🇪🇸',
+                'Finlandia':        '🇫🇮',
+                'Francia':          '🇫🇷',
+                'Gran Bretaña':     '🇬🇧',
+                'Grecia':           '🇬🇷',
+                'Hungría':          '🇭🇺',
+                'Irlanda':          '🇮🇪',
+                'Italia':           '🇮🇹',
+                'Mónaco':           '🇲🇨',
+                'Noruega':          '🇳🇴',
+                'Nueva Zelanda':    '🇳🇿',
+                'Países Bajos':     '🇳🇱',
+                'Polonia':          '🇵🇱',
+                'Portugal':         '🇵🇹',
+                'Rumanía':          '🇷🇴',
+                'Serbia':           '🇷🇸',
+                'Suecia':           '🇸🇪',
+                'Suiza':            '🇨🇭',
+                'Ucrania':          '🇺🇦',
                 // África
-                'Ghana':            'GH',
-                'Kenia':            'KE',
-                'Marruecos':        'MA',
-                'Nigeria':          'NG',
-                'Sudáfrica':        'ZA',
+                'Ghana':            '🇬🇭',
+                'Kenia':            '🇰🇪',
+                'Marruecos':        '🇲🇦',
+                'Nigeria':          '🇳🇬',
+                'Sudáfrica':        '🇿🇦',
                 // Asia y Oriente Medio
-                'Corea del Sur':    'KR',
-                'Filipinas':        'PH',
-                'Hong Kong':        'HK',
-                'India':            'IN',
-                'Indonesia':        'ID',
-                'Israel':           'IL',
-                'Japón':            'JP',
-                'Malasia':          'MY',
-                'Singapur':         'SG',
-                'Tailandia':        'TH',
-                'Taiwán':           'TW',
-                'Turquía':          'TR',
+                'Corea del Sur':    '🇰🇷',
+                'Filipinas':        '🇵🇭',
+                'Hong Kong':        '🇭🇰',
+                'India':            '🇮🇳',
+                'Indonesia':        '🇮🇩',
+                'Israel':           '🇮🇱',
+                'Japón':            '🇯🇵',
+                'Malasia':          '🇲🇾',
+                'Singapur':         '🇸🇬',
+                'Tailandia':        '🇹🇭',
+                'Taiwán':           '🇹🇼',
+                'Turquía':          '🇹🇷',
             };
-            return siglas[loc] || loc.substring(0,3).toUpperCase();
+            return flags[loc] || '📻';
         }
 
         function renderRadioAccordion() {
@@ -2281,7 +2268,7 @@
                 const header = document.createElement('div');
                 header.className = 'radio-accordion-header' + (isOpen ? ' open' : '') + (hasActive ? ' has-active' : '');
                 header.innerHTML =
-                    '<span class="radio-acc-sigla">' + getLocationSigla(loc) + '</span>'
+                    '<span class="radio-acc-sigla">' + getLocationFlag(loc) + '</span>'
                     + '<span class="radio-acc-name">' + loc + '</span>'
                     + '<span class="radio-acc-count">' + count + '</span>'
                     + (hasActive ? '<span class="radio-acc-live">\uD83D\uDD0A</span>' : '')
