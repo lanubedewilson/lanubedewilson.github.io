@@ -156,18 +156,18 @@
         ============================================= */
         #no-signal-msg {
             position: fixed;
-            inset: 0;
-            background: rgba(8,8,8,0.90);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            /* Empieza debajo del header (~46px) para no taparlo */
+            top: 46px;
+            left: 0; right: 0; bottom: 0;
+            background: rgba(8,8,8,0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 800;
             overflow-y: auto;
-            /* Espacio seguro para notch/barra de navegación en iOS */
-            padding: max(env(safe-area-inset-top, 20px), 24px)
-                     env(safe-area-inset-right, 16px)
+            padding: 24px env(safe-area-inset-right, 16px)
                      max(env(safe-area-inset-bottom, 20px), 24px)
                      env(safe-area-inset-left, 16px);
         }
@@ -560,86 +560,6 @@
         /* =============================================
            MODAL TENDENCIAS X
         ============================================= */
-        #trends-modal {
-            position: fixed; inset: 0;
-            background: rgba(8,8,8,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 900;
-            display: none;
-            align-items: flex-start;
-            justify-content: center;
-            padding: max(env(safe-area-inset-top,20px),24px) 16px 24px;
-            overflow-y: auto;
-        }
-        #trends-modal.visible { display: flex; }
-
-        .trends-card {
-            width: 92%; max-width: 480px;
-            background: var(--surface-1);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-card);
-            padding: 28px 24px 32px;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-            margin: auto;
-        }
-        .trends-close {
-            position: absolute; top: 14px; right: 18px;
-            background: none; border: none;
-            color: rgba(255,255,255,0.25); font-size: 1.6rem;
-            cursor: pointer; line-height: 1; padding: 0;
-            transition: color 0.2s;
-        }
-        .trends-close:hover { color: var(--white-bone); }
-
-        .trends-header {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 20px; padding-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-        }
-        .trends-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 1.4rem; color: var(--white-bone);
-            margin: 0; letter-spacing: 1px; line-height: 1;
-        }
-        .trends-subtitle {
-            font-size: 0.68rem; color: #444; font-weight: 300;
-            letter-spacing: 0.1em; text-transform: uppercase; margin: 0;
-        }
-        .trends-list { display: flex; flex-direction: column; gap: 5px; }
-        .trends-row {
-            display: flex; align-items: center; gap: 12px;
-            padding: 9px 12px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.025);
-            border: 1px solid var(--border);
-            transition: background 0.2s;
-        }
-        .trends-row:hover { background: rgba(255,255,255,0.045); }
-        .trends-pos {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 1.05rem; min-width: 26px;
-            text-align: center; flex-shrink: 0;
-            color: #333;
-        }
-        .trends-pos.t1 { color: #FFD700; }
-        .trends-pos.t2 { color: #C0C0C0; }
-        .trends-pos.t3 { color: #CD7F32; }
-        .trends-text {
-            font-size: 0.88rem; font-weight: 500;
-            color: var(--white-bone); flex: 1;
-        }
-        .trends-loading {
-            text-align: center; padding: 30px 0;
-            color: #333; font-size: 0.82rem; letter-spacing: 0.08em;
-        }
-        .trends-spinner {
-            width: 18px; height: 18px;
-            border: 2px solid #1a1a1a; border-top-color: var(--white-bone);
-            border-radius: 50%; animation: spin 0.9s linear infinite;
-            margin: 0 auto 12px;
-        }
 
         /* BOTÓN PLAY/PAUSA CUSTOM */
         #btn-yt-control {
@@ -932,34 +852,6 @@
         /* =============================================
            RANKINGS MODAL
         ============================================= */
-        .ranking-tabs {
-            display: flex; gap: 6px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-            overflow-x: auto; scrollbar-width: none;
-        }
-        .ranking-tabs::-webkit-scrollbar { display: none; }
-        .ranking-tab {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.72rem;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: none;
-            color: #444;
-            cursor: pointer;
-            transition: all 0.2s;
-            white-space: nowrap; flex-shrink: 0;
-        }
-        .ranking-tab.active {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            font-weight: 700;
-        }
 
         .note-read-more {
             margin-top: 10px;
@@ -977,85 +869,6 @@
         }
         .note-extra-content.expanded { max-height: 2000px; }
 
-        #ranking-modal {
-            position: fixed; inset: 0;
-            background: rgba(8,8,8,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            z-index: 900;
-            display: none;
-            align-items: flex-start; justify-content: center;
-            padding: 20px 0; overflow-y: auto;
-        }
-        #ranking-modal.visible { display: flex; }
-
-        .ranking-modal-inner {
-            width: 92%; max-width: 540px;
-            background: var(--surface-1);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-card);
-            padding: 28px 24px 32px;
-            position: relative;
-            animation: fadeIn 0.3s ease;
-            margin: auto;
-        }
-
-        .ranking-modal-close {
-            position: absolute;
-            top: 14px; right: 18px;
-            background: none; border: none;
-            color: #333;
-            font-size: 1.8rem;
-            cursor: pointer; line-height: 1; padding: 0;
-            transition: color 0.2s;
-        }
-        .ranking-modal-close:hover { color: var(--white-bone); }
-
-        .ranking-modal-header {
-            display: flex; align-items: center; gap: 10px;
-            margin-bottom: 20px; padding-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-        }
-        .ranking-modal-icon { font-size: 1.3rem; }
-        .ranking-modal-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 1.4rem; color: var(--white-bone);
-            margin: 0; letter-spacing: 1px; line-height: 1;
-        }
-
-        .ranking-list { display: flex; flex-direction: column; gap: 5px; }
-
-        .ranking-row {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 10px;
-            border-radius: 8px;
-            background: rgba(255,255,255,0.025);
-            border: 1px solid var(--border);
-        }
-
-        .ranking-pos {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 1.05rem;
-            min-width: 28px; text-align: center; flex-shrink: 0;
-        }
-        .ranking-pos.p1 { color: #FFD700; }
-        .ranking-pos.p2 { color: #C0C0C0; }
-        .ranking-pos.p3 { color: #CD7F32; }
-        .ranking-pos.pn { color: #333; }
-
-        .ranking-info { flex: 1; overflow: hidden; }
-
-        .ranking-song {
-            font-size: 0.86rem; font-weight: 600;
-            color: var(--white-bone);
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-        .ranking-artist {
-            font-size: 0.73rem; color: #4a4a4a;
-            font-weight: 300;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
-
         .ranking-trend {
             font-size: 0.68rem; font-weight: 600;
             flex-shrink: 0; padding: 2px 6px; border-radius: 4px;
@@ -1064,30 +877,6 @@
         .trend-up   { background: rgba(0,255,136,0.1); color: #00cc66; }
         .trend-same { color: #2a2a2a; }
         .trend-down { color: rgba(255,80,80,0.4); }
-
-        .ranking-loading {
-            text-align: center; padding: 30px 0;
-            color: #333; font-size: 0.82rem;
-            font-weight: 300; letter-spacing: 0.08em;
-        }
-        .ranking-loading-spinner {
-            width: 18px; height: 18px;
-            border: 2px solid #1a1a1a;
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-            margin: 0 auto 12px;
-        }
-
-        .ranking-external-link {
-            display: flex; align-items: center; justify-content: center;
-            gap: 6px; margin-top: 18px;
-            font-size: 0.7rem; letter-spacing: 0.1em;
-            color: #2a2a2a; text-decoration: none;
-            font-family: 'DM Sans', sans-serif; font-weight: 500;
-            text-transform: uppercase; transition: color 0.2s;
-        }
-        .ranking-external-link:hover { color: var(--accent); }
 
         /* =============================================
            SIDEBAR DE RADIO
@@ -1375,7 +1164,7 @@
             <span id="yt-icon">⏸</span>
         </button>
 
-        <video id="initial-loop" class="player-frame active" autoplay loop muted playsinline>
+        <video id="initial-loop" class="player-frame active" autoplay loop muted playsinline preload="none">
             <source src="la nube.mp4" type="video/mp4">
         </video>
 
@@ -1384,55 +1173,28 @@
         <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
         <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
 
-        <div id="no-signal-msg">
-            <div class="no-signal-card">
-                <button class="no-signal-close" onclick="closeNoSignal()">×</button>
-                <div class="no-signal-badge">
-                    <span class="dot-red"></span>
-                    <span>SEÑAL EN ESPERA</span>
-                </div>
-                <p class="no-signal-title">EVENTOS EN VIVO,<br>PODCAST Y MÁS</p>
-                <p class="no-signal-body">
-                    Cuando el indicador se ponga verde,<br>
-                    nos encontramos acá — en vivo, sin filtros.<br>
-                    Todo lo que pasa en La Nube.
-                </p>
-                <div class="no-signal-hint">
-                    <span class="dot-green"></span>
-                    <p>Cuando veas esto — estamos en vivo</p>
-                </div>
-            </div>
-        </div>
-
         <audio id="bg-audio" loop>
             <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
         </audio>
     </div>
 
-    <div id="ranking-modal">
-        <div class="ranking-modal-inner">
-            <button class="ranking-modal-close" onclick="closeRankingModal()">×</button>
-            <div class="ranking-modal-header">
-                <span class="ranking-modal-icon" id="modal-icon">⭐</span>
-                <div>
-                    <p class="ranking-modal-title" id="modal-title">RANKINGS</p>
-                    <p class="ranking-modal-subtitle" id="modal-subtitle">TOP 20 GLOBAL</p>
-                </div>
+    <div id="no-signal-msg">
+        <div class="no-signal-card">
+            <button class="no-signal-close" onclick="closeNoSignal()">×</button>
+            <div class="no-signal-badge">
+                <span class="dot-red"></span>
+                <span>SEÑAL EN ESPERA</span>
             </div>
-            <div class="ranking-tabs">
-                <button class="ranking-tab active" onclick="switchRankingTab('sp-ar', this)">♫ Spotify AR</button>
-                <button class="ranking-tab" onclick="switchRankingTab('sp-global', this)">♫ Spotify Global</button>
-                <button class="ranking-tab" onclick="switchRankingTab('radio', this)">♫ Billboard Radio</button>
+            <p class="no-signal-title">EVENTOS EN VIVO,<br>PODCAST Y MÁS</p>
+            <p class="no-signal-body">
+                Cuando el indicador se ponga verde,<br>
+                nos encontramos acá — en vivo, sin filtros.<br>
+                Todo lo que pasa en La Nube.
+            </p>
+            <div class="no-signal-hint">
+                <span class="dot-green"></span>
+                <p>Cuando veas esto — estamos en vivo</p>
             </div>
-            <div id="modal-list" class="ranking-list">
-                <div class="ranking-loading">
-                    <div class="ranking-loading-spinner"></div>
-                    CONECTANDO CON RANKINGS...
-                </div>
-            </div>
-            <a id="modal-source-link" href="#" target="_blank" class="ranking-external-link" style="display:none;">
-                ↗ VER FUENTE COMPLETA EN KWORB.NET
-            </a>
         </div>
     </div>
 
@@ -1481,25 +1243,7 @@
         </div>
     </div>
 
-    <!-- MODAL TENDENCIAS X -->
-    <div id="trends-modal">
-        <div class="trends-card">
-            <button class="trends-close" onclick="closeTrendsModal()">×</button>
-            <div class="trends-header">
-                <span style="font-size:1.3rem">𝕏</span>
-                <div>
-                    <p class="trends-title">TENDENCIAS</p>
-                    <p class="trends-subtitle">Lo que se habla ahora</p>
-                </div>
-            </div>
-            <div id="trends-list" class="trends-list">
-                <div class="trends-loading">
-                    <div class="trends-spinner"></div>
-                    CARGANDO TENDENCIAS...
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <div class="sponsor-footer">
         <div id="sponsor-ad">
@@ -1520,7 +1264,6 @@
     <script>
         let allNews  = [];
         let sponsors = [];
-        let trendsData = [];
         const bgAudio = document.getElementById('bg-audio');
 
         /* =============================================
@@ -1822,9 +1565,6 @@
             const now = Date.now();
             const newsUrl     = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
             const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
-            // ⚠️ Reemplazá TRENDS_GID con el gid real de tu pestaña de tendencias
-            const TRENDS_GID  = 'TRENDS_GID';
-            const trendsUrl   = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=${TRENDS_GID}&single=true&output=csv&t=${now}`;
             try {
                 const res = await fetch(newsUrl);
                 const text = await res.text();
@@ -1840,12 +1580,6 @@
                 const textSpo = await resSpo.text();
                 sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
                 startSponsors();
-                // Cargar tendencias (silencioso si falla)
-                try {
-                    const resTr = await fetch(trendsUrl);
-                    const textTr = await resTr.text();
-                    trendsData = textTr.split('\n').slice(1).filter(r => r.trim() !== '').slice(0, 40);
-                } catch(e) { trendsData = []; }
                 const liveDot = document.getElementById('live-dot');
                 const wasLive = liveDot.classList.contains('live');
                 liveDot.classList.toggle('live', isLive);
@@ -2007,67 +1741,6 @@
             if (unmuteBtn) unmuteBtn.style.display = 'none';
             showToast('🔊 Audio del stream activado');
         }
-
-        const SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQHX6di9e13j4thMxs-fdrylfVDym1b_61DgSNleLZ613EWYOe1VJqGSv4wlSKAo3LxdqlsykYJmAKU/pub?output=csv';
-        const CAROUSEL_SOURCES = {
-            'sp-ar':     { csvUrl: `${SHEET_BASE}&gid=0`,         label: 'Spotify · Argentina Daily',      icon: '♫', mode: 'spotify' },
-            'sp-global': { csvUrl: `${SHEET_BASE}&gid=134572978`, label: 'Spotify · Global Daily',         icon: '♫', mode: 'spotify' },
-            'radio':     { csvUrl: `${SHEET_BASE}&gid=839811863`, label: 'Billboard · Radio Global',       icon: '♫', mode: 'radio' }
-        };
-        const carouselCache = {};
-
-        function parseCSV(text) {
-            return text.split('\n').map(line => {
-                const cols = []; let cur = '', inQ = false;
-                for (let i = 0; i < line.length; i++) {
-                    const ch = line[i];
-                    if (ch === '"') { inQ = !inQ; } else if (ch === ',' && !inQ) { cols.push(cur.trim()); cur = ''; } else { cur += ch; }
-                }
-                cols.push(cur.trim()); return cols;
-            });
-        }
-
-        async function loadRanking(sourceKey) {
-            if (carouselCache[sourceKey]) return carouselCache[sourceKey];
-            const src = CAROUSEL_SOURCES[sourceKey];
-            try {
-                const res = await fetch(src.csvUrl + '&t=' + Date.now());
-                const text = await res.text();
-                const rows = parseCSV(text).slice(1);
-                const items = [];
-                rows.forEach(cols => {
-                    const pos = parseInt(cols[0]);
-                    if (isNaN(pos)) return;
-                    if (src.mode === 'spotify') { items.push({ pos, artist: (cols[1]||'').replace(/"/g,''), title: (cols[2]||'').replace(/"/g,''), change: '' }); }
-                    else { const full = (cols[1]||'').replace(/"/g,''); const dash = full.indexOf(' - '); items.push({ pos, artist: dash > -1 ? full.slice(0,dash) : '', title: dash > -1 ? full.slice(dash+3) : full, change: '' }); }
-                });
-                carouselCache[sourceKey] = items.sort((a,b)=>a.pos-b.pos).slice(0,20);
-                return carouselCache[sourceKey];
-            } catch(e) { return null; }
-        }
-
-        let currentRankingTab = 'sp-ar';
-        function openRankingModalDirect() {
-            document.getElementById('ranking-modal').classList.add('visible');
-            document.body.style.overflow = 'hidden';
-            switchRankingTab(currentRankingTab, document.querySelector(`.ranking-tab[onclick*="${currentRankingTab}"]`));
-        }
-
-        async function switchRankingTab(sourceKey, tabEl) {
-            currentRankingTab = sourceKey;
-            document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
-            if (tabEl) tabEl.classList.add('active');
-            const src = CAROUSEL_SOURCES[sourceKey];
-            document.getElementById('modal-icon').innerText = src.icon;
-            document.getElementById('modal-subtitle').innerText = src.label.toUpperCase();
-            document.getElementById('modal-list').innerHTML = '<div class="ranking-loading">CARGANDO...</div>';
-            let items = await loadRanking(sourceKey);
-            if (!items) { document.getElementById('modal-list').innerHTML = 'Error'; return; }
-            document.getElementById('modal-list').innerHTML = items.map(it => `<div class="ranking-row"><span class="ranking-pos ${it.pos<=3?'p'+it.pos:'pn'}">${it.pos}</span><div class="ranking-info"><div class="ranking-song">${it.title}</div><div class="ranking-artist">${it.artist}</div></div></div>`).join('');
-        }
-
-        function closeRankingModal() { document.getElementById('ranking-modal').classList.remove('visible'); document.body.style.overflow = ''; }
-        document.getElementById('ranking-modal').addEventListener('click', function(e) { if (e.target === this) closeRankingModal(); });
 
         /* =============================================
            RADIO SIDEBAR LOGIC
@@ -2716,7 +2389,89 @@
         async function fetchRadiosFromAPI() {
             const container = document.getElementById('radio-list');
             if (container) {
-                container.innerHTML = '<div style="text-align:center;padding:30px 20px;color:#cc7700;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">📡 SINTONIZANDO ANTENAS...<br><span style="font-size:0.65rem;color:rgba(180,100,0,0.5);font-family:\'DM Sans\',sans-serif;font-weight:300;">Cargando emisoras de todo el mundo</span></div>';
+                const ghostNames = [
+                    // San Juan
+                    'Light FM (FM 97.3)', 'LV5 Radio Sarmiento', 'CNN Radio San Juan',
+                    'Lider (FM 104.3)', 'Radio Universidad',
+                    // Buenos Aires
+                    'Mega (FM 98.3)', 'La 100 (FM 99.9)', 'Mitre (FM 105.9)',
+                    'Urbana Play (FM 104.3)', 'Nacional Rock (FM 93.7)',
+                    // Estados Unidos
+                    'NPR News', 'iHeart Radio', 'WNYC New York',
+                    'KROQ Los Angeles', 'WBEZ Chicago'
+                ];
+
+                const ghostHTML = ghostNames.map((name, i) => `
+                    <div class="radio-ghost-item" style="animation-delay:${(i * 0.11).toFixed(2)}s">
+                        <div class="radio-ghost-dot"></div>
+                        <span class="radio-ghost-name">${name}</span>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `
+                    <style>
+                        .radio-ghost-header {
+                            padding: 10px 14px 6px;
+                            font-family: 'Bebas Neue', cursive;
+                            font-size: 0.7rem;
+                            letter-spacing: 0.2em;
+                            color: rgba(180,100,0,0.35);
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                        }
+                        .radio-ghost-header::after {
+                            content: '';
+                            flex: 1;
+                            height: 1px;
+                            background: rgba(180,100,0,0.1);
+                        }
+                        .radio-ghost-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            padding: 9px 14px;
+                            border-bottom: 1px solid rgba(255,255,255,0.025);
+                            animation: ghostPulse 2s ease-in-out infinite;
+                            pointer-events: none;
+                            user-select: none;
+                        }
+                        .radio-ghost-dot {
+                            width: 6px; height: 6px;
+                            border-radius: 50%;
+                            background: rgba(180,100,0,0.18);
+                            flex-shrink: 0;
+                        }
+                        .radio-ghost-name {
+                            font-family: 'DM Sans', sans-serif;
+                            font-size: 0.82rem;
+                            color: rgba(255,255,255,0.09);
+                            letter-spacing: 0.02em;
+                            font-weight: 400;
+                        }
+                        @keyframes ghostPulse {
+                            0%, 100% { opacity: 0.25; }
+                            50%       { opacity: 0.75; }
+                        }
+                        .radio-ghost-label {
+                            text-align: center;
+                            padding: 14px 16px 10px;
+                            font-family: 'Bebas Neue', cursive;
+                            font-size: 0.78rem;
+                            letter-spacing: 0.18em;
+                            color: rgba(180,100,0,0.45);
+                        }
+                        .radio-ghost-signal {
+                            display: inline-block;
+                            animation: ghostPulse 1.2s ease-in-out infinite;
+                        }
+                    </style>
+                    <div class="radio-ghost-label">
+                        <span class="radio-ghost-signal">📡</span> SINTONIZANDO ANTENAS...
+                    </div>
+                    <div class="radio-ghost-header">Emisoras</div>
+                    ${ghostHTML}
+                `;
             }
             try {
                 const base = await getRadioBrowserBaseUrl();
@@ -2976,34 +2731,6 @@
         /* =============================================
            TENDENCIAS X
         ============================================= */
-        function openTrendsModal() {
-            document.getElementById('trends-modal').classList.add('visible');
-            const list = document.getElementById('trends-list');
-            if (trendsData.length === 0) {
-                list.innerHTML = '<div class="trends-loading" style="color:#444">Sin tendencias cargadas aún.<br><span style="font-size:0.75rem">Completá la hoja "Tendencias" en el Sheets.</span></div>';
-                return;
-            }
-            list.innerHTML = '';
-            trendsData.forEach((row, i) => {
-                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                const pos  = (col[0] || '').replace(/"/g,'').trim();
-                const text = (col[1] || '').replace(/"/g,'').trim();
-                if (!text) return;
-                const posNum = parseInt(pos, 10) || (i + 1);
-                const posClass = posNum === 1 ? 't1' : posNum === 2 ? 't2' : posNum === 3 ? 't3' : '';
-                const div = document.createElement('div');
-                div.className = 'trends-row';
-                div.innerHTML = `
-                    <span class="trends-pos ${posClass}">${posNum}</span>
-                    <span class="trends-text">${text}</span>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function closeTrendsModal() {
-            document.getElementById('trends-modal').classList.remove('visible');
-        }
 
         window.onload = () => {
             fetchData();
