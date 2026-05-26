@@ -945,6 +945,33 @@
             border-color: rgba(200,120,0,0.3) !important;
         }
         .radio-item.active-radio span.radio-name { color: #cc7700; }
+        .radio-item.connecting {
+            background: rgba(0,212,255,0.05) !important;
+            border-color: rgba(0,212,255,0.2) !important;
+        }
+        .radio-item.connecting span.radio-name { color: rgba(0,212,255,0.7); }
+        .radio-item.connecting .radio-dot {
+            background: var(--accent);
+            opacity: 1;
+            animation: pulse-fade 0.7s infinite ease-in-out;
+        }
+        .radio-item.connecting .radio-speaker {
+            opacity: 0;
+        }
+        .radio-item.connecting::after {
+            content: '···';
+            font-size: 1rem;
+            color: var(--accent);
+            letter-spacing: 2px;
+            animation: connectingDots 1.2s steps(4, end) infinite;
+            flex-shrink: 0;
+        }
+        @keyframes connectingDots {
+            0%   { content: '·  '; }
+            33%  { content: '·· '; }
+            66%  { content: '···'; }
+            100% { content: '   '; }
+        }
         .radio-item .radio-speaker {
             font-size: 0.9rem; opacity: 0; transition: opacity 0.3s;
             animation: pulse-fade 1.5s infinite ease-in-out; flex-shrink: 0;
@@ -1972,7 +1999,7 @@
 
            { name: 'FM Dos (FM 98.5)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
-           { name: 'Radio Festival (FM 93.7)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
+          
 
           
             // ==========================================
@@ -2348,29 +2375,41 @@
 
 
         function playRadioStation(idx, el) {
-            // DETENER TODO ANTES DE INICIAR RADIO
             stopAllMedia();
 
-            // Quitar marca anterior en todos los items visibles
             document.querySelectorAll('.radio-item.active-radio').forEach(i => i.classList.remove('active-radio'));
+            document.querySelectorAll('.radio-item.connecting').forEach(i => i.classList.remove('connecting'));
 
-            // Configurar radio actual
             activeRadioIndex = idx;
             activeRadioEl = el;
-            el.classList.add('active-radio');
+            el.classList.add('connecting');
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             const station = RADIO_STATIONS[idx];
             radioAudio.src = station.url;
-            radioAudio.load();
+
+            // Cuando el audio empieza a sonar → quitar connecting, poner active
+            const onPlaying = () => {
+                el.classList.remove('connecting');
+                el.classList.add('active-radio');
+                document.getElementById('radio-now-playing-label').innerText = '▶ ' + station.name.toUpperCase();
+                radioAudio.removeEventListener('playing', onPlaying);
+                radioAudio.removeEventListener('error', onError);
+            };
+            const onError = () => {
+                el.classList.remove('connecting');
+                showToast('❌ Sin señal: ' + station.name);
+                radioAudio.removeEventListener('playing', onPlaying);
+                radioAudio.removeEventListener('error', onError);
+            };
+            radioAudio.addEventListener('playing', onPlaying);
+            radioAudio.addEventListener('error', onError);
+
             radioAudio.play().catch(() => {});
 
-            // VOLVER AL VIDEO DE INICIO (la nube.mp4) CON EL AUDIO DE RADIO
             switchSignal('default');
-
-            document.getElementById('radio-now-playing-label').innerText = '\u25B6 ' + station.name.toUpperCase();
+            document.getElementById('radio-now-playing-label').innerText = '⏳ ' + station.name.toUpperCase();
             document.getElementById('btn-radio-modal').classList.add('radio-active');
-            showToast('\uD83D\uDCFB Radio: ' + station.name + '...');
 
             // Actualizar cabeceras del acordeón para reflejar región activa
             document.querySelectorAll('.radio-accordion-header').forEach(h => {
