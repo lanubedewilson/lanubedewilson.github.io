@@ -1015,6 +1015,35 @@
         }
         .radio-accordion-header.has-active .radio-acc-name { color: #cc7700; }
 
+        .radio-garden-entry {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 14px;
+            margin: 8px 10px 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(0,212,255,0.15);
+            background: rgba(0,212,255,0.04);
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .radio-garden-entry:hover {
+            background: rgba(0,212,255,0.10);
+            border-color: rgba(0,212,255,0.35);
+        }
+        .radio-garden-flag { font-size: 1rem; flex-shrink: 0; }
+        .radio-garden-label {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            color: var(--accent);
+            flex: 1;
+        }
+        .radio-garden-arrow {
+            font-size: 0.85rem;
+            color: rgba(0,212,255,0.5);
+        }
+
         .radio-acc-count {
             font-size: 0.6rem;
             color: #3a3a3a;
@@ -1126,7 +1155,7 @@
             <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
             <div class="vibe-item" onclick="changeVibe('2u4GnVNtlsY', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
             <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
-            <div class="vibe-item" onclick="changeVibe('gE_G19reR8c', 'TeleSol', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TeleSol</span></div>
+            <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
             <div class="vibe-item" onclick="changeVibe('jIy9zt11Kn0', 'Meganoticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Meganoticias</span></div>
             <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
             <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
@@ -1934,7 +1963,8 @@
 
            { name: 'FM Dos (FM 98.5)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
-          
+         
+
           
             // ==========================================
             // Estados Unidos
@@ -2302,6 +2332,13 @@
                 group.appendChild(body);
                 container.appendChild(group);
             });
+
+            // Entrada final — siempre al fondo del scroll
+            const gardenEntry = document.createElement('div');
+            gardenEntry.className = 'radio-garden-entry';
+            gardenEntry.innerHTML = '<span class="radio-garden-flag">🌍</span><span class="radio-garden-label">Radio Garden</span><span class="radio-garden-arrow">↗</span>';
+            gardenEntry.onclick = () => { stopAllMedia(); window.open('https://radio.garden', '_blank'); };
+            container.appendChild(gardenEntry);
         }
 
 
