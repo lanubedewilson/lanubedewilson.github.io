@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>La Nube de Wilson | v2.0 Timeline</title>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
     <style>
         /* =============================================
            SISTEMA DE DISEÑO — DARK LUXURY / TECH PREMIUM
@@ -998,11 +999,19 @@
         }
 
         .radio-acc-sigla {
-            font-size: 1rem;
+            font-size: 1.1rem;
             line-height: 1;
             min-width: 24px;
             flex-shrink: 0;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .radio-acc-sigla .fi {
+            width: 1.2em;
+            height: 0.9em;
+            border-radius: 2px;
         }
 
         .radio-acc-name {
@@ -1155,7 +1164,7 @@
             <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
             <div class="vibe-item" onclick="changeVibe('2u4GnVNtlsY', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
             <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
-            <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
+            <div class="vibe-item" onclick="changeVibe('gE_G19reR8c', 'TeleSol', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TeleSol</span></div>
             <div class="vibe-item" onclick="changeVibe('jIy9zt11Kn0', 'Meganoticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Meganoticias</span></div>
             <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
             <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
@@ -1963,7 +1972,7 @@
 
            { name: 'FM Dos (FM 98.5)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
-         
+           { name: 'Radio Festival (FM 93.7)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
           
             // ==========================================
@@ -2197,87 +2206,83 @@
         }
 
         function getLocationFlag(loc) {
-            const flags = {
-                // Argentina — todas las provincias usan bandera AR
-                'San Juan':         '🇦🇷',
-                'Buenos Aires':     '🇦🇷',
-                'Córdoba':          '🇦🇷',
-                'Mendoza':          '🇦🇷',
-                'Santa Fe':         '🇦🇷',
-                'San Luis':         '🇦🇷',
-                'Neuquén':          '🇦🇷',
-                'Chubut':           '🇦🇷',
-                // Latinoamérica
-                'Chile':            '🇨🇱',
-                'Bolivia':          '🇧🇴',
-                'Brasil':           '🇧🇷',
-                'Colombia':         '🇨🇴',
-                'Ecuador':          '🇪🇨',
-                'Perú':             '🇵🇪',
-                'Uruguay':          '🇺🇾',
-                'Venezuela':        '🇻🇪',
-                // Norte y Centro América
-                'Estados Unidos':   '🇺🇸',
-                'Canadá':           '🇨🇦',
-                'México':           '🇲🇽',
-                'Costa Rica':       '🇨🇷',
-                'El Salvador':      '🇸🇻',
-                'Guatemala':        '🇬🇹',
-                'Honduras':         '🇭🇳',
-                'Jamaica':          '🇯🇲',
-                'Nicaragua':        '🇳🇮',
-                'Puerto Rico':      '🇵🇷',
-                'Rep. Dominicana':  '🇩🇴',
-                'Trinidad y Tobago':'🇹🇹',
-                // Europa
-                'Alemania':         '🇩🇪',
-                'Austria':          '🇦🇹',
-                'Bélgica':          '🇧🇪',
-                'Bulgaria':         '🇧🇬',
-                'Rep. Checa':       '🇨🇿',
-                'Chipre':           '🇨🇾',
-                'Croacia':          '🇭🇷',
-                'Dinamarca':        '🇩🇰',
-                'España':           '🇪🇸',
-                'Finlandia':        '🇫🇮',
-                'Francia':          '🇫🇷',
-                'Gran Bretaña':     '🇬🇧',
-                'Grecia':           '🇬🇷',
-                'Hungría':          '🇭🇺',
-                'Irlanda':          '🇮🇪',
-                'Italia':           '🇮🇹',
-                'Mónaco':           '🇲🇨',
-                'Noruega':          '🇳🇴',
-                'Nueva Zelanda':    '🇳🇿',
-                'Países Bajos':     '🇳🇱',
-                'Polonia':          '🇵🇱',
-                'Portugal':         '🇵🇹',
-                'Rumanía':          '🇷🇴',
-                'Serbia':           '🇷🇸',
-                'Suecia':           '🇸🇪',
-                'Suiza':            '🇨🇭',
-                'Ucrania':          '🇺🇦',
-                // África
-                'Ghana':            '🇬🇭',
-                'Kenia':            '🇰🇪',
-                'Marruecos':        '🇲🇦',
-                'Nigeria':          '🇳🇬',
-                'Sudáfrica':        '🇿🇦',
-                // Asia y Oriente Medio
-                'Corea del Sur':    '🇰🇷',
-                'Filipinas':        '🇵🇭',
-                'Hong Kong':        '🇭🇰',
-                'India':            '🇮🇳',
-                'Indonesia':        '🇮🇩',
-                'Israel':           '🇮🇱',
-                'Japón':            '🇯🇵',
-                'Malasia':          '🇲🇾',
-                'Singapur':         '🇸🇬',
-                'Tailandia':        '🇹🇭',
-                'Taiwán':           '🇹🇼',
-                'Turquía':          '🇹🇷',
+            const codes = {
+                'San Juan':         'ar',
+                'Buenos Aires':     'ar',
+                'Córdoba':          'ar',
+                'Mendoza':          'ar',
+                'Santa Fe':         'ar',
+                'San Luis':         'ar',
+                'Neuquén':          'ar',
+                'Chubut':           'ar',
+                'Chile':            'cl',
+                'Bolivia':          'bo',
+                'Brasil':           'br',
+                'Colombia':         'co',
+                'Ecuador':          'ec',
+                'Perú':             'pe',
+                'Uruguay':          'uy',
+                'Venezuela':        've',
+                'Estados Unidos':   'us',
+                'Canadá':           'ca',
+                'México':           'mx',
+                'Costa Rica':       'cr',
+                'El Salvador':      'sv',
+                'Guatemala':        'gt',
+                'Honduras':         'hn',
+                'Jamaica':          'jm',
+                'Nicaragua':        'ni',
+                'Puerto Rico':      'pr',
+                'Rep. Dominicana':  'do',
+                'Trinidad y Tobago':'tt',
+                'Alemania':         'de',
+                'Austria':          'at',
+                'Bélgica':          'be',
+                'Bulgaria':         'bg',
+                'Rep. Checa':       'cz',
+                'Chipre':           'cy',
+                'Croacia':          'hr',
+                'Dinamarca':        'dk',
+                'España':           'es',
+                'Finlandia':        'fi',
+                'Francia':          'fr',
+                'Gran Bretaña':     'gb',
+                'Grecia':           'gr',
+                'Hungría':          'hu',
+                'Irlanda':          'ie',
+                'Italia':           'it',
+                'Mónaco':           'mc',
+                'Noruega':          'no',
+                'Nueva Zelanda':    'nz',
+                'Países Bajos':     'nl',
+                'Polonia':          'pl',
+                'Portugal':         'pt',
+                'Rumanía':          'ro',
+                'Serbia':           'rs',
+                'Suecia':           'se',
+                'Suiza':            'ch',
+                'Ucrania':          'ua',
+                'Ghana':            'gh',
+                'Kenia':            'ke',
+                'Marruecos':        'ma',
+                'Nigeria':          'ng',
+                'Sudáfrica':        'za',
+                'Corea del Sur':    'kr',
+                'Filipinas':        'ph',
+                'Hong Kong':        'hk',
+                'India':            'in',
+                'Indonesia':        'id',
+                'Israel':           'il',
+                'Japón':            'jp',
+                'Malasia':          'my',
+                'Singapur':         'sg',
+                'Tailandia':        'th',
+                'Taiwán':           'tw',
+                'Turquía':          'tr',
             };
-            return flags[loc] || '📻';
+            const code = codes[loc];
+            if (code) return `<span class="fi fi-${code}"></span>`;
+            return '📻';
         }
 
         function renderRadioAccordion() {
