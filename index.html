@@ -275,27 +275,50 @@
             background: transparent;
             overflow: hidden;
             padding: 5px var(--gap);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .ticker {
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 20px;
+            flex: 1;
+            overflow: hidden;
+        }
+        .ticker-group {
+            position: absolute;
+            display: flex;
+            align-items: center;
             white-space: nowrap;
-            animation: tickerMove 90s linear infinite;
             color: var(--accent);
             font-weight: 500;
             font-size: 0.72rem;
             letter-spacing: 0.08em;
         }
-        /* Punto de pulso — señal de vida */
-        .ticker-wrap::before {
-            content: '';
-            display: inline-block;
-            width: 5px; height: 5px;
-            background: var(--accent);
-            border-radius: 50%;
-            margin-right: 8px;
-            vertical-align: middle;
-            animation: pulse-fade 2s ease-in-out infinite;
+        .ticker-group-sep {
+            color: rgba(0,212,255,0.25);
+            margin: 0 10px;
         }
+        .ticker-group.tk-entering {
+            animation: tk-enter 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .ticker-group.tk-visible {
+            opacity: 1; transform: translateX(0); filter: blur(0);
+        }
+        .ticker-group.tk-exiting {
+            animation: tk-exit 1.17s ease-in forwards;
+        }
+        @keyframes tk-enter {
+            from { opacity: 0; transform: translateX(50px); filter: blur(10px); }
+            to   { opacity: 1; transform: translateX(0);    filter: blur(0);    }
+        }
+        @keyframes tk-exit {
+            from { opacity: 1; transform: translateX(0);     filter: blur(0);    }
+            to   { opacity: 0; transform: translateX(-50px); filter: blur(10px); }
+        }
+        
 
         .ticker-loading {
             display: inline-flex;
@@ -315,10 +338,7 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes tickerMove {
-            0%   { transform: translateX(100vw); }
-            100% { transform: translateX(-100%); }
-        }
+
 
         /* =============================================
            GRID DE SECCIONES
@@ -1256,6 +1276,7 @@
             <div class="ticker-spinner"></div>
             CONECTANDO con MERCADOS...
         </div>
+        <span id="ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
         <div class="ticker" id="main-ticker" style="display:none;"></div>
     </div>
 
@@ -1493,12 +1514,75 @@
             if (sidebar) sidebar.classList.toggle('open');
         }
 
+        /* -----------------------------------------------
+           TICKER — grupos de 2 con blur-fade
+           Duración grupo: 5500ms | Entrada: 1800ms | Salida: 1170ms
+        ----------------------------------------------- */
+        let _tkItems    = [];
+        let _tkIdx      = 0;
+        let _tkCurrent  = null;
+        let _tkTimer    = null;
+        const TK_GROUP  = 2;
+        const TK_STAY   = 5500;
+        const TK_ENTER  = 1800;
+        const TK_EXIT   = 1170;
+
+        function _tkBuildEl(group) {
+            const el = document.createElement('div');
+            el.className = 'ticker-group';
+            el.innerHTML = group.map((item, i) =>
+                item + (i < group.length - 1
+                    ? '<span class="ticker-group-sep">•</span>'
+                    : '')
+            ).join('');
+            return el;
+        }
+
+        function _tkShowNext() {
+            const stage = document.getElementById('main-ticker');
+            if (!stage || !_tkItems.length) return;
+
+            const group = [];
+            for (let i = 0; i < TK_GROUP; i++)
+                group.push(_tkItems[(_tkIdx + i) % _tkItems.length]);
+            _tkIdx = (_tkIdx + TK_GROUP) % _tkItems.length;
+
+            const newEl = _tkBuildEl(group);
+
+            if (_tkCurrent) {
+                const old = _tkCurrent;
+                old.classList.remove('tk-visible');
+                old.classList.add('tk-exiting');
+                setTimeout(() => old.remove(), TK_EXIT + 50);
+            }
+
+            newEl.classList.add('tk-entering');
+            stage.appendChild(newEl);
+            _tkCurrent = newEl;
+            setTimeout(() => {
+                newEl.classList.remove('tk-entering');
+                newEl.classList.add('tk-visible');
+            }, TK_ENTER);
+        }
+
         function showTicker(text) {
             const loading = document.getElementById('ticker-loading');
             const ticker  = document.getElementById('main-ticker');
+            const dot     = document.getElementById('ticker-dot');
             loading.style.display = 'none';
-            ticker.style.display  = 'inline-block';
-            ticker.innerText = text;
+            ticker.style.display  = 'flex';
+            if (dot) dot.style.display = 'inline-block';
+
+            // Parsear el string separado por • en ítems individuales
+            _tkItems = text.split('•').map(s => s.trim()).filter(Boolean);
+            _tkIdx = 0;
+
+            clearInterval(_tkTimer);
+            _tkCurrent = null;
+            ticker.innerHTML = '';
+
+            _tkShowNext();
+            _tkTimer = setInterval(_tkShowNext, TK_STAY);
         }
 
         async function updateTicker() {
@@ -1802,7 +1886,7 @@
            // ==========================================
             // SAN JUAN - CAPITAL Y GRAN SAN JUAN
             // ==========================================
-            { name: 'Pop Life (FM 107.7)', url: 'https://pop-life-107.smurua4.workers.dev/', location: 'San Juan' },
+            { name: 'Pop Life (FM 107.7)', url: 'http://streaming1.locucionar.com:14835/stream/;stream/1', location: 'San Juan' },
             { name: 'Light FM (FM 97.3)', url: 'https://host.serviceinfinito.com.ar:7000/;stream', location: 'San Juan' },
             { name: 'Armonía FM (FM 96.7)', url: 'https://streaming6.locucionar.com:24162/stream', location: 'San Juan' }, 
             { name: 'Master Classics 24/7', url: 'https://sc.host-live.com:8182/;', location: 'San Juan' }, 
@@ -2375,19 +2459,6 @@
         }
 
 
-        /* -----------------------------------------------
-           PROXY HTTPS — evita bloqueo de contenido mixto
-           Si la URL del stream es HTTP, la enrutamos por
-           un proxy CORS gratuito que la sirve en HTTPS.
-        ----------------------------------------------- */
-        function safeStreamUrl(url) {
-            if (!url) return url;
-            // Si ya es HTTPS, no hace falta nada
-            if (url.startsWith('https://')) return url;
-            // Si es HTTP, encapsularla en corsproxy.io (HTTPS)
-            return 'https://corsproxy.io/?' + encodeURIComponent(url);
-        }
-
         function playRadioStation(idx, el) {
             stopAllMedia();
 
@@ -2400,7 +2471,7 @@
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             const station = RADIO_STATIONS[idx];
-            radioAudio.src = safeStreamUrl(station.url);
+            radioAudio.src = station.url;
 
             // Cuando el audio empieza a sonar → quitar connecting, poner active
             const onPlaying = () => {
