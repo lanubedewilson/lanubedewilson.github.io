@@ -1740,12 +1740,7 @@
             // Actualizar datos cada vez que el usuario abre el feed
             await fetchData();
             const container = document.getElementById('timeline-content');
-            container.innerHTML = `
-                <div style="display:flex;justify-content:flex-end;padding:0 4px 12px;">
-                    <button onclick="openTimeline('all')" style="background:transparent;border:1px solid rgba(0,212,255,0.25);color:var(--accent);font-family:'Bebas Neue',cursive;font-size:0.75rem;letter-spacing:2px;padding:6px 14px;border-radius:8px;cursor:pointer;">
-                        ↻ ACTUALIZAR
-                    </button>
-                </div>`;
+            container.innerHTML = '';
             allNews.forEach((row, index) => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length < 4) return;
