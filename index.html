@@ -2375,6 +2375,19 @@
         }
 
 
+        /* -----------------------------------------------
+           PROXY HTTPS — evita bloqueo de contenido mixto
+           Si la URL del stream es HTTP, la enrutamos por
+           un proxy CORS gratuito que la sirve en HTTPS.
+        ----------------------------------------------- */
+        function safeStreamUrl(url) {
+            if (!url) return url;
+            // Si ya es HTTPS, no hace falta nada
+            if (url.startsWith('https://')) return url;
+            // Si es HTTP, encapsularla en corsproxy.io (HTTPS)
+            return 'https://corsproxy.io/?' + encodeURIComponent(url);
+        }
+
         function playRadioStation(idx, el) {
             stopAllMedia();
 
@@ -2387,7 +2400,7 @@
             el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
             const station = RADIO_STATIONS[idx];
-            radioAudio.src = station.url;
+            radioAudio.src = safeStreamUrl(station.url);
 
             // Cuando el audio empieza a sonar → quitar connecting, poner active
             const onPlaying = () => {
