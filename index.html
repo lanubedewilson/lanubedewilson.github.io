@@ -1242,7 +1242,7 @@
         </video>
 
         <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson?muted=true" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <iframe id="player-kick" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
         <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
 
@@ -1736,9 +1736,16 @@
             } catch (e) { console.error('Error cargando:', e); }
         }
 
-        function openTimeline(category) {
+        async function openTimeline(category) {
+            // Actualizar datos cada vez que el usuario abre el feed
+            await fetchData();
             const container = document.getElementById('timeline-content');
-            container.innerHTML = '';
+            container.innerHTML = `
+                <div style="display:flex;justify-content:flex-end;padding:0 4px 12px;">
+                    <button onclick="openTimeline('all')" style="background:transparent;border:1px solid rgba(0,212,255,0.25);color:var(--accent);font-family:'Bebas Neue',cursive;font-size:0.75rem;letter-spacing:2px;padding:6px 14px;border-radius:8px;cursor:pointer;">
+                        ↻ ACTUALIZAR
+                    </button>
+                </div>`;
             allNews.forEach((row, index) => {
                 const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 if (col.length < 4) return;
@@ -2885,12 +2892,43 @@
            TENDENCIAS X
         ============================================= */
 
+        /* Verificación liviana del estado del stream — solo lee la fila de control,
+           no recarga noticias ni sponsors. Se ejecuta cada 2 minutos. */
+        async function checkStreamStatus() {
+            try {
+                const now = Date.now();
+                const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+                const res  = await fetch(url);
+                const text = await res.text();
+                const rows = text.split('\n');
+                const controlRow  = rows[1] || '';
+                const controlCols = controlRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const streamState = (controlCols[3] || '').replace(/"/g, '').trim().toLowerCase();
+                const isLive  = streamState === 'on';
+                const liveDot = document.getElementById('live-dot');
+                const wasLive = liveDot.classList.contains('live');
+                liveDot.classList.toggle('live', isLive);
+                const streamDotFeed = document.getElementById('stream-dot-feed');
+                if (streamDotFeed) streamDotFeed.classList.toggle('live', isLive);
+                const btnStream = document.getElementById('btn-stream');
+                if (btnStream) btnStream.classList.toggle('live-on', isLive);
+                // Si el stream se cayó mientras el usuario lo miraba → cortar
+                if (wasLive && !isLive && document.getElementById('player-kick').classList.contains('active')) {
+                    stopAllMedia();
+                    document.getElementById('player-kick').classList.remove('active');
+                    document.getElementById('initial-loop').classList.add('active');
+                    document.getElementById('no-signal-msg').classList.add('visible');
+                }
+            } catch (e) { /* silencioso */ }
+        }
+
         window.onload = () => {
             fetchData();
             updateTicker();
-            // Radio carga de forma diferida al primer uso (no en onload)
             setInterval(updateTicker, 60000);
-            setInterval(fetchData, 15000);
+            // fetchData se llama al abrir el feed — no hay polling permanente
+            // Solo el estado del stream (on/off) se verifica cada 2 minutos, sin recargar noticias ni sponsors
+            setInterval(checkStreamStatus, 120000);
         };
         window.addEventListener('click', unlockAudio, { once: true });
         window.addEventListener('touchstart', unlockAudio, { once: true });
