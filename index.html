@@ -1338,6 +1338,8 @@
     <script>
         let allNews  = [];
         let sponsors = [];
+        let lastFetchTime = 0;
+        const FETCH_COOLDOWN = 5 * 60 * 1000; // 5 minutos entre refrescos
         const bgAudio = document.getElementById('bg-audio');
 
         /* =============================================
@@ -1732,13 +1734,12 @@
                     document.getElementById('initial-loop').classList.add('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
                 }
+                lastFetchTime = Date.now();
                 checkDeepLinking();
             } catch (e) { console.error('Error cargando:', e); }
         }
 
-        async function openTimeline(category) {
-            // Actualizar datos cada vez que el usuario abre el feed
-            await fetchData();
+        function renderTimeline() {
             const container = document.getElementById('timeline-content');
             container.innerHTML = '';
             allNews.forEach((row, index) => {
@@ -1807,6 +1808,37 @@
             });
             document.getElementById('timeline-overlay').scrollTo(0, 0);
             document.getElementById('timeline-overlay').classList.add('open');
+        }
+
+        async function openTimeline(category) {
+            const now = Date.now();
+            const needsRefresh = (now - lastFetchTime) > FETCH_COOLDOWN;
+
+            if (allNews.length === 0) {
+                // Primera vez: mostrar skeleton mientras carga
+                const container = document.getElementById('timeline-content');
+                container.innerHTML = `
+                    <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
+                        <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+                        CARGANDO FEED...
+                    </div>`;
+                document.getElementById('timeline-overlay').scrollTo(0, 0);
+                document.getElementById('timeline-overlay').classList.add('open');
+                await fetchData();
+                renderTimeline();
+            } else {
+                // Datos ya disponibles: abrir instantáneo
+                renderTimeline();
+                // Refrescar en background si los datos son viejos
+                if (needsRefresh) {
+                    fetchData().then(() => {
+                        // Si el overlay sigue abierto, actualizar silenciosamente
+                        if (document.getElementById('timeline-overlay').classList.contains('open')) {
+                            renderTimeline();
+                        }
+                    });
+                }
+            }
         }
 
         function toggleReadMore(extraId, btnId) {
@@ -2918,11 +2950,12 @@
         }
 
         window.onload = () => {
+            // Precarga silenciosa: los datos quedan listos antes de que el usuario abra el Feed
             fetchData();
             updateTicker();
             setInterval(updateTicker, 60000);
-            // fetchData se llama al abrir el feed — no hay polling permanente
-            // Solo el estado del stream (on/off) se verifica cada 2 minutos, sin recargar noticias ni sponsors
+            // El stream (on/off) se verifica cada 2 minutos sin recargar noticias ni sponsors
+            // El Feed refresca en background solo si pasaron más de 5 minutos desde el último fetch
             setInterval(checkStreamStatus, 120000);
         };
         window.addEventListener('click', unlockAudio, { once: true });
