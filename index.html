@@ -375,26 +375,40 @@
             background: transparent;
         }
 
-        /* BASE — todos los botones de la barra comparten esto */
+        /* BASE — efecto pulsador físico 3D con luz lateral */
         .nav-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 4px;
-            background: var(--surface-1);
-            border: 1px solid var(--border);
+            background: linear-gradient(170deg, #1a1a1a 0%, #111111 60%, #0d0d0d 100%);
+            border: 1px solid rgba(255,255,255,0.06);
             border-radius: var(--radius-card);
             cursor: pointer;
-            transition: background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.3s;
+            transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.2s;
             flex: 1;
             min-width: 0;
             padding: 12px 6px;
             font-family: 'DM Sans', sans-serif;
-            /* Glow apagado en reposo — sutil, elegante */
-            box-shadow: 0 0 8px -2px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.03);
+            position: relative;
+            /* Sombra inferior = profundidad del botón físico */
+            box-shadow:
+                0 4px 0 0 rgba(0,0,0,0.6),
+                0 6px 12px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,255,255,0.05),
+                inset 0 -1px 0 rgba(0,0,0,0.3);
         }
-        .nav-btn:active { transform: scale(0.94); }
+
+        /* Al presionar: se hunde */
+        .nav-btn:active {
+            transform: translateY(3px);
+            box-shadow:
+                0 1px 0 0 rgba(0,0,0,0.6),
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(0,0,0,0.2),
+                inset 0 2px 6px rgba(0,0,0,0.3);
+        }
 
         .nav-btn .nb-emoji { font-size: 1.4rem; line-height: 1; }
         .nav-btn .nb-label {
@@ -406,91 +420,227 @@
             white-space: nowrap;
         }
 
-        /* FEED — botón central destacado */
+        /* FEED — cian */
         #btn-feed-main {
-            border-color: rgba(0,212,255,0.22);
-            box-shadow: 0 0 12px -3px rgba(0,212,255,0.18), inset 0 1px 0 rgba(0,212,255,0.08);
             flex: 1.6;
+            border-color: rgba(0,212,255,0.15);
+            box-shadow:
+                0 4px 0 0 rgba(0,80,100,0.7),
+                0 6px 16px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(0,212,255,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                /* luz lateral izquierda */
+                -3px 0 12px -2px rgba(0,212,255,0.20),
+                /* luz lateral derecha */
+                3px 0 12px -2px rgba(0,212,255,0.20);
         }
         #btn-feed-main .nb-label { color: var(--accent); }
         #btn-feed-main:hover {
-            background: var(--surface-2);
-            border-color: rgba(0,212,255,0.65);
-            box-shadow: 0 0 22px -2px rgba(0,212,255,0.45), 0 0 48px -8px rgba(0,212,255,0.22), inset 0 1px 0 rgba(0,212,255,0.15);
+            background: linear-gradient(170deg, #1c2a2e 0%, #111111 60%, #0d0d0d 100%);
+            border-color: rgba(0,212,255,0.40);
+            box-shadow:
+                0 4px 0 0 rgba(0,80,100,0.7),
+                0 8px 24px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(0,212,255,0.12),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -4px 0 18px -1px rgba(0,212,255,0.40),
+                4px 0 18px -1px rgba(0,212,255,0.40),
+                0 0 28px -4px rgba(0,212,255,0.25);
             transform: translateY(-1px);
         }
+        #btn-feed-main:active {
+            transform: translateY(3px);
+            box-shadow:
+                0 1px 0 0 rgba(0,80,100,0.7),
+                0 2px 6px rgba(0,0,0,0.4),
+                inset 0 2px 6px rgba(0,0,0,0.3),
+                -2px 0 8px -2px rgba(0,212,255,0.20),
+                2px 0 8px -2px rgba(0,212,255,0.20);
+        }
 
-        /* CLIMA */
+        /* CLIMA — amarillo */
         #btn-clima {
             border-color: rgba(255,200,40,0.10);
-            box-shadow: 0 0 10px -4px rgba(255,200,40,0.14), inset 0 1px 0 rgba(255,200,40,0.04);
+            box-shadow:
+                0 4px 0 0 rgba(80,60,0,0.7),
+                0 6px 12px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,200,40,0.05),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -3px 0 10px -3px rgba(255,200,40,0.12),
+                3px 0 10px -3px rgba(255,200,40,0.12);
         }
         #btn-clima .nb-label { color: #444; }
         #btn-clima:hover {
-            background: var(--surface-2);
-            border-color: rgba(255,200,40,0.55);
-            box-shadow: 0 0 20px -2px rgba(255,200,40,0.40), 0 0 44px -8px rgba(255,200,40,0.18), inset 0 1px 0 rgba(255,200,40,0.12);
+            background: linear-gradient(170deg, #1e1c10 0%, #111111 60%, #0d0d0d 100%);
+            border-color: rgba(255,200,40,0.40);
+            box-shadow:
+                0 4px 0 0 rgba(80,60,0,0.7),
+                0 8px 20px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,200,40,0.10),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -4px 0 16px -1px rgba(255,200,40,0.38),
+                4px 0 16px -1px rgba(255,200,40,0.38),
+                0 0 24px -4px rgba(255,200,40,0.20);
             transform: translateY(-1px);
         }
         #btn-clima:hover .nb-label { color: #ffcc28; }
+        #btn-clima:active {
+            transform: translateY(3px);
+            box-shadow:
+                0 1px 0 0 rgba(80,60,0,0.7),
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 2px 6px rgba(0,0,0,0.3),
+                -2px 0 8px -3px rgba(255,200,40,0.18),
+                2px 0 8px -3px rgba(255,200,40,0.18);
+        }
 
-        /* VIBRAS */
+        /* VIBRAS — cian tenue */
         #btn-vibras {
-            border-color: rgba(0,212,255,0.08);
-            box-shadow: 0 0 10px -4px rgba(0,212,255,0.10), inset 0 1px 0 rgba(0,212,255,0.03);
+            border-color: rgba(0,212,255,0.07);
+            box-shadow:
+                0 4px 0 0 rgba(0,60,80,0.6),
+                0 6px 12px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(0,212,255,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -3px 0 10px -3px rgba(0,212,255,0.10),
+                3px 0 10px -3px rgba(0,212,255,0.10);
         }
         #btn-vibras .nb-label { color: #444; }
         #btn-vibras:hover {
-            background: var(--surface-2);
-            border-color: rgba(0,212,255,0.50);
-            box-shadow: 0 0 20px -2px rgba(0,212,255,0.35), 0 0 44px -8px rgba(0,212,255,0.15), inset 0 1px 0 rgba(0,212,255,0.10);
+            background: linear-gradient(170deg, #131a1e 0%, #111111 60%, #0d0d0d 100%);
+            border-color: rgba(0,212,255,0.38);
+            box-shadow:
+                0 4px 0 0 rgba(0,60,80,0.6),
+                0 8px 20px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(0,212,255,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -4px 0 16px -1px rgba(0,212,255,0.32),
+                4px 0 16px -1px rgba(0,212,255,0.32),
+                0 0 22px -4px rgba(0,212,255,0.18);
             transform: translateY(-1px);
         }
         #btn-vibras:hover .nb-label { color: var(--accent); }
+        #btn-vibras:active {
+            transform: translateY(3px);
+            box-shadow:
+                0 1px 0 0 rgba(0,60,80,0.6),
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 2px 6px rgba(0,0,0,0.3),
+                -2px 0 8px -3px rgba(0,212,255,0.14),
+                2px 0 8px -3px rgba(0,212,255,0.14);
+        }
 
-        /* STREAM */
+        /* STREAM — rojo / verde si live */
         #btn-stream {
             border-color: rgba(255,51,51,0.10);
-            box-shadow: 0 0 10px -4px rgba(255,51,51,0.14), inset 0 1px 0 rgba(255,51,51,0.04);
+            box-shadow:
+                0 4px 0 0 rgba(80,0,0,0.6),
+                0 6px 12px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(255,51,51,0.04),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -3px 0 10px -3px rgba(255,51,51,0.12),
+                3px 0 10px -3px rgba(255,51,51,0.12);
         }
         #btn-stream .nb-label { color: #444; }
         #btn-stream:hover {
-            background: var(--surface-2);
-            border-color: rgba(255,51,51,0.55);
-            box-shadow: 0 0 20px -2px rgba(255,51,51,0.40), 0 0 44px -8px rgba(255,51,51,0.18), inset 0 1px 0 rgba(255,51,51,0.12);
+            background: linear-gradient(170deg, #1e1010 0%, #111111 60%, #0d0d0d 100%);
+            border-color: rgba(255,51,51,0.45);
+            box-shadow:
+                0 4px 0 0 rgba(80,0,0,0.6),
+                0 8px 20px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(255,51,51,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -4px 0 16px -1px rgba(255,51,51,0.38),
+                4px 0 16px -1px rgba(255,51,51,0.38),
+                0 0 22px -4px rgba(255,51,51,0.20);
             transform: translateY(-1px);
         }
         #btn-stream:hover .nb-label { color: #ff4444; }
+        #btn-stream:active {
+            transform: translateY(3px);
+            box-shadow:
+                0 1px 0 0 rgba(80,0,0,0.6),
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 2px 6px rgba(0,0,0,0.3),
+                -2px 0 8px -3px rgba(255,51,51,0.16),
+                2px 0 8px -3px rgba(255,51,51,0.16);
+        }
         #btn-stream.live-on {
-            border-color: rgba(0,255,136,0.35);
-            background: rgba(0,255,136,0.06);
-            box-shadow: 0 0 14px -3px rgba(0,255,136,0.30), inset 0 1px 0 rgba(0,255,136,0.08);
+            border-color: rgba(0,255,136,0.25);
+            background: linear-gradient(170deg, #101e14 0%, #111111 60%, #0d0d0d 100%);
+            box-shadow:
+                0 4px 0 0 rgba(0,80,40,0.7),
+                0 6px 16px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(0,255,136,0.08),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -4px 0 16px -1px rgba(0,255,136,0.35),
+                4px 0 16px -1px rgba(0,255,136,0.35),
+                0 0 22px -4px rgba(0,255,136,0.18);
         }
         #btn-stream.live-on .nb-label { color: #00ff88; }
 
-        /* RADIO */
+        /* RADIO — naranja ámbar */
         #btn-radio-modal {
             border-color: rgba(200,120,0,0.12);
-            box-shadow: 0 0 10px -4px rgba(200,120,0,0.18), inset 0 1px 0 rgba(200,120,0,0.04);
+            box-shadow:
+                0 4px 0 0 rgba(70,35,0,0.7),
+                0 6px 12px rgba(0,0,0,0.4),
+                inset 0 1px 0 rgba(200,120,0,0.05),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -3px 0 10px -3px rgba(200,120,0,0.15),
+                3px 0 10px -3px rgba(200,120,0,0.15);
         }
         #btn-radio-modal .nb-emoji { color: #cc7700; }
         #btn-radio-modal .nb-label { color: #444; }
         #btn-radio-modal:hover {
-            background: var(--surface-2);
-            border-color: rgba(200,120,0,0.55);
-            box-shadow: 0 0 20px -2px rgba(200,120,0,0.40), 0 0 44px -8px rgba(200,120,0,0.18), inset 0 1px 0 rgba(200,120,0,0.10);
+            background: linear-gradient(170deg, #1c1508 0%, #111111 60%, #0d0d0d 100%);
+            border-color: rgba(200,120,0,0.45);
+            box-shadow:
+                0 4px 0 0 rgba(70,35,0,0.7),
+                0 8px 20px rgba(0,0,0,0.5),
+                inset 0 1px 0 rgba(200,120,0,0.10),
+                inset 0 -1px 0 rgba(0,0,0,0.3),
+                -4px 0 16px -1px rgba(200,120,0,0.40),
+                4px 0 16px -1px rgba(200,120,0,0.40),
+                0 0 24px -4px rgba(200,120,0,0.22);
             transform: translateY(-1px);
         }
         #btn-radio-modal:hover .nb-label { color: #cc7700; }
+        #btn-radio-modal:active {
+            transform: translateY(3px);
+            box-shadow:
+                0 1px 0 0 rgba(70,35,0,0.7),
+                0 2px 4px rgba(0,0,0,0.4),
+                inset 0 2px 6px rgba(0,0,0,0.3),
+                -2px 0 8px -3px rgba(200,120,0,0.18),
+                2px 0 8px -3px rgba(200,120,0,0.18);
+        }
         #btn-radio-modal.radio-active {
-            border-color: rgba(200,120,0,0.5);
-            background: rgba(200,100,0,0.12);
+            border-color: rgba(200,120,0,0.40);
+            background: linear-gradient(170deg, #1c1508 0%, #111111 60%, #0d0d0d 100%);
             animation: radio-pulse 2s infinite ease-in-out;
         }
         #btn-radio-modal.radio-active .nb-label { color: #e08800; }
         @keyframes radio-pulse {
-            0%, 100% { box-shadow: 0 0 10px -3px rgba(200,120,0,0.25), inset 0 1px 0 rgba(200,120,0,0.06); }
-            50%       { box-shadow: 0 0 26px -2px rgba(200,120,0,0.55), 0 0 50px -8px rgba(200,120,0,0.25), inset 0 1px 0 rgba(200,120,0,0.10); }
+            0%, 100% {
+                box-shadow:
+                    0 4px 0 0 rgba(70,35,0,0.7),
+                    0 6px 12px rgba(0,0,0,0.4),
+                    inset 0 1px 0 rgba(200,120,0,0.06),
+                    inset 0 -1px 0 rgba(0,0,0,0.3),
+                    -3px 0 12px -2px rgba(200,120,0,0.25),
+                    3px 0 12px -2px rgba(200,120,0,0.25);
+            }
+            50% {
+                box-shadow:
+                    0 4px 0 0 rgba(70,35,0,0.7),
+                    0 8px 20px rgba(0,0,0,0.5),
+                    inset 0 1px 0 rgba(200,120,0,0.10),
+                    inset 0 -1px 0 rgba(0,0,0,0.3),
+                    -5px 0 22px -1px rgba(200,120,0,0.55),
+                    5px 0 22px -1px rgba(200,120,0,0.55),
+                    0 0 30px -4px rgba(200,120,0,0.28);
+            }
         }
 
         /* =============================================
@@ -2662,11 +2812,21 @@
             }
             try {
                 const base = await getRadioBrowserBaseUrl();
-                const q = (cc, lim=12) =>
-                    fetch(`${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`)
-                    .then(r => r.json()).catch(() => []);
 
-                // Países de la captura + los que ya teníamos, en lotes paralelos
+                // q con timeout: si un país tarda más de 4s, devuelve [] y no frena al resto
+                const q = (cc, lim=8) => {
+                    const ctrl = new AbortController();
+                    const timer = setTimeout(() => ctrl.abort(), 4000);
+                    return fetch(
+                        `${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`,
+                        { signal: ctrl.signal }
+                    )
+                    .then(r => r.json())
+                    .catch(() => [])
+                    .finally(() => clearTimeout(timer));
+                };
+
+                // Países en paralelo — límites reducidos para carga rápida
                 const [
                     resAR, resMZA, resCBA,
                     resCL, resBO, resBR, resCO, resEC, resPE, resUY, resVE,
@@ -2677,29 +2837,29 @@
                     resGH, resKE, resNG, resMA, resZA,
                     resPH, resHK, resIN, resID, resIL, resJP, resMY, resKR, resSG, resTH, resTW, resTR
                 ] = await Promise.all([
-                    // Argentina (extra para filtrar provincias)
-                    fetch(`${base}/json/stations/search?countrycode=AR&limit=60&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
-                    fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=15&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
-                    fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=15&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
+                    // Argentina — con timeout propio
+                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),5000); return fetch(`${base}/json/stations/search?countrycode=AR&limit=40&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
+                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),4000); return fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
+                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),4000); return fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
                     // Latinoamérica
-                    q('CL',15), q('BO',12), q('BR',15), q('CO',12), q('EC',10),
-                    q('PE',10), q('UY',10), q('VE',10),
+                    q('CL',8), q('BO',6), q('BR',8), q('CO',6), q('EC',6),
+                    q('PE',6), q('UY',6), q('VE',6),
                     // Norte y Centro América
-                    q('US',15), q('CA',12), q('MX',12), q('CR',10), q('SV',8),
-                    q('GT',8),  q('HN',8),  q('JM',8),  q('NI',8),  q('PR',8),
-                    q('DO',8),  q('TT',8),
+                    q('US',8), q('CA',6), q('MX',6), q('CR',5), q('SV',5),
+                    q('GT',5), q('HN',5), q('JM',5), q('NI',5), q('PR',5),
+                    q('DO',5), q('TT',5),
                     // Europa
-                    q('DE',12), q('AT',10), q('BE',10), q('BG',10), q('CZ',10),
-                    q('DK',10), q('ES',12), q('FI',10), q('FR',12), q('GB',12),
-                    q('GR',10), q('HR',8),  q('HU',10), q('IE',10), q('IT',12),
-                    q('NL',10), q('NO',10), q('PL',10), q('PT',10),
-                    q('RO',10), q('RS',8),  q('SE',10), q('CH',10), q('UA',10),
+                    q('DE',8), q('AT',6), q('BE',6), q('BG',6), q('CZ',6),
+                    q('DK',6), q('ES',8), q('FI',6), q('FR',8), q('GB',8),
+                    q('GR',6), q('HR',5), q('HU',6), q('IE',6), q('IT',8),
+                    q('NL',6), q('NO',6), q('PL',6), q('PT',6),
+                    q('RO',6), q('RS',5), q('SE',6), q('CH',6), q('UA',6),
                     // África
-                    q('GH',8),  q('KE',8),  q('NG',8),  q('MA',8),  q('ZA',10),
+                    q('GH',5), q('KE',5), q('NG',5), q('MA',5), q('ZA',6),
                     // Asia y Oriente Medio
-                    q('PH',8),  q('HK',8),  q('IN',12), q('ID',10), q('IL',8),
-                    q('JP',12), q('MY',8),  q('KR',10), q('SG',8),  q('TH',8),
-                    q('TW',8),  q('TR',10)
+                    q('PH',5), q('HK',5), q('IN',8), q('ID',6), q('IL',5),
+                    q('JP',8), q('MY',5), q('KR',6), q('SG',5), q('TH',5),
+                    q('TW',5), q('TR',6)
                 ]);
 
                 const map = (arr, loc) => arr
