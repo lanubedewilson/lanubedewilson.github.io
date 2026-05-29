@@ -1772,7 +1772,7 @@
         }
 
         function _tkShowNext() {
-            const stage = document.getElementById('main-ticker');
+            const stage = document.getElementById('feed-main-ticker');
             if (!stage || !_tkItems.length) return;
 
             const group = [];
@@ -1799,20 +1799,12 @@
         }
 
         function showTicker(text) {
-            const loading = document.getElementById('ticker-loading');
-            const ticker  = document.getElementById('main-ticker');
-            const dot     = document.getElementById('ticker-dot');
-            loading.style.display = 'none';
-            ticker.style.display  = 'flex';
-            if (dot) dot.style.display = 'inline-block';
-
             // Parsear el string separado por • en ítems individuales
             _tkItems = text.split('•').map(s => s.trim()).filter(Boolean);
             _tkIdx = 0;
 
             clearInterval(_tkTimer);
             _tkCurrent = null;
-            ticker.innerHTML = '';
 
             _tkShowNext();
             _tkTimer = setInterval(_tkShowNext, TK_STAY);
