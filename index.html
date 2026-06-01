@@ -762,6 +762,8 @@
             padding: 5px var(--gap);
             text-align: center;
             border-top: 1px solid var(--border);
+            opacity: 0;
+            transition: opacity 0.8s ease;
         }
         #sponsor-ad {
             max-width: 90%;
@@ -818,14 +820,19 @@
             z-index: 500;
             transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
             overflow-y: auto;
-            padding: 40px 5%;
+            padding: 0 0 40px 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #timeline-overlay .timeline-container {
+            padding: 0 5% 40px;
         }
         #timeline-overlay.open { right: 0; }
 
         .close-timeline {
             position: sticky;
-            top: 20px;
-            margin-left: auto; margin-right: 0;
+            top: 52px;
+            margin-left: auto; margin-right: 5%;
             display: table;
             font-size: 2rem;
             color: var(--accent);
@@ -840,15 +847,19 @@
             border: 1px solid rgba(0,212,255,0.25);
             backdrop-filter: blur(6px);
             transition: all 0.2s;
+            flex-shrink: 0;
+            align-self: flex-end;
+            margin-top: 10px;
         }
         .close-timeline:hover { transform: scale(1.1); background: var(--accent-dim); }
 
         .timeline-container {
             max-width: 700px;
-            margin: 60px auto 0;
+            margin: 20px auto 0;
             border-left: 2px solid rgba(0,212,255,0.2);
             padding-left: 30px;
             position: relative;
+            width: 100%;
         }
 
         .note-card {
@@ -1318,12 +1329,77 @@
         ============================================= */
         header       { animation: fadeUp 0.35s ease both; }
         .main-stage  { animation: fadeUp 0.35s 0.07s ease both; }
-        .ticker-wrap { animation: fadeUp 0.35s 0.12s ease both; }
-        .feed-row    { animation: fadeUp 0.35s 0.17s ease both; }
+        .feed-row    { animation: fadeUp 0.35s 0.12s ease both; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(8px); }
             to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =============================================
+           BARRA DE INFO EN EL FEED (ticker + clima)
+        ============================================= */
+        #feed-info-bar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(8,8,8,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Fila ticker dentro del feed */
+        #feed-ticker-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 14px;
+            height: 28px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            overflow: hidden;
+        }
+        #feed-ticker-row .ticker {
+            height: 18px;
+        }
+        #feed-ticker-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #2a2a2a;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+        }
+
+        /* Fila clima dentro del feed */
+        #feed-clima-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 14px;
+            height: 24px;
+            overflow: hidden;
+        }
+        #feed-clima-text {
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: rgba(255,204,0,0.7);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #feed-clima-dot {
+            width: 5px; height: 5px;
+            background: #ffcc00;
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pulse-fade 2s ease-in-out infinite;
+            display: none;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -1432,23 +1508,13 @@
         </div>
     </div>
 
-    <div class="ticker-wrap">
-        <div id="ticker-loading" class="ticker-loading">
-            <div class="ticker-spinner"></div>
-            CONECTANDO con MERCADOS...
-        </div>
-        <span id="ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
-        <div class="ticker" id="main-ticker" style="display:none;"></div>
-    </div>
-
     <div class="feed-row">
         <button id="btn-stream" class="nav-btn" onclick="switchSignal('kick')" title="Stream en vivo">
             <span class="nb-emoji"><span id="stream-dot-feed" class="dot" style="width:10px;height:10px;margin:0"></span></span>
             <span class="nb-label">Stream</span>
         </button>
-        <button id="btn-clima" class="nav-btn" onclick="openClimaModal()" title="Clima según tu ubicación">
-            <span class="nb-emoji">🌤️</span>
-            <span class="nb-label">Clima</span>
+        <button id="btn-clima" class="nav-btn" title="Próximamente">
+            <span class="nb-emoji" style="font-size:1.1rem;color:#555;">▶</span>
         </button>
         <button id="btn-feed-main" class="nav-btn" onclick="openTimeline('all')" title="El Feed de la Nube">
             <span class="nb-emoji">☁️</span>
@@ -1492,6 +1558,21 @@
     </div>
 
     <div id="timeline-overlay">
+        <!-- Barra de info sticky: ticker + clima -->
+        <div id="feed-info-bar">
+            <div id="feed-ticker-row">
+                <span id="feed-ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
+                <span id="feed-ticker-loading" style="display:inline-flex;align-items:center;gap:6px;color:#2a2a2a;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;">
+                    <div class="ticker-spinner"></div>
+                    MERCADOS...
+                </span>
+                <div class="ticker" id="feed-main-ticker" style="display:none;"></div>
+            </div>
+            <div id="feed-clima-row">
+                <span id="feed-clima-dot"></span>
+                <span id="feed-clima-text">CARGANDO CLIMA...</span>
+            </div>
+        </div>
         <span class="close-timeline" onclick="closeTimeline()">×</span>
         <div class="timeline-container" id="timeline-content"></div>
     </div>
@@ -1702,7 +1783,7 @@
         }
 
         function _tkShowNext() {
-            const stage = document.getElementById('main-ticker');
+            const stage = document.getElementById('feed-main-ticker');
             if (!stage || !_tkItems.length) return;
 
             const group = [];
@@ -1729,23 +1810,125 @@
         }
 
         function showTicker(text) {
-            const loading = document.getElementById('ticker-loading');
-            const ticker  = document.getElementById('main-ticker');
-            const dot     = document.getElementById('ticker-dot');
-            loading.style.display = 'none';
-            ticker.style.display  = 'flex';
-            if (dot) dot.style.display = 'inline-block';
-
             // Parsear el string separado por • en ítems individuales
             _tkItems = text.split('•').map(s => s.trim()).filter(Boolean);
             _tkIdx = 0;
 
             clearInterval(_tkTimer);
             _tkCurrent = null;
-            ticker.innerHTML = '';
 
             _tkShowNext();
             _tkTimer = setInterval(_tkShowNext, TK_STAY);
+
+            // Sincronizar feed ticker
+            _syncFeedTicker(text);
+        }
+
+        /* -----------------------------------------------
+           FEED TICKER — ticker secundario dentro del feed
+        ----------------------------------------------- */
+        let _feedTkItems  = [];
+        let _feedTkIdx    = 0;
+        let _feedTkCurrent = null;
+        let _feedTkTimer  = null;
+
+        function _feedTkShowNext() {
+            const stage = document.getElementById('feed-main-ticker');
+            if (!stage || !_feedTkItems.length) return;
+            const group = [];
+            for (let i = 0; i < TK_GROUP; i++)
+                group.push(_feedTkItems[(_feedTkIdx + i) % _feedTkItems.length]);
+            _feedTkIdx = (_feedTkIdx + TK_GROUP) % _feedTkItems.length;
+            const newEl = _tkBuildEl(group);
+            if (_feedTkCurrent) {
+                const old = _feedTkCurrent;
+                old.classList.remove('tk-visible');
+                old.classList.add('tk-exiting');
+                setTimeout(() => old.remove(), TK_EXIT + 50);
+            }
+            newEl.classList.add('tk-entering');
+            stage.appendChild(newEl);
+            _feedTkCurrent = newEl;
+            setTimeout(() => {
+                newEl.classList.remove('tk-entering');
+                newEl.classList.add('tk-visible');
+            }, TK_ENTER);
+        }
+
+        function _syncFeedTicker(text) {
+            const loading = document.getElementById('feed-ticker-loading');
+            const ticker  = document.getElementById('feed-main-ticker');
+            const dot     = document.getElementById('feed-ticker-dot');
+            if (loading) loading.style.display = 'none';
+            if (ticker)  ticker.style.display  = 'flex';
+            if (dot)     dot.style.display      = 'inline-block';
+            _feedTkItems = text.split('•').map(s => s.trim()).filter(Boolean);
+            _feedTkIdx   = 0;
+            clearInterval(_feedTkTimer);
+            _feedTkCurrent = null;
+            if (ticker) ticker.innerHTML = '';
+            _feedTkShowNext();
+            _feedTkTimer = setInterval(_feedTkShowNext, TK_STAY);
+        }
+
+        /* -----------------------------------------------
+           CLIMA EN EL FEED — carga diferida y silenciosa
+        ----------------------------------------------- */
+        const SJ_LAT = -31.5375;
+        const SJ_LON = -68.5364;
+
+        async function _fetchClimaData(lat, lon) {
+            const [wRes, gRes] = await Promise.all([
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,precipitation&wind_speed_unit=kmh`),
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`)
+            ]);
+            const w = await wRes.json();
+            const g = await gRes.json();
+            return { w, g };
+        }
+
+        async function loadFeedClima() {
+            const climaText = document.getElementById('feed-clima-text');
+            const climaDot  = document.getElementById('feed-clima-dot');
+            if (!climaText) return;
+
+            try {
+                // Primero cargamos San Juan por defecto
+                const { w: wSJ, g: gSJ } = await _fetchClimaData(SJ_LAT, SJ_LON);
+                const cSJ   = wSJ.current;
+                const emoSJ = WMO_EMOJI[cSJ.weathercode] || '🌡️';
+                const desSJ = WMO_CODES[cSJ.weathercode] || '';
+                climaText.style.color = 'rgba(255,204,0,0.75)';
+                climaText.textContent = `${emoSJ} SAN JUAN ${Math.round(cSJ.temperature_2m)}° · ST ${Math.round(cSJ.apparent_temperature)}° · ${desSJ.toUpperCase()} · 💧${cSJ.relative_humidity_2m}% · 💨${Math.round(cSJ.wind_speed_10m)} KM/H`;
+                if (climaDot) climaDot.style.display = 'inline-block';
+
+                // Después intentamos geolocalización sin bloquear
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        async pos => {
+                            try {
+                                const { latitude: lat, longitude: lon } = pos.coords;
+                                // Solo actualizar si no estamos en San Juan (diferencia > 50km aprox)
+                                const dist = Math.sqrt(Math.pow(lat - SJ_LAT, 2) + Math.pow(lon - SJ_LON, 2));
+                                if (dist < 0.5) return; // Estamos cerca de SJ, no hacer otro fetch
+                                const { w, g } = await _fetchClimaData(lat, lon);
+                                const c    = w.current;
+                                const city = g.address?.city || g.address?.town || g.address?.village || 'Tu ubicación';
+                                const emo  = WMO_EMOJI[c.weathercode] || '🌡️';
+                                const des  = WMO_CODES[c.weathercode] || '';
+                                climaText.textContent = `${emo} ${city.toUpperCase()} ${Math.round(c.temperature_2m)}° · ST ${Math.round(c.apparent_temperature)}° · ${des.toUpperCase()} · 💧${c.relative_humidity_2m}% · 💨${Math.round(c.wind_speed_10m)} KM/H`;
+                            } catch(e) { /* silencioso — ya tenemos SJ */ }
+                        },
+                        () => { /* sin permiso — San Juan queda */ },
+                        { timeout: 6000, maximumAge: 300000 }
+                    );
+                }
+            } catch(e) {
+                if (climaText) {
+                    climaText.style.color = '#2a2a2a';
+                    climaText.textContent = 'SIN DATOS DE CLIMA';
+                }
+            }
         }
 
         async function updateTicker() {
@@ -2736,7 +2919,6 @@
         }
 
         async function fetchRadiosFromAPI() {
-            // Si ya cargó o está en proceso, no hacer nada
             if (radioBrowserLoaded || radioBrowserLoading) return;
             radioBrowserLoading = true;
 
@@ -2999,7 +3181,7 @@
                     // Ya cargó en segundo plano: solo redibujar
                     renderRadioAccordion();
                 }
-                // Si radioBrowserLoading === true: la carga ya está en curso,
+                // Si radioBrowserLoading === true: la carga ya corre en fondo,
                 // el skeleton "Sintonizando antenas..." ya se ve, no hace falta hacer nada.
             }
         }
@@ -3130,22 +3312,31 @@
         }
 
         window.onload = () => {
-            // Precarga silenciosa: los datos quedan listos antes de que el usuario abra el Feed
+            // 1. Noticias primero — carga inmediata para que el Feed esté listo
             fetchData();
-            updateTicker();
-            setInterval(updateTicker, 60000);
-            // El stream (on/off) se verifica cada 2 minutos sin recargar noticias ni sponsors
-            // El Feed refresca en background solo si pasaron más de 5 minutos desde el último fetch
+            // 2. Ticker y clima se cargan 2 s después para no retrasar la vista de noticias
+            setTimeout(() => {
+                updateTicker();
+                loadFeedClima();
+                setInterval(updateTicker, 60000);
+            }, 2000);
+            // 3. Sponsors aparecen a los 3 s con fade suave — dan tiempo al usuario de orientarse
+            setTimeout(() => {
+                const footer = document.querySelector('.sponsor-footer');
+                if (footer) footer.style.opacity = '1';
+            }, 3000);
+            // El stream (on/off) se verifica cada 2 minutos
             setInterval(checkStreamStatus, 120000);
 
-            // CARGA DIFERIDA DE RADIOS — se ejecuta cuando el navegador está libre
+            // 4. CARGA DIFERIDA DE RADIOS — cuando el navegador esté libre
+            // Así cuando el usuario toque el botón Radio, la lista ya está lista
             const cargarRadiosDeFondo = () => {
                 if (!radioBrowserLoaded && !radioBrowserLoading) {
                     fetchRadiosFromAPI();
                 }
             };
             if ('requestIdleCallback' in window) {
-                // Espera a que el hilo principal no tenga nada urgente; máximo 5 segundos
+                // Espera a que el hilo principal esté libre; máximo 5 s de espera
                 requestIdleCallback(cargarRadiosDeFondo, { timeout: 5000 });
             } else {
                 // Fallback para Safari y navegadores antiguos
