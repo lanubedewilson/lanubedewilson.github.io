@@ -2390,13 +2390,44 @@
             try {
                 const query  = encodeURIComponent(`${ciudad} Argentina`);
                 const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
-                const proxy  = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=20`;
-                const res    = await fetch(proxy);
-                const data   = await res.json();
 
-                if (!data.items || data.items.length === 0) throw new Error('Sin resultados');
+                // Tres proxies CORS de fallback — se prueban en orden hasta que uno funcione
+                const proxies = [
+                    `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
+                    `https://thingproxy.freeboard.io/fetch/${rssUrl}`,
+                ];
 
-                renderFeedLocal(data.items, ciudad, esGPS);
+                let xmlText = null;
+                for (const proxyUrl of proxies) {
+                    try {
+                        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(6000) });
+                        if (res.ok) {
+                            const text = await res.text();
+                            if (text.includes('<item>')) { xmlText = text; break; }
+                        }
+                    } catch(e) { /* probar siguiente */ }
+                }
+
+                if (!xmlText) throw new Error('Todos los proxies fallaron');
+
+                // Parsear el XML del RSS directamente — sin depender de rss2json
+                const parser = new DOMParser();
+                const doc    = parser.parseFromString(xmlText, 'text/xml');
+                const itemEls = Array.from(doc.querySelectorAll('item')).slice(0, 20);
+
+                if (itemEls.length === 0) throw new Error('RSS vacío');
+
+                const items = itemEls.map(el => ({
+                    title:       el.querySelector('title')?.textContent || '',
+                    link:        el.querySelector('link')?.textContent  || '',
+                    pubDate:     el.querySelector('pubDate')?.textContent || '',
+                    author:      el.querySelector('source')?.textContent || '',
+                    description: el.querySelector('description')?.textContent || '',
+                    thumbnail:   el.querySelector('enclosure')?.getAttribute('url') || '',
+                }));
+
+                renderFeedLocal(items, ciudad, esGPS);
                 feedLocalLoaded = true;
             } catch(err) {
                 console.error('Feed Local error:', err);
