@@ -2169,7 +2169,31 @@
             const ciudad = userCity || 'Argentina';
             const esGPS  = userCityGPS;
 
+            // FIX 4: intentar mostrar cache instantáneo mientras se actualiza en background
+            const FEED_CACHE_TTL = 1000 * 60 * 120; // 2 horas
+            const cacheKey    = `fl_items_${(ciudad).toLowerCase().replace(/\s+/g,'_')}`;
+            const cacheTs     = parseInt(localStorage.getItem(cacheKey + '_ts') || '0');
+            const cacheRaw    = localStorage.getItem(cacheKey);
+            const cacheValido = cacheRaw && (Date.now() - cacheTs) < FEED_CACHE_TTL;
+
             const container = document.getElementById('feed-local-content');
+
+            if (cacheValido) {
+                // Mostrar cache inmediatamente
+                try {
+                    const cachedItems = JSON.parse(cacheRaw);
+                    renderFeedLocal(cachedItems, ciudad, esGPS, true); // true = fromCache
+                    feedLocalLoaded  = true;
+                    feedLocalLoading = false;
+                    // Actualizar en background sin bloquear UI
+                    _fetchFeedLocalNetwork(ciudad, esGPS, cacheKey, container);
+                    return;
+                } catch(e) {
+                    localStorage.removeItem(cacheKey);
+                }
+            }
+
+            // Sin cache válido: mostrar spinner y cargar
             container.innerHTML = `
                 <div id="feed-local-header">
                     🌩️ Feed Local
@@ -2180,10 +2204,19 @@
                     CARGANDO NOTICIAS LOCALES...
                 </div>`;
 
+            await _fetchFeedLocalNetwork(ciudad, esGPS, cacheKey, container);
+        }
+
+        async function _fetchFeedLocalNetwork(ciudad, esGPS, cacheKey, container) {
             try {
-                const ciudadQ = `"${ciudad}"`;
-                const regionQ = userRegion && userRegion !== ciudad ? ` "${userRegion}"` : '';
-                const query   = encodeURIComponent(`${ciudadQ}${regionQ} noticias`);
+                // FIX 3: usar provincia/región como término principal para cubrir ~200 km de radio
+                const ciudadQ  = `"${ciudad}"`;
+                const regionQ  = userRegion && userRegion !== ciudad ? ` "${userRegion}"` : '';
+                // Si tenemos región (provincia), buscar también por ella para ampliar el radio geográfico
+                const queryTermino = userRegion && userRegion !== ciudad
+                    ? encodeURIComponent(`${regionQ.trim()} noticias`)       // búsqueda por provincia primero
+                    : encodeURIComponent(`${ciudadQ} noticias`);
+                const query = queryTermino;
                 const rssUrl  = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
 
                 const proxies = [
@@ -2192,20 +2225,18 @@
                     `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
                 ];
 
+                // FIX 1: proxies en paralelo — gana el más rápido
                 let xmlText = null;
-                for (const proxyUrl of proxies) {
-                    try {
-                        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
-                        if (res.ok) {
-                            const text = await res.text();
-                            if (text.includes('<item>')) { 
-                                xmlText = text; 
-                                break; 
-                            }
-                        }
-                    } catch(e) { 
-                        console.warn(`Falló el proxy: ${proxyUrl}`);
-                    }
+                try {
+                    xmlText = await Promise.any(
+                        proxies.map(url =>
+                            fetch(url, { signal: AbortSignal.timeout(8000) })
+                                .then(r => { if (!r.ok) throw new Error('no ok'); return r.text(); })
+                                .then(t => { if (!t.includes('<item>')) throw new Error('sin items'); return t; })
+                        )
+                    );
+                } catch(e) {
+                    console.warn('Todos los proxies fallaron en paralelo:', e);
                 }
 
                 if (!xmlText) throw new Error('Todos los proxies fallaron');
@@ -2225,30 +2256,40 @@
                     thumbnail:   el.querySelector('enclosure')?.getAttribute('url') || '',
                 }));
 
-                renderFeedLocal(items, ciudad, esGPS);
+                renderFeedLocal(items, ciudad, esGPS, false);
                 feedLocalLoaded = true;
+                // FIX 4: guardar en cache
+                try {
+                    localStorage.setItem(cacheKey, JSON.stringify(items));
+                    localStorage.setItem(cacheKey + '_ts', Date.now().toString());
+                } catch(e) { /* localStorage lleno, ignorar */ }
             } catch(err) {
                 console.error('Feed Local error:', err);
-                container.innerHTML = `
-                    <div id="feed-local-header">🌩️ Feed Local<span>${ciudad}</span></div>
-                    <div style="padding:40px;text-align:center;color:#555;font-size:0.85rem;">
-                        No se pudieron cargar las noticias locales.<br>Intentá de nuevo más tarde.
-                    </div>`;
+                // Solo mostrar error si el contenedor no tiene noticias ya renderizadas
+                if (!container.querySelector('.note-card')) {
+                    container.innerHTML = `
+                        <div id="feed-local-header">🌩️ Feed Local<span>${ciudad}</span></div>
+                        <div style="padding:40px;text-align:center;color:#555;font-size:0.85rem;">
+                            No se pudieron cargar las noticias locales.<br>Intentá de nuevo más tarde.
+                        </div>`;
+                }
             } finally {
                 feedLocalLoading = false;
             }
         }
 
-        function renderFeedLocal(items, ciudad, esGPS) {
+        function renderFeedLocal(items, ciudad, esGPS, fromCache) {
             const container  = document.getElementById('feed-local-content');
             const previewLen = 300;
             const subtitulo  = esGPS ? `📍 ${ciudad} · GPS · Google News` : `📡 ${ciudad} · por IP · Google News`;
             const btnGPS     = esGPS ? '' : `<button onclick="mejorarConGPS()" style="margin-top:8px;background:none;border:1px solid rgba(255,160,0,0.3);color:#ffaa00;font-size:0.62rem;padding:3px 10px;border-radius:20px;cursor:pointer;letter-spacing:1px;">📍 Mejorar con GPS</button>`;
+            // FIX 4: indicador sutil si viene del cache
+            const cacheTag   = fromCache ? `<span style="font-size:0.55rem;color:#333;letter-spacing:1px;margin-left:8px;">· desde caché</span>` : '';
 
             let html = `
                 <div id="feed-local-header">
                     🌩️ Feed Local
-                    <span>${subtitulo}</span>
+                    <span>${subtitulo}${cacheTag}</span>
                     <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: center; align-items: center; padding: 0 5%;">
                         <input type="text" id="input-manual-city" placeholder="Escribe otra ciudad o provincia..." onkeypress="handleManualCityEnter(event)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" style="flex: 1; padding: 8px 14px; border-radius: var(--radius-btn); border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--white-bone); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; outline: none; transition: 0.3s; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
                         <button onclick="cambiarUbicacionManual()" style="background: var(--accent-dim); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); font-family: 'Bebas Neue', cursive; font-size: 0.9rem; letter-spacing: 1px; padding: 6px 14px; border-radius: var(--radius-btn); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.2)'" onmouseout="this.style.background='var(--accent-dim)'">BUSCAR</button>
@@ -3011,6 +3052,9 @@
             } catch (e) { }
         }
 
+        // FIX 2: variable para prefetch silencioso
+        let prefetchDone = false;
+
         window.onload = () => {
             fetchData();
             setTimeout(() => {
@@ -3025,7 +3069,13 @@
             setInterval(checkStreamStatus, 120000);
 
             const tareasIdle = () => {
-                detectarUbicacionPorIP();
+                // FIX 2: detectar ubicación y prefetchear noticias en background
+                detectarUbicacionPorIP().then(() => {
+                    if (!prefetchDone && !feedLocalLoaded && !feedLocalLoading) {
+                        prefetchDone = true;
+                        fetchFeedLocal(); // corre en background, sin abrir el overlay
+                    }
+                });
                 if (!radioBrowserLoaded && !radioBrowserLoading) {
                     fetchRadiosFromAPI();
                 }
