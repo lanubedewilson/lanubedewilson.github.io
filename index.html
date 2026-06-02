@@ -275,50 +275,27 @@
             background: transparent;
             overflow: hidden;
             padding: 5px var(--gap);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
         .ticker {
-            display: flex;
-            align-items: center;
-            position: relative;
-            height: 20px;
-            flex: 1;
-            overflow: hidden;
-        }
-        .ticker-group {
-            position: absolute;
-            display: flex;
-            align-items: center;
+            display: inline-block;
             white-space: nowrap;
+            animation: tickerMove 90s linear infinite;
             color: var(--accent);
             font-weight: 500;
             font-size: 0.72rem;
             letter-spacing: 0.08em;
         }
-        .ticker-group-sep {
-            color: rgba(0,212,255,0.25);
-            margin: 0 10px;
+        /* Punto de pulso — señal de vida */
+        .ticker-wrap::before {
+            content: '';
+            display: inline-block;
+            width: 5px; height: 5px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 8px;
+            vertical-align: middle;
+            animation: pulse-fade 2s ease-in-out infinite;
         }
-        .ticker-group.tk-entering {
-            animation: tk-enter 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .ticker-group.tk-visible {
-            opacity: 1; transform: translateX(0); filter: blur(0);
-        }
-        .ticker-group.tk-exiting {
-            animation: tk-exit 1.17s ease-in forwards;
-        }
-        @keyframes tk-enter {
-            from { opacity: 0; transform: translateX(50px); filter: blur(10px); }
-            to   { opacity: 1; transform: translateX(0);    filter: blur(0);    }
-        }
-        @keyframes tk-exit {
-            from { opacity: 1; transform: translateX(0);     filter: blur(0);    }
-            to   { opacity: 0; transform: translateX(-50px); filter: blur(10px); }
-        }
-        
 
         .ticker-loading {
             display: inline-flex;
@@ -338,7 +315,10 @@
             animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-
+        @keyframes tickerMove {
+            0%   { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
+        }
 
         /* =============================================
            GRID DE SECCIONES
@@ -375,40 +355,26 @@
             background: transparent;
         }
 
-        /* BASE — efecto pulsador físico 3D con luz lateral */
+        /* BASE — todos los botones de la barra comparten esto */
         .nav-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 4px;
-            background: linear-gradient(170deg, #1a1a1a 0%, #111111 60%, #0d0d0d 100%);
-            border: 1px solid rgba(255,255,255,0.06);
+            background: var(--surface-1);
+            border: 1px solid var(--border);
             border-radius: var(--radius-card);
             cursor: pointer;
-            transition: transform 0.1s ease, box-shadow 0.15s ease, background 0.2s;
+            transition: background 0.25s, border-color 0.25s, transform 0.15s, box-shadow 0.3s;
             flex: 1;
             min-width: 0;
             padding: 12px 6px;
             font-family: 'DM Sans', sans-serif;
-            position: relative;
-            /* Sombra inferior = profundidad del botón físico */
-            box-shadow:
-                0 4px 0 0 rgba(0,0,0,0.6),
-                0 6px 12px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,255,255,0.05),
-                inset 0 -1px 0 rgba(0,0,0,0.3);
+            /* Glow apagado en reposo — sutil, elegante */
+            box-shadow: 0 0 8px -2px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.03);
         }
-
-        /* Al presionar: se hunde */
-        .nav-btn:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 1px 0 0 rgba(0,0,0,0.6),
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(0,0,0,0.2),
-                inset 0 2px 6px rgba(0,0,0,0.3);
-        }
+        .nav-btn:active { transform: scale(0.94); }
 
         .nav-btn .nb-emoji { font-size: 1.4rem; line-height: 1; }
         .nav-btn .nb-label {
@@ -420,229 +386,91 @@
             white-space: nowrap;
         }
 
-        /* FEED — cian */
+        /* FEED — botón central destacado */
         #btn-feed-main {
+            border-color: rgba(0,212,255,0.22);
+            box-shadow: 0 0 12px -3px rgba(0,212,255,0.18), inset 0 1px 0 rgba(0,212,255,0.08);
             flex: 1.6;
-            border-color: rgba(0,212,255,0.15);
-            box-shadow:
-                0 4px 0 0 rgba(0,80,100,0.7),
-                0 6px 16px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(0,212,255,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                /* luz lateral izquierda */
-                -3px 0 12px -2px rgba(0,212,255,0.20),
-                /* luz lateral derecha */
-                3px 0 12px -2px rgba(0,212,255,0.20);
         }
         #btn-feed-main .nb-label { color: var(--accent); }
         #btn-feed-main:hover {
-            background: linear-gradient(170deg, #1c2a2e 0%, #111111 60%, #0d0d0d 100%);
-            border-color: rgba(0,212,255,0.40);
-            box-shadow:
-                0 4px 0 0 rgba(0,80,100,0.7),
-                0 8px 24px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(0,212,255,0.12),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -4px 0 18px -1px rgba(0,212,255,0.40),
-                4px 0 18px -1px rgba(0,212,255,0.40),
-                0 0 28px -4px rgba(0,212,255,0.25);
+            background: var(--surface-2);
+            border-color: rgba(0,212,255,0.65);
+            box-shadow: 0 0 22px -2px rgba(0,212,255,0.45), 0 0 48px -8px rgba(0,212,255,0.22), inset 0 1px 0 rgba(0,212,255,0.15);
             transform: translateY(-1px);
         }
-        #btn-feed-main:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 1px 0 0 rgba(0,80,100,0.7),
-                0 2px 6px rgba(0,0,0,0.4),
-                inset 0 2px 6px rgba(0,0,0,0.3),
-                -2px 0 8px -2px rgba(0,212,255,0.20),
-                2px 0 8px -2px rgba(0,212,255,0.20);
-        }
 
-        /* CLIMA — amarillo */
+        /* CLIMA */
         #btn-clima {
             border-color: rgba(255,200,40,0.10);
-            box-shadow:
-                0 4px 0 0 rgba(80,60,0,0.7),
-                0 6px 12px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,200,40,0.05),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -3px 0 10px -3px rgba(255,200,40,0.12),
-                3px 0 10px -3px rgba(255,200,40,0.12);
+            box-shadow: 0 0 10px -4px rgba(255,200,40,0.14), inset 0 1px 0 rgba(255,200,40,0.04);
         }
         #btn-clima .nb-label { color: #444; }
-        #btn-clima.local-active .nb-label { color: #ffaa00; }
-        #btn-clima.local-active { border-color: rgba(255,160,0,0.4); }
         #btn-clima:hover {
-            background: linear-gradient(170deg, #1e1c10 0%, #111111 60%, #0d0d0d 100%);
-            border-color: rgba(255,200,40,0.40);
-            box-shadow:
-                0 4px 0 0 rgba(80,60,0,0.7),
-                0 8px 20px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,200,40,0.10),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -4px 0 16px -1px rgba(255,200,40,0.38),
-                4px 0 16px -1px rgba(255,200,40,0.38),
-                0 0 24px -4px rgba(255,200,40,0.20);
+            background: var(--surface-2);
+            border-color: rgba(255,200,40,0.55);
+            box-shadow: 0 0 20px -2px rgba(255,200,40,0.40), 0 0 44px -8px rgba(255,200,40,0.18), inset 0 1px 0 rgba(255,200,40,0.12);
             transform: translateY(-1px);
         }
         #btn-clima:hover .nb-label { color: #ffcc28; }
-        #btn-clima:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 1px 0 0 rgba(80,60,0,0.7),
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 2px 6px rgba(0,0,0,0.3),
-                -2px 0 8px -3px rgba(255,200,40,0.18),
-                2px 0 8px -3px rgba(255,200,40,0.18);
-        }
 
-        /* VIBRAS — cian tenue */
+        /* VIBRAS */
         #btn-vibras {
-            border-color: rgba(0,212,255,0.07);
-            box-shadow:
-                0 4px 0 0 rgba(0,60,80,0.6),
-                0 6px 12px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(0,212,255,0.04),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -3px 0 10px -3px rgba(0,212,255,0.10),
-                3px 0 10px -3px rgba(0,212,255,0.10);
+            border-color: rgba(0,212,255,0.08);
+            box-shadow: 0 0 10px -4px rgba(0,212,255,0.10), inset 0 1px 0 rgba(0,212,255,0.03);
         }
         #btn-vibras .nb-label { color: #444; }
         #btn-vibras:hover {
-            background: linear-gradient(170deg, #131a1e 0%, #111111 60%, #0d0d0d 100%);
-            border-color: rgba(0,212,255,0.38);
-            box-shadow:
-                0 4px 0 0 rgba(0,60,80,0.6),
-                0 8px 20px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(0,212,255,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -4px 0 16px -1px rgba(0,212,255,0.32),
-                4px 0 16px -1px rgba(0,212,255,0.32),
-                0 0 22px -4px rgba(0,212,255,0.18);
+            background: var(--surface-2);
+            border-color: rgba(0,212,255,0.50);
+            box-shadow: 0 0 20px -2px rgba(0,212,255,0.35), 0 0 44px -8px rgba(0,212,255,0.15), inset 0 1px 0 rgba(0,212,255,0.10);
             transform: translateY(-1px);
         }
         #btn-vibras:hover .nb-label { color: var(--accent); }
-        #btn-vibras:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 1px 0 0 rgba(0,60,80,0.6),
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 2px 6px rgba(0,0,0,0.3),
-                -2px 0 8px -3px rgba(0,212,255,0.14),
-                2px 0 8px -3px rgba(0,212,255,0.14);
-        }
 
-        /* STREAM — rojo / verde si live */
+        /* STREAM */
         #btn-stream {
             border-color: rgba(255,51,51,0.10);
-            box-shadow:
-                0 4px 0 0 rgba(80,0,0,0.6),
-                0 6px 12px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(255,51,51,0.04),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -3px 0 10px -3px rgba(255,51,51,0.12),
-                3px 0 10px -3px rgba(255,51,51,0.12);
+            box-shadow: 0 0 10px -4px rgba(255,51,51,0.14), inset 0 1px 0 rgba(255,51,51,0.04);
         }
         #btn-stream .nb-label { color: #444; }
         #btn-stream:hover {
-            background: linear-gradient(170deg, #1e1010 0%, #111111 60%, #0d0d0d 100%);
-            border-color: rgba(255,51,51,0.45);
-            box-shadow:
-                0 4px 0 0 rgba(80,0,0,0.6),
-                0 8px 20px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(255,51,51,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -4px 0 16px -1px rgba(255,51,51,0.38),
-                4px 0 16px -1px rgba(255,51,51,0.38),
-                0 0 22px -4px rgba(255,51,51,0.20);
+            background: var(--surface-2);
+            border-color: rgba(255,51,51,0.55);
+            box-shadow: 0 0 20px -2px rgba(255,51,51,0.40), 0 0 44px -8px rgba(255,51,51,0.18), inset 0 1px 0 rgba(255,51,51,0.12);
             transform: translateY(-1px);
         }
         #btn-stream:hover .nb-label { color: #ff4444; }
-        #btn-stream:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 1px 0 0 rgba(80,0,0,0.6),
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 2px 6px rgba(0,0,0,0.3),
-                -2px 0 8px -3px rgba(255,51,51,0.16),
-                2px 0 8px -3px rgba(255,51,51,0.16);
-        }
         #btn-stream.live-on {
-            border-color: rgba(0,255,136,0.25);
-            background: linear-gradient(170deg, #101e14 0%, #111111 60%, #0d0d0d 100%);
-            box-shadow:
-                0 4px 0 0 rgba(0,80,40,0.7),
-                0 6px 16px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(0,255,136,0.08),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -4px 0 16px -1px rgba(0,255,136,0.35),
-                4px 0 16px -1px rgba(0,255,136,0.35),
-                0 0 22px -4px rgba(0,255,136,0.18);
+            border-color: rgba(0,255,136,0.35);
+            background: rgba(0,255,136,0.06);
+            box-shadow: 0 0 14px -3px rgba(0,255,136,0.30), inset 0 1px 0 rgba(0,255,136,0.08);
         }
         #btn-stream.live-on .nb-label { color: #00ff88; }
 
-        /* RADIO — naranja ámbar */
+        /* RADIO */
         #btn-radio-modal {
             border-color: rgba(200,120,0,0.12);
-            box-shadow:
-                0 4px 0 0 rgba(70,35,0,0.7),
-                0 6px 12px rgba(0,0,0,0.4),
-                inset 0 1px 0 rgba(200,120,0,0.05),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -3px 0 10px -3px rgba(200,120,0,0.15),
-                3px 0 10px -3px rgba(200,120,0,0.15);
+            box-shadow: 0 0 10px -4px rgba(200,120,0,0.18), inset 0 1px 0 rgba(200,120,0,0.04);
         }
         #btn-radio-modal .nb-emoji { color: #cc7700; }
         #btn-radio-modal .nb-label { color: #444; }
         #btn-radio-modal:hover {
-            background: linear-gradient(170deg, #1c1508 0%, #111111 60%, #0d0d0d 100%);
-            border-color: rgba(200,120,0,0.45);
-            box-shadow:
-                0 4px 0 0 rgba(70,35,0,0.7),
-                0 8px 20px rgba(0,0,0,0.5),
-                inset 0 1px 0 rgba(200,120,0,0.10),
-                inset 0 -1px 0 rgba(0,0,0,0.3),
-                -4px 0 16px -1px rgba(200,120,0,0.40),
-                4px 0 16px -1px rgba(200,120,0,0.40),
-                0 0 24px -4px rgba(200,120,0,0.22);
+            background: var(--surface-2);
+            border-color: rgba(200,120,0,0.55);
+            box-shadow: 0 0 20px -2px rgba(200,120,0,0.40), 0 0 44px -8px rgba(200,120,0,0.18), inset 0 1px 0 rgba(200,120,0,0.10);
             transform: translateY(-1px);
         }
         #btn-radio-modal:hover .nb-label { color: #cc7700; }
-        #btn-radio-modal:active {
-            transform: translateY(3px);
-            box-shadow:
-                0 1px 0 0 rgba(70,35,0,0.7),
-                0 2px 4px rgba(0,0,0,0.4),
-                inset 0 2px 6px rgba(0,0,0,0.3),
-                -2px 0 8px -3px rgba(200,120,0,0.18),
-                2px 0 8px -3px rgba(200,120,0,0.18);
-        }
         #btn-radio-modal.radio-active {
-            border-color: rgba(200,120,0,0.40);
-            background: linear-gradient(170deg, #1c1508 0%, #111111 60%, #0d0d0d 100%);
+            border-color: rgba(200,120,0,0.5);
+            background: rgba(200,100,0,0.12);
             animation: radio-pulse 2s infinite ease-in-out;
         }
         #btn-radio-modal.radio-active .nb-label { color: #e08800; }
         @keyframes radio-pulse {
-            0%, 100% {
-                box-shadow:
-                    0 4px 0 0 rgba(70,35,0,0.7),
-                    0 6px 12px rgba(0,0,0,0.4),
-                    inset 0 1px 0 rgba(200,120,0,0.06),
-                    inset 0 -1px 0 rgba(0,0,0,0.3),
-                    -3px 0 12px -2px rgba(200,120,0,0.25),
-                    3px 0 12px -2px rgba(200,120,0,0.25);
-            }
-            50% {
-                box-shadow:
-                    0 4px 0 0 rgba(70,35,0,0.7),
-                    0 8px 20px rgba(0,0,0,0.5),
-                    inset 0 1px 0 rgba(200,120,0,0.10),
-                    inset 0 -1px 0 rgba(0,0,0,0.3),
-                    -5px 0 22px -1px rgba(200,120,0,0.55),
-                    5px 0 22px -1px rgba(200,120,0,0.55),
-                    0 0 30px -4px rgba(200,120,0,0.28);
-            }
+            0%, 100% { box-shadow: 0 0 10px -3px rgba(200,120,0,0.25), inset 0 1px 0 rgba(200,120,0,0.06); }
+            50%       { box-shadow: 0 0 26px -2px rgba(200,120,0,0.55), 0 0 50px -8px rgba(200,120,0,0.25), inset 0 1px 0 rgba(200,120,0,0.10); }
         }
 
         /* =============================================
@@ -764,8 +592,6 @@
             padding: 5px var(--gap);
             text-align: center;
             border-top: 1px solid var(--border);
-            opacity: 0;
-            transition: opacity 0.8s ease;
         }
         #sponsor-ad {
             max-width: 90%;
@@ -822,68 +648,14 @@
             z-index: 500;
             transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
             overflow-y: auto;
-            padding: 0 0 40px 0;
-            display: flex;
-            flex-direction: column;
-        }
-        #timeline-overlay .timeline-container {
-            padding: 0 5% 40px;
+            padding: 40px 5%;
         }
         #timeline-overlay.open { right: 0; }
 
-        /* =============================================
-           FEED LOCAL OVERLAY
-        ============================================= */
-        #feed-local-overlay {
-            position: fixed;
-            top: 0; right: -100%;
-            width: 100%; height: 100%;
-            background: rgba(8,8,8,0.88);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            z-index: 500;
-            transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-            overflow-y: auto;
-            padding: 0 0 40px 0;
-            display: flex;
-            flex-direction: column;
-        }
-        #feed-local-overlay.open { right: 0; }
-
-        #feed-local-overlay .timeline-container {
-            border-left-color: rgba(255,160,0,0.25);
-        }
-
-        #feed-local-overlay .note-card {
-            border-left-color: #ffaa00;
-        }
-        #feed-local-overlay .note-card::before {
-            border-color: #ffaa00;
-        }
-
-        #feed-local-header {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 1.4rem;
-            letter-spacing: 3px;
-            color: #ffaa00;
-            text-align: center;
-            padding: 24px 5% 0;
-            flex-shrink: 0;
-        }
-        #feed-local-header span {
-            font-size: 0.72rem;
-            color: #555;
-            display: block;
-            letter-spacing: 2px;
-            margin-top: 2px;
-            font-family: sans-serif;
-            text-transform: uppercase;
-        }
-
         .close-timeline {
             position: sticky;
-            top: 52px;
-            margin-left: auto; margin-right: 5%;
+            top: 20px;
+            margin-left: auto; margin-right: 0;
             display: table;
             font-size: 2rem;
             color: var(--accent);
@@ -898,19 +670,15 @@
             border: 1px solid rgba(0,212,255,0.25);
             backdrop-filter: blur(6px);
             transition: all 0.2s;
-            flex-shrink: 0;
-            align-self: flex-end;
-            margin-top: 10px;
         }
         .close-timeline:hover { transform: scale(1.1); background: var(--accent-dim); }
 
         .timeline-container {
             max-width: 700px;
-            margin: 20px auto 0;
+            margin: 60px auto 0;
             border-left: 2px solid rgba(0,212,255,0.2);
             padding-left: 30px;
             position: relative;
-            width: 100%;
         }
 
         .note-card {
@@ -1380,77 +1148,12 @@
         ============================================= */
         header       { animation: fadeUp 0.35s ease both; }
         .main-stage  { animation: fadeUp 0.35s 0.07s ease both; }
-        .feed-row    { animation: fadeUp 0.35s 0.12s ease both; }
+        .ticker-wrap { animation: fadeUp 0.35s 0.12s ease both; }
+        .feed-row    { animation: fadeUp 0.35s 0.17s ease both; }
 
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(8px); }
             to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* =============================================
-           BARRA DE INFO EN EL FEED (ticker + clima)
-        ============================================= */
-        #feed-info-bar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(8,8,8,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Fila ticker dentro del feed */
-        #feed-ticker-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 14px;
-            height: 28px;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            overflow: hidden;
-        }
-        #feed-ticker-row .ticker {
-            height: 18px;
-        }
-        #feed-ticker-loading {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: #2a2a2a;
-            font-size: 0.68rem;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-        }
-
-        /* Fila clima dentro del feed */
-        #feed-clima-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 4px 14px;
-            height: 24px;
-            overflow: hidden;
-        }
-        #feed-clima-text {
-            font-size: 0.68rem;
-            font-weight: 500;
-            letter-spacing: 0.08em;
-            color: rgba(255,204,0,0.7);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        #feed-clima-dot {
-            width: 5px; height: 5px;
-            background: #ffcc00;
-            border-radius: 50%;
-            flex-shrink: 0;
-            animation: pulse-fade 2s ease-in-out infinite;
-            display: none;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -1472,7 +1175,6 @@
         <div class="vibe-container">
 
             <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
-            <div class="vibe-item" onclick="changeVibe('NJyCwdWT80c', 'Chill House', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>Chill House</span></div>
             <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
             <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
             <div class="vibe-item" onclick="changeVibe('c6JAn-IGX6o', 'Indie Folk', this)"><div style="width:4px;height:20px;background:#a2d149"></div><span>Indie Folk</span></div>
@@ -1482,25 +1184,15 @@
             <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop', this)"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
             <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
             <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
-            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock & Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock &amp; Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock &amp; Pop</span></div>
             <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
-            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
-            <div class="vibe-item" onclick="changeVibe('fTb6yJ7AlT8', 'Relaxing Jazz', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Relaxing Jazz</span></div>
-            <div class="vibe-item" onclick="changeVibe('9UMxZofMNbA', 'Chillout Lounge', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Chillout Lounge</span></div>
-            <div class="vibe-item" onclick="changeVibe('4xDzrJKXOOY', 'Synthwave', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Synthwave</span></div>
-            <div class="vibe-item" onclick="changeVibe('28KRPhVzCus', 'Hip hop lofi ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Hip hop lofi</span></div>
-            <div class="vibe-item" onclick="changeVibe('TfWotiyXGfI', '1990s Lofi ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>1990s Lofi</span></div>
-            <div class="vibe-item" onclick="changeVibe('acjs8sDZDro', 'Focus Work ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Focus Work</span></div>
-            <div class="vibe-item" onclick="changeVibe('yT5Jx87JIGk', 'Cyberpunk ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Cyberpunk</span></div>
             <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
             <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
-           
+            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
             <div class="vibe-item" onclick="changeVibe('2u4GnVNtlsY', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
             <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
-            <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
-            
-            
-           
+            <div class="vibe-item" onclick="changeVibe('gE_G19reR8c', 'TeleSol', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TeleSol</span></div>
+            <div class="vibe-item" onclick="changeVibe('jIy9zt11Kn0', 'Meganoticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Meganoticias</span></div>
             <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
             <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
             <div class="vibe-item" onclick="changeVibe('mKCieTImjvU', 'Fogón 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Fogón 24/7</span></div>
@@ -1530,7 +1222,7 @@
         </video>
 
         <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <iframe id="player-kick" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <iframe id="player-kick" class="player-frame" src="https://player.kick.com/lanubedewilson?muted=true" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
         <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
 
@@ -1559,14 +1251,22 @@
         </div>
     </div>
 
+    <div class="ticker-wrap">
+        <div id="ticker-loading" class="ticker-loading">
+            <div class="ticker-spinner"></div>
+            CONECTANDO con MERCADOS...
+        </div>
+        <div class="ticker" id="main-ticker" style="display:none;"></div>
+    </div>
+
     <div class="feed-row">
         <button id="btn-stream" class="nav-btn" onclick="switchSignal('kick')" title="Stream en vivo">
             <span class="nb-emoji"><span id="stream-dot-feed" class="dot" style="width:10px;height:10px;margin:0"></span></span>
             <span class="nb-label">Stream</span>
         </button>
-        <button id="btn-clima" class="nav-btn" onclick="openFeedLocal()" title="Feed Local — Noticias de San Juan">
-            <span class="nb-emoji">🌩️</span>
-            <span class="nb-label">Local</span>
+        <button id="btn-clima" class="nav-btn" onclick="openClimaModal()" title="Clima según tu ubicación">
+            <span class="nb-emoji">🌤️</span>
+            <span class="nb-label">Clima</span>
         </button>
         <button id="btn-feed-main" class="nav-btn" onclick="openTimeline('all')" title="El Feed de la Nube">
             <span class="nb-emoji">☁️</span>
@@ -1596,12 +1296,6 @@
         </div>
     </div>
 
-    <!-- FEED LOCAL OVERLAY -->
-    <div id="feed-local-overlay">
-        <span class="close-timeline" onclick="closeFeedLocal()" style="border-color:rgba(255,160,0,0.3);color:#ffaa00;">×</span>
-        <div class="timeline-container" id="feed-local-content"></div>
-    </div>
-
 
 
     <div class="sponsor-footer">
@@ -1616,21 +1310,6 @@
     </div>
 
     <div id="timeline-overlay">
-        <!-- Barra de info sticky: ticker + clima -->
-        <div id="feed-info-bar">
-            <div id="feed-ticker-row">
-                <span id="feed-ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
-                <span id="feed-ticker-loading" style="display:inline-flex;align-items:center;gap:6px;color:#2a2a2a;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;">
-                    <div class="ticker-spinner"></div>
-                    MERCADOS...
-                </span>
-                <div class="ticker" id="feed-main-ticker" style="display:none;"></div>
-            </div>
-            <div id="feed-clima-row">
-                <span id="feed-clima-dot"></span>
-                <span id="feed-clima-text">CARGANDO CLIMA...</span>
-            </div>
-        </div>
         <span class="close-timeline" onclick="closeTimeline()">×</span>
         <div class="timeline-container" id="timeline-content"></div>
     </div>
@@ -1638,8 +1317,6 @@
     <script>
         let allNews  = [];
         let sponsors = [];
-        let lastFetchTime = 0;
-        const FETCH_COOLDOWN = 5 * 60 * 1000; // 5 minutos entre refrescos
         const bgAudio = document.getElementById('bg-audio');
 
         /* =============================================
@@ -1816,177 +1493,12 @@
             if (sidebar) sidebar.classList.toggle('open');
         }
 
-        /* -----------------------------------------------
-           TICKER — grupos de 2 con blur-fade
-           Duración grupo: 5500ms | Entrada: 1800ms | Salida: 1170ms
-        ----------------------------------------------- */
-        let _tkItems    = [];
-        let _tkIdx      = 0;
-        let _tkCurrent  = null;
-        let _tkTimer    = null;
-        const TK_GROUP  = 2;
-        const TK_STAY   = 5500;
-        const TK_ENTER  = 1800;
-        const TK_EXIT   = 1170;
-
-        function _tkBuildEl(group) {
-            const el = document.createElement('div');
-            el.className = 'ticker-group';
-            el.innerHTML = group.map((item, i) =>
-                item + (i < group.length - 1
-                    ? '<span class="ticker-group-sep">•</span>'
-                    : '')
-            ).join('');
-            return el;
-        }
-
-        function _tkShowNext() {
-            const stage = document.getElementById('feed-main-ticker');
-            if (!stage || !_tkItems.length) return;
-
-            const group = [];
-            for (let i = 0; i < TK_GROUP; i++)
-                group.push(_tkItems[(_tkIdx + i) % _tkItems.length]);
-            _tkIdx = (_tkIdx + TK_GROUP) % _tkItems.length;
-
-            const newEl = _tkBuildEl(group);
-
-            if (_tkCurrent) {
-                const old = _tkCurrent;
-                old.classList.remove('tk-visible');
-                old.classList.add('tk-exiting');
-                setTimeout(() => old.remove(), TK_EXIT + 50);
-            }
-
-            newEl.classList.add('tk-entering');
-            stage.appendChild(newEl);
-            _tkCurrent = newEl;
-            setTimeout(() => {
-                newEl.classList.remove('tk-entering');
-                newEl.classList.add('tk-visible');
-            }, TK_ENTER);
-        }
-
         function showTicker(text) {
-            // Parsear el string separado por • en ítems individuales
-            _tkItems = text.split('•').map(s => s.trim()).filter(Boolean);
-            _tkIdx = 0;
-
-            clearInterval(_tkTimer);
-            _tkCurrent = null;
-
-            _tkShowNext();
-            _tkTimer = setInterval(_tkShowNext, TK_STAY);
-
-            // Sincronizar feed ticker
-            _syncFeedTicker(text);
-        }
-
-        /* -----------------------------------------------
-           FEED TICKER — ticker secundario dentro del feed
-        ----------------------------------------------- */
-        let _feedTkItems  = [];
-        let _feedTkIdx    = 0;
-        let _feedTkCurrent = null;
-        let _feedTkTimer  = null;
-
-        function _feedTkShowNext() {
-            const stage = document.getElementById('feed-main-ticker');
-            if (!stage || !_feedTkItems.length) return;
-            const group = [];
-            for (let i = 0; i < TK_GROUP; i++)
-                group.push(_feedTkItems[(_feedTkIdx + i) % _feedTkItems.length]);
-            _feedTkIdx = (_feedTkIdx + TK_GROUP) % _feedTkItems.length;
-            const newEl = _tkBuildEl(group);
-            if (_feedTkCurrent) {
-                const old = _feedTkCurrent;
-                old.classList.remove('tk-visible');
-                old.classList.add('tk-exiting');
-                setTimeout(() => old.remove(), TK_EXIT + 50);
-            }
-            newEl.classList.add('tk-entering');
-            stage.appendChild(newEl);
-            _feedTkCurrent = newEl;
-            setTimeout(() => {
-                newEl.classList.remove('tk-entering');
-                newEl.classList.add('tk-visible');
-            }, TK_ENTER);
-        }
-
-        function _syncFeedTicker(text) {
-            const loading = document.getElementById('feed-ticker-loading');
-            const ticker  = document.getElementById('feed-main-ticker');
-            const dot     = document.getElementById('feed-ticker-dot');
-            if (loading) loading.style.display = 'none';
-            if (ticker)  ticker.style.display  = 'flex';
-            if (dot)     dot.style.display      = 'inline-block';
-            _feedTkItems = text.split('•').map(s => s.trim()).filter(Boolean);
-            _feedTkIdx   = 0;
-            clearInterval(_feedTkTimer);
-            _feedTkCurrent = null;
-            if (ticker) ticker.innerHTML = '';
-            _feedTkShowNext();
-            _feedTkTimer = setInterval(_feedTkShowNext, TK_STAY);
-        }
-
-        /* -----------------------------------------------
-           CLIMA EN EL FEED — carga diferida y silenciosa
-        ----------------------------------------------- */
-        const SJ_LAT = -31.5375;
-        const SJ_LON = -68.5364;
-
-        async function _fetchClimaData(lat, lon) {
-            const [wRes, gRes] = await Promise.all([
-                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,precipitation&wind_speed_unit=kmh`),
-                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`)
-            ]);
-            const w = await wRes.json();
-            const g = await gRes.json();
-            return { w, g };
-        }
-
-        async function loadFeedClima() {
-            const climaText = document.getElementById('feed-clima-text');
-            const climaDot  = document.getElementById('feed-clima-dot');
-            if (!climaText) return;
-
-            try {
-                // Primero cargamos San Juan por defecto
-                const { w: wSJ, g: gSJ } = await _fetchClimaData(SJ_LAT, SJ_LON);
-                const cSJ   = wSJ.current;
-                const emoSJ = WMO_EMOJI[cSJ.weathercode] || '🌡️';
-                const desSJ = WMO_CODES[cSJ.weathercode] || '';
-                climaText.style.color = 'rgba(255,204,0,0.75)';
-                climaText.textContent = `${emoSJ} SAN JUAN ${Math.round(cSJ.temperature_2m)}° · ST ${Math.round(cSJ.apparent_temperature)}° · ${desSJ.toUpperCase()} · 💧${cSJ.relative_humidity_2m}% · 💨${Math.round(cSJ.wind_speed_10m)} KM/H`;
-                if (climaDot) climaDot.style.display = 'inline-block';
-
-                // Después intentamos geolocalización sin bloquear
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(
-                        async pos => {
-                            try {
-                                const { latitude: lat, longitude: lon } = pos.coords;
-                                // Solo actualizar si no estamos en San Juan (diferencia > 50km aprox)
-                                const dist = Math.sqrt(Math.pow(lat - SJ_LAT, 2) + Math.pow(lon - SJ_LON, 2));
-                                if (dist < 0.5) return; // Estamos cerca de SJ, no hacer otro fetch
-                                const { w, g } = await _fetchClimaData(lat, lon);
-                                const c    = w.current;
-                                const city = g.address?.city || g.address?.town || g.address?.village || 'Tu ubicación';
-                                const emo  = WMO_EMOJI[c.weathercode] || '🌡️';
-                                const des  = WMO_CODES[c.weathercode] || '';
-                                climaText.textContent = `${emo} ${city.toUpperCase()} ${Math.round(c.temperature_2m)}° · ST ${Math.round(c.apparent_temperature)}° · ${des.toUpperCase()} · 💧${c.relative_humidity_2m}% · 💨${Math.round(c.wind_speed_10m)} KM/H`;
-                            } catch(e) { /* silencioso — ya tenemos SJ */ }
-                        },
-                        () => { /* sin permiso — San Juan queda */ },
-                        { timeout: 6000, maximumAge: 300000 }
-                    );
-                }
-            } catch(e) {
-                if (climaText) {
-                    climaText.style.color = '#2a2a2a';
-                    climaText.textContent = 'SIN DATOS DE CLIMA';
-                }
-            }
+            const loading = document.getElementById('ticker-loading');
+            const ticker  = document.getElementById('main-ticker');
+            loading.style.display = 'none';
+            ticker.style.display  = 'inline-block';
+            ticker.innerText = text;
         }
 
         async function updateTicker() {
@@ -2136,12 +1648,11 @@
                     document.getElementById('initial-loop').classList.add('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
                 }
-                lastFetchTime = Date.now();
                 checkDeepLinking();
             } catch (e) { console.error('Error cargando:', e); }
         }
 
-        function renderTimeline() {
+        function openTimeline(category) {
             const container = document.getElementById('timeline-content');
             container.innerHTML = '';
             allNews.forEach((row, index) => {
@@ -2212,37 +1723,6 @@
             document.getElementById('timeline-overlay').classList.add('open');
         }
 
-        async function openTimeline(category) {
-            const now = Date.now();
-            const needsRefresh = (now - lastFetchTime) > FETCH_COOLDOWN;
-
-            if (allNews.length === 0) {
-                // Primera vez: mostrar skeleton mientras carga
-                const container = document.getElementById('timeline-content');
-                container.innerHTML = `
-                    <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
-                        <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
-                        CARGANDO FEED...
-                    </div>`;
-                document.getElementById('timeline-overlay').scrollTo(0, 0);
-                document.getElementById('timeline-overlay').classList.add('open');
-                await fetchData();
-                renderTimeline();
-            } else {
-                // Datos ya disponibles: abrir instantáneo
-                renderTimeline();
-                // Refrescar en background si los datos son viejos
-                if (needsRefresh) {
-                    fetchData().then(() => {
-                        // Si el overlay sigue abierto, actualizar silenciosamente
-                        if (document.getElementById('timeline-overlay').classList.contains('open')) {
-                            renderTimeline();
-                        }
-                    });
-                }
-            }
-        }
-
         function toggleReadMore(extraId, btnId) {
             const extra = document.getElementById(extraId);
             const btn   = document.getElementById(btnId);
@@ -2251,283 +1731,6 @@
         }
 
         function closeTimeline() { document.getElementById('timeline-overlay').classList.remove('open'); window.history.pushState(null, null, ' '); }
-
-        /* =============================================
-           FEED LOCAL — Google News RSS San Juan
-        ============================================= */
-        let feedLocalLoaded = false;
-        let feedLocalLoading = false;
-
-        /* =============================================
-           GEOLOCALIZACIÓN — detección por IP + GPS opcional
-        ============================================= */
-        let userCity     = null; // ciudad detectada (string)
-        let userCityGPS  = false; // true si fue mejorada con GPS
-        let ipDetecting  = false; // semáforo para no llamar dos veces
-
-        async function detectarUbicacionPorIP() {
-            if (userCity || ipDetecting) return;
-            ipDetecting = true;
-            try {
-                // Cache: si ya lo detectamos en una visita anterior, usarlo
-                const cached = localStorage.getItem('fl_city');
-                const cachedTs = parseInt(localStorage.getItem('fl_city_ts') || '0');
-                const CACHE_TTL = 1000 * 60 * 60 * 24; // 24 horas
-                if (cached && (Date.now() - cachedTs) < CACHE_TTL) {
-                    userCity = cached;
-                    userCityGPS = localStorage.getItem('fl_city_gps') === '1';
-                    ipDetecting = false;
-                    return;
-                }
-                // API gratuita, sin key, muy rápida (~100ms)
-                const res  = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
-                if (data && data.city) {
-                    userCity = data.city;
-                    localStorage.setItem('fl_city',    userCity);
-                    localStorage.setItem('fl_city_ts', Date.now().toString());
-                    localStorage.setItem('fl_city_gps','0');
-                }
-            } catch(e) {
-                console.warn('IP geoloc falló:', e);
-            } finally {
-                ipDetecting = false;
-            }
-        }
-
-        async function mejorarConGPS() {
-            if (!navigator.geolocation) {
-                showToast('Tu navegador no soporta GPS');
-                return;
-            }
-            showToast('Solicitando ubicación GPS...');
-            navigator.geolocation.getCurrentPosition(
-                async (pos) => {
-                    try {
-                        const { latitude: lat, longitude: lon } = pos.coords;
-                        const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`);
-                        const data = await res.json();
-                        const city = data.address?.city || data.address?.town || data.address?.village || data.address?.county || null;
-                        if (city) {
-                            userCity    = city;
-                            userCityGPS = true;
-                            localStorage.setItem('fl_city',    userCity);
-                            localStorage.setItem('fl_city_ts', Date.now().toString());
-                            localStorage.setItem('fl_city_gps','1');
-                            // Recargar el feed con la ciudad nueva
-                            feedLocalLoaded  = false;
-                            feedLocalLoading = false;
-                            fetchFeedLocal();
-                            showToast(`📍 Ubicación: ${userCity}`);
-                        }
-                    } catch(e) {
-                        showToast('No se pudo obtener la ciudad');
-                    }
-                },
-                () => showToast('Permiso de ubicación denegado'),
-                { timeout: 8000 }
-            );
-        }
-
-        /* =============================================
-           FEED LOCAL
-        ============================================= */
-        async function openFeedLocal() {
-            const overlay = document.getElementById('feed-local-overlay');
-            if (overlay.classList.contains('open')) {
-                closeFeedLocal();
-                return;
-            }
-            document.getElementById('btn-clima').classList.add('local-active');
-            overlay.classList.add('open');
-            overlay.scrollTo(0, 0);
-
-            if (!feedLocalLoaded && !feedLocalLoading) {
-                // Si la detección de IP aún no terminó, esperarla (máx 2s) antes de buscar noticias
-                if (ipDetecting) {
-                    const container = document.getElementById('feed-local-content');
-                    container.innerHTML = `
-                        <div id="feed-local-header">🌩️ Feed Local<span>Detectando tu ubicación...</span></div>
-                        <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
-                            <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ffaa00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
-                            OBTENIENDO UBICACIÓN...
-                        </div>`;
-                    let waited = 0;
-                    await new Promise(resolve => {
-                        const check = setInterval(() => {
-                            waited += 100;
-                            if (!ipDetecting || waited >= 2000) { clearInterval(check); resolve(); }
-                        }, 100);
-                    });
-                }
-                fetchFeedLocal();
-            }
-        }
-
-        function closeFeedLocal() {
-            document.getElementById('feed-local-overlay').classList.remove('open');
-            document.getElementById('btn-clima').classList.remove('local-active');
-        }
-
-        async function fetchFeedLocal() {
-            if (feedLocalLoading) return;
-            feedLocalLoading = true;
-
-            const ciudad = userCity || 'Argentina';
-            const esGPS  = userCityGPS;
-
-            const container = document.getElementById('feed-local-content');
-            container.innerHTML = `
-                <div id="feed-local-header">
-                    🌩️ Feed Local
-                    <span>${ciudad} · Google News</span>
-                </div>
-                <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
-                    <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ffaa00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
-                    CARGANDO NOTICIAS LOCALES...
-                </div>`;
-
-            try {
-                const query  = encodeURIComponent(`${ciudad} Argentina`);
-                const rssUrl = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
-
-                // Tres proxies CORS de fallback — se prueban en orden hasta que uno funcione
-                const proxies = [
-                    `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
-                    `https://thingproxy.freeboard.io/fetch/${rssUrl}`,
-                ];
-
-                let xmlText = null;
-                for (const proxyUrl of proxies) {
-                    try {
-                        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(6000) });
-                        if (res.ok) {
-                            const text = await res.text();
-                            if (text.includes('<item>')) { xmlText = text; break; }
-                        }
-                    } catch(e) { /* probar siguiente */ }
-                }
-
-                if (!xmlText) throw new Error('Todos los proxies fallaron');
-
-                // Parsear el XML del RSS directamente — sin depender de rss2json
-                const parser = new DOMParser();
-                const doc    = parser.parseFromString(xmlText, 'text/xml');
-                const itemEls = Array.from(doc.querySelectorAll('item')).slice(0, 20);
-
-                if (itemEls.length === 0) throw new Error('RSS vacío');
-
-                const items = itemEls.map(el => ({
-                    title:       el.querySelector('title')?.textContent || '',
-                    link:        el.querySelector('link')?.textContent  || '',
-                    pubDate:     el.querySelector('pubDate')?.textContent || '',
-                    author:      el.querySelector('source')?.textContent || '',
-                    description: el.querySelector('description')?.textContent || '',
-                    thumbnail:   el.querySelector('enclosure')?.getAttribute('url') || '',
-                }));
-
-                renderFeedLocal(items, ciudad, esGPS);
-                feedLocalLoaded = true;
-            } catch(err) {
-                console.error('Feed Local error:', err);
-                container.innerHTML = `
-                    <div id="feed-local-header">🌩️ Feed Local<span>${ciudad}</span></div>
-                    <div style="padding:40px;text-align:center;color:#555;font-size:0.85rem;">
-                        No se pudieron cargar las noticias locales.<br>Intentá de nuevo más tarde.
-                    </div>`;
-            } finally {
-                feedLocalLoading = false;
-            }
-        }
-
-        function renderFeedLocal(items, ciudad, esGPS) {
-            const container  = document.getElementById('feed-local-content');
-            const previewLen = 300;
-            const subtitulo  = esGPS ? `📍 ${ciudad} · GPS · Google News` : `📡 ${ciudad} · por IP · Google News`;
-            const btnGPS     = esGPS ? '' : `<button onclick="mejorarConGPS()" style="margin-top:4px;background:none;border:1px solid rgba(255,160,0,0.3);color:#ffaa00;font-size:0.62rem;padding:3px 10px;border-radius:20px;cursor:pointer;letter-spacing:1px;">📍 Mejorar con GPS</button>`;
-
-            let html = `
-                <div id="feed-local-header">
-                    🌩️ Feed Local
-                    <span>${subtitulo}</span>
-                    ${btnGPS}
-                </div>`;
-
-            items.forEach((item, i) => {
-                const title    = (item.title || '').replace(/ - .*$/, '').trim();
-                const fullText = stripHtml(item.description || item.content || '');
-                const source   = item.author || extractDomain(item.link || '');
-                const pubDate  = item.pubDate ? formatFeedDate(item.pubDate) : '';
-                const img      = item.thumbnail || item.enclosure?.link || extractImg(item.description || '');
-
-                let cutAt = previewLen;
-                if (fullText.length > previewLen) {
-                    const punctMatch = fullText.slice(0, previewLen).search(/[.!?\n][^.!?\n]*$/);
-                    if (punctMatch > previewLen * 0.5) {
-                        cutAt = punctMatch + 1;
-                    } else {
-                        const lastSpace = fullText.lastIndexOf(' ', previewLen);
-                        cutAt = lastSpace > previewLen * 0.7 ? lastSpace : previewLen;
-                    }
-                }
-                const preview  = fullText.length > cutAt ? fullText.slice(0, cutAt).trimEnd() + '…' : fullText;
-                const extra    = fullText.length > cutAt ? fullText.slice(cutAt).trimStart() : '';
-                const hasExtra = extra.length > 0;
-                const extraId  = `fl-extra-${i}`;
-                const btnId    = `fl-btn-${i}`;
-
-                html += `
-                    <div class="note-card" style="border-left-color:#ffaa00;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <span style="color:#ffaa00;font-size:0.7rem;font-weight:bold;opacity:0.8;white-space:nowrap;flex-shrink:0;">[ LOCAL ]</span>
-                            <div style="text-align:right;">
-                                <span style="color:var(--accent-green);font-size:0.7rem;font-style:italic;display:block;">📰 ${source}</span>
-                                <span style="color:gray;font-size:0.6rem;display:block;">📅 ${pubDate}</span>
-                            </div>
-                        </div>
-                        ${img ? `<img src="${img}" class="note-img" onerror="this.style.display='none'">` : ''}
-                        <h2 class="note-title">${title}</h2>
-                        <div class="note-content">${preview}</div>
-                        ${hasExtra ? `
-                        <div class="note-extra-content" id="${extraId}">
-                            <div class="note-content" style="padding-top:6px;">${extra}</div>
-                        </div>
-                        <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
-                            LEER MÁS <span>↓</span>
-                        </button>` : ''}
-                        <div class="share-bar">
-                            <button class="share-btn" onclick="navigator.clipboard.writeText('${escapeJs(item.link || '')}').then(()=>showToast('Link copiado'))">🔗 Copiar Link</button>
-                        </div>
-                    </div>`;
-            });
-
-            container.innerHTML = html;
-            document.getElementById('feed-local-overlay').scrollTo(0, 0);
-        }
-
-        // Helpers del Feed Local
-        function stripHtml(html) {
-            const tmp = document.createElement('div');
-            tmp.innerHTML = html;
-            return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
-        }
-        function extractImg(html) {
-            const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
-            return m ? m[1] : '';
-        }
-        function extractDomain(url) {
-            try { return new URL(url).hostname.replace('www.', ''); } catch { return ''; }
-        }
-        function formatFeedDate(dateStr) {
-            try {
-                const d = new Date(dateStr);
-                return d.toLocaleDateString('es-AR', { day:'2-digit', month:'short', year:'numeric' });
-            } catch { return dateStr; }
-        }
-        function escapeJs(str) {
-            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
-        }
 
         function checkDeepLinking() {
             const hash = window.location.hash;
@@ -2599,7 +1802,6 @@
            // ==========================================
             // SAN JUAN - CAPITAL Y GRAN SAN JUAN
             // ==========================================
-            { name: 'Pop Life (FM 107.7)', url: 'https://pop-life-107.smurua4.workers.dev/', location: 'San Juan' },
             { name: 'Light FM (FM 97.3)', url: 'https://host.serviceinfinito.com.ar:7000/;stream', location: 'San Juan' },
             { name: 'Armonía FM (FM 96.7)', url: 'https://streaming6.locucionar.com:24162/stream', location: 'San Juan' }, 
             { name: 'Master Classics 24/7', url: 'https://sc.host-live.com:8182/;', location: 'San Juan' }, 
@@ -2797,7 +1999,7 @@
 
            { name: 'FM Dos (FM 98.5)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
-          
+           { name: 'Radio Festival (FM 93.7)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
 
           
             // ==========================================
@@ -3341,21 +2543,11 @@
             }
             try {
                 const base = await getRadioBrowserBaseUrl();
+                const q = (cc, lim=12) =>
+                    fetch(`${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`)
+                    .then(r => r.json()).catch(() => []);
 
-                // q con timeout: si un país tarda más de 4s, devuelve [] y no frena al resto
-                const q = (cc, lim=8) => {
-                    const ctrl = new AbortController();
-                    const timer = setTimeout(() => ctrl.abort(), 4000);
-                    return fetch(
-                        `${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`,
-                        { signal: ctrl.signal }
-                    )
-                    .then(r => r.json())
-                    .catch(() => [])
-                    .finally(() => clearTimeout(timer));
-                };
-
-                // Países en paralelo — límites reducidos para carga rápida
+                // Países de la captura + los que ya teníamos, en lotes paralelos
                 const [
                     resAR, resMZA, resCBA,
                     resCL, resBO, resBR, resCO, resEC, resPE, resUY, resVE,
@@ -3366,29 +2558,29 @@
                     resGH, resKE, resNG, resMA, resZA,
                     resPH, resHK, resIN, resID, resIL, resJP, resMY, resKR, resSG, resTH, resTW, resTR
                 ] = await Promise.all([
-                    // Argentina — con timeout propio
-                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),5000); return fetch(`${base}/json/stations/search?countrycode=AR&limit=40&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
-                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),4000); return fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
-                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),4000); return fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
+                    // Argentina (extra para filtrar provincias)
+                    fetch(`${base}/json/stations/search?countrycode=AR&limit=60&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
+                    fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=15&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
+                    fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=15&order=votes&reverse=true&hidebroken=true`).then(r=>r.json()).catch(()=>[]),
                     // Latinoamérica
-                    q('CL',8), q('BO',6), q('BR',8), q('CO',6), q('EC',6),
-                    q('PE',6), q('UY',6), q('VE',6),
+                    q('CL',15), q('BO',12), q('BR',15), q('CO',12), q('EC',10),
+                    q('PE',10), q('UY',10), q('VE',10),
                     // Norte y Centro América
-                    q('US',8), q('CA',6), q('MX',6), q('CR',5), q('SV',5),
-                    q('GT',5), q('HN',5), q('JM',5), q('NI',5), q('PR',5),
-                    q('DO',5), q('TT',5),
+                    q('US',15), q('CA',12), q('MX',12), q('CR',10), q('SV',8),
+                    q('GT',8),  q('HN',8),  q('JM',8),  q('NI',8),  q('PR',8),
+                    q('DO',8),  q('TT',8),
                     // Europa
-                    q('DE',8), q('AT',6), q('BE',6), q('BG',6), q('CZ',6),
-                    q('DK',6), q('ES',8), q('FI',6), q('FR',8), q('GB',8),
-                    q('GR',6), q('HR',5), q('HU',6), q('IE',6), q('IT',8),
-                    q('NL',6), q('NO',6), q('PL',6), q('PT',6),
-                    q('RO',6), q('RS',5), q('SE',6), q('CH',6), q('UA',6),
+                    q('DE',12), q('AT',10), q('BE',10), q('BG',10), q('CZ',10),
+                    q('DK',10), q('ES',12), q('FI',10), q('FR',12), q('GB',12),
+                    q('GR',10), q('HR',8),  q('HU',10), q('IE',10), q('IT',12),
+                    q('NL',10), q('NO',10), q('PL',10), q('PT',10),
+                    q('RO',10), q('RS',8),  q('SE',10), q('CH',10), q('UA',10),
                     // África
-                    q('GH',5), q('KE',5), q('NG',5), q('MA',5), q('ZA',6),
+                    q('GH',8),  q('KE',8),  q('NG',8),  q('MA',8),  q('ZA',10),
                     // Asia y Oriente Medio
-                    q('PH',5), q('HK',5), q('IN',8), q('ID',6), q('IL',5),
-                    q('JP',8), q('MY',5), q('KR',6), q('SG',5), q('TH',5),
-                    q('TW',5), q('TR',6)
+                    q('PH',8),  q('HK',8),  q('IN',12), q('ID',10), q('IL',8),
+                    q('JP',12), q('MY',8),  q('KR',10), q('SG',8),  q('TH',8),
+                    q('TW',8),  q('TR',10)
                 ]);
 
                 const map = (arr, loc) => arr
@@ -3608,68 +2800,12 @@
            TENDENCIAS X
         ============================================= */
 
-        /* Verificación liviana del estado del stream — solo lee la fila de control,
-           no recarga noticias ni sponsors. Se ejecuta cada 2 minutos. */
-        async function checkStreamStatus() {
-            try {
-                const now = Date.now();
-                const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
-                const res  = await fetch(url);
-                const text = await res.text();
-                const rows = text.split('\n');
-                const controlRow  = rows[1] || '';
-                const controlCols = controlRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-                const streamState = (controlCols[3] || '').replace(/"/g, '').trim().toLowerCase();
-                const isLive  = streamState === 'on';
-                const liveDot = document.getElementById('live-dot');
-                const wasLive = liveDot.classList.contains('live');
-                liveDot.classList.toggle('live', isLive);
-                const streamDotFeed = document.getElementById('stream-dot-feed');
-                if (streamDotFeed) streamDotFeed.classList.toggle('live', isLive);
-                const btnStream = document.getElementById('btn-stream');
-                if (btnStream) btnStream.classList.toggle('live-on', isLive);
-                // Si el stream se cayó mientras el usuario lo miraba → cortar
-                if (wasLive && !isLive && document.getElementById('player-kick').classList.contains('active')) {
-                    stopAllMedia();
-                    document.getElementById('player-kick').classList.remove('active');
-                    document.getElementById('initial-loop').classList.add('active');
-                    document.getElementById('no-signal-msg').classList.add('visible');
-                }
-            } catch (e) { /* silencioso */ }
-        }
-
         window.onload = () => {
-            // 1. Noticias primero — carga inmediata para que el Feed esté listo
             fetchData();
-            // 2. Ticker y clima se cargan 2 s después para no retrasar la vista de noticias
-            setTimeout(() => {
-                updateTicker();
-                loadFeedClima();
-                setInterval(updateTicker, 60000);
-            }, 2000);
-            // 3. Sponsors aparecen a los 3 s con fade suave — dan tiempo al usuario de orientarse
-            setTimeout(() => {
-                const footer = document.querySelector('.sponsor-footer');
-                if (footer) footer.style.opacity = '1';
-            }, 3000);
-            // El stream (on/off) se verifica cada 2 minutos
-            setInterval(checkStreamStatus, 120000);
-
-            // 4. CARGA DIFERIDA — cuando el navegador esté libre:
-            //    a) Detectar ubicación por IP (para el Feed Local)
-            //    b) Precargar radios (para el botón Radio)
-            const tareasIdle = () => {
-                detectarUbicacionPorIP();
-                if (!radioBrowserLoaded && !radioBrowserLoading) {
-                    fetchRadiosFromAPI();
-                }
-            };
-            if ('requestIdleCallback' in window) {
-                requestIdleCallback(tareasIdle, { timeout: 5000 });
-            } else {
-                // Fallback para Safari y navegadores antiguos
-                setTimeout(tareasIdle, 3000);
-            }
+            updateTicker();
+            // Radio carga de forma diferida al primer uso (no en onload)
+            setInterval(updateTicker, 60000);
+            setInterval(fetchData, 15000);
         };
         window.addEventListener('click', unlockAudio, { once: true });
         window.addEventListener('touchstart', unlockAudio, { once: true });
