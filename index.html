@@ -1478,4 +1478,2221 @@
             <div class="vibe-item" onclick="changeVibe('b-bK2Vn3D38', 'Radio Pop', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Radio Pop</span></div>
             <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urbano', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Urbano</span></div>
             <div class="vibe-item" onclick="changeVibe('8zRR2_6aRNE', 'Fogón', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón</span></div>
-            <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove
+            <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop', this)"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
+            <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
+            <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock & Pop</span></div>
+            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
+            <div class="vibe-item" onclick="changeVibe('fTb6yJ7AlT8', 'Relaxing Jazz', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Relaxing Jazz</span></div>
+            <div class="vibe-item" onclick="changeVibe('9UMxZofMNbA', 'Chillout Lounge', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Chillout Lounge</span></div>
+            <div class="vibe-item" onclick="changeVibe('4xDzrJKXOOY', 'Synthwave', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Synthwave</span></div>
+            <div class="vibe-item" onclick="changeVibe('28KRPhVzCus', 'Hip hop lofi ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Hip hop lofi</span></div>
+            <div class="vibe-item" onclick="changeVibe('TfWotiyXGfI', '1990s Lofi ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>1990s Lofi</span></div>
+            <div class="vibe-item" onclick="changeVibe('acjs8sDZDro', 'Focus Work ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Focus Work</span></div>
+            <div class="vibe-item" onclick="changeVibe('yT5Jx87JIGk', 'Cyberpunk ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Cyberpunk</span></div>
+            <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
+            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
+           
+            <div class="vibe-item" onclick="changeVibe('2u4GnVNtlsY', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
+            <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>
+            <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
+            
+            
+           
+            <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
+            <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
+            <div class="vibe-item" onclick="changeVibe('mKCieTImjvU', 'Fogón 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Fogón 24/7</span></div>
+
+            <button onclick="toggleVibeMenu()" style="width:100%;margin-top:30px;background:none;border:1px solid #444;color:#888;padding:12px;cursor:pointer;font-size:0.8rem;border-radius:4px;font-family:'Bebas Neue';letter-spacing:1px;">CERRAR DIAL</button>
+        </div>
+    </div>
+
+    <div id="radio-sidebar">
+        <button class="radio-sidebar-close" onclick="toggleRadioSidebar()" title="Cerrar radio">▶</button>
+        <div class="radio-header">
+            📻 EMISORAS DE RADIO
+            <small id="radio-now-playing-label">SELECCIONA UNA EMISORA</small>
+        </div>
+        <div class="radio-container" id="radio-list"></div>
+    </div>
+
+    <audio id="radio-audio"></audio>
+
+    <div class="main-stage">
+        <button id="btn-yt-control" onclick="toggleYtPlay()">
+            <span id="yt-icon">⏸</span>
+        </button>
+
+        <video id="initial-loop" class="player-frame active" autoplay loop muted playsinline preload="none">
+            <source src="la nube.mp4" type="video/mp4">
+        </video>
+
+        <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <iframe id="player-kick" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
+        <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
+
+        <audio id="bg-audio" loop>
+            <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div id="no-signal-msg">
+        <div class="no-signal-card">
+            <button class="no-signal-close" onclick="closeNoSignal()">×</button>
+            <div class="no-signal-badge">
+                <span class="dot-red"></span>
+                <span>SEÑAL EN ESPERA</span>
+            </div>
+            <p class="no-signal-title">EVENTOS EN VIVO,<br>PODCAST Y MÁS</p>
+            <p class="no-signal-body">
+                Cuando el indicador se ponga verde,<br>
+                nos encontramos acá — en vivo, sin filtros.<br>
+                Todo lo que pasa en La Nube.
+            </p>
+            <div class="no-signal-hint">
+                <span class="dot-green"></span>
+                <p>Cuando veas esto — estamos en vivo</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="feed-row">
+        <button id="btn-stream" class="nav-btn" onclick="switchSignal('kick')" title="Stream en vivo">
+            <span class="nb-emoji"><span id="stream-dot-feed" class="dot" style="width:10px;height:10px;margin:0"></span></span>
+            <span class="nb-label">Stream</span>
+        </button>
+        <button id="btn-clima" class="nav-btn" onclick="openFeedLocal()" title="Feed Local — Noticias de San Juan">
+            <span class="nb-emoji">🌩️</span>
+            <span class="nb-label">Local</span>
+        </button>
+        <button id="btn-feed-main" class="nav-btn" onclick="openTimeline('all')" title="El Feed de la Nube">
+            <span class="nb-emoji">☁️</span>
+            <span class="nb-label">Feed</span>
+        </button>
+        <button id="btn-vibras" class="nav-btn" onclick="toggleVibeMenu()" title="Seleccioná tu vibra">
+            <span class="nb-emoji">🎛️</span>
+            <span class="nb-label">Vibras</span>
+        </button>
+        <button id="btn-radio-modal" class="nav-btn" onclick="toggleRadioSidebar()" title="Emisoras de Radio">
+            <span class="nb-emoji">📻</span>
+            <span class="nb-label">Radio</span>
+        </button>
+    </div>
+
+    <div id="clima-modal">
+        <div class="clima-card">
+            <button class="clima-close" onclick="closeClimaModal()">×</button>
+            <div class="clima-header">☀ CLIMA EN TU ZONA</div>
+            <div id="clima-content">
+                <div class="clima-loading">
+                    <div class="clima-spinner"></div>
+                    OBTENIENDO UBICACIÓN...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="feed-local-overlay">
+        <span class="close-timeline" onclick="closeFeedLocal()" style="border-color:rgba(255,160,0,0.3);color:#ffaa00;">×</span>
+        <div class="timeline-container" id="feed-local-content"></div>
+    </div>
+
+
+
+    <div class="sponsor-footer">
+        <div id="sponsor-ad">
+            <div id="sponsor-progress"></div>
+            <div class="sponsor-placeholder">
+                <div class="sponsor-placeholder-bar"></div>
+                <div class="sponsor-placeholder-bar"></div>
+                <div class="sponsor-placeholder-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="timeline-overlay">
+        <div id="feed-info-bar">
+            <div id="feed-ticker-row">
+                <span id="feed-ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
+                <span id="feed-ticker-loading" style="display:inline-flex;align-items:center;gap:6px;color:#2a2a2a;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;">
+                    <div class="ticker-spinner"></div>
+                    MERCADOS...
+                </span>
+                <div class="ticker" id="feed-main-ticker" style="display:none;"></div>
+            </div>
+            <div id="feed-clima-row">
+                <span id="feed-clima-dot"></span>
+                <span id="feed-clima-text">CARGANDO CLIMA...</span>
+            </div>
+        </div>
+        <span class="close-timeline" onclick="closeTimeline()">×</span>
+        <div class="timeline-container" id="timeline-content"></div>
+    </div>
+
+    <script>
+        let allNews  = [];
+        let sponsors = [];
+        let lastFetchTime = 0;
+        const FETCH_COOLDOWN = 5 * 60 * 1000; // 5 minutos entre refrescos
+        const bgAudio = document.getElementById('bg-audio');
+
+        /* =============================================
+           LÓGICA DE CONTROL GLOBAL DE MEDIOS
+           ============================================= */
+
+        function stopAllMedia() {
+            // Detener Audio de Fondo
+            bgAudio.pause();
+
+            // Detener Radio
+            const radioAudio = document.getElementById('radio-audio');
+            radioAudio.pause();
+            radioAudio.src = ''; 
+            document.getElementById('btn-radio-modal').classList.remove('radio-active');
+            const radioLabel = document.getElementById('radio-now-playing-label');
+            if(radioLabel) radioLabel.innerText = 'SELECCIONA UNA EMISORA';
+            if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
+            activeRadioIndex = -1;
+            activeRadioEl = null;
+
+            // Detener YouTube (limpiando src para matar el audio)
+            const py = document.getElementById('player-yt');
+            py.src = ''; 
+            isYtPlaying = false;
+            const ytIcon = document.getElementById('yt-icon');
+            if (ytIcon) ytIcon.innerText = '▶';
+
+            // Detener Kick: vaciar src para cortar el stream completamente
+            const pk = document.getElementById('player-kick');
+            pk.src = '';
+            // Ocultar botones de unmute y compartir
+            const unmuteBtn = document.getElementById('kick-unmute-btn');
+            if (unmuteBtn) unmuteBtn.style.display = 'none';
+            const shareBtn = document.getElementById('kick-share-btn');
+            if (shareBtn) shareBtn.style.display = 'none';
+        }
+
+        function switchSignal(type) {
+            const pk        = document.getElementById('player-kick');
+            const py        = document.getElementById('player-yt');
+            const loop      = document.getElementById('initial-loop');
+            const customBtn = document.getElementById('btn-yt-control');
+
+            [pk, py, loop].forEach(el => el.classList.remove('active'));
+            customBtn.style.display = 'none';
+
+            if (type === 'kick') {
+                const isLive = document.getElementById('live-dot').classList.contains('live');
+                if (isLive) {
+                    stopAllMedia(); // Detener todos antes de entrar a Kick
+                    // Recargar el iframe de Kick (silenciado por defecto para evitar bloqueo mobile)
+                    pk.src = 'https://player.kick.com/lanubedewilson?muted=true';
+                    pk.classList.add('active');
+                    py.src = '';
+                    // Mostrar botones de unmute y compartir
+                    const unmuteBtn = document.getElementById('kick-unmute-btn');
+                    if (unmuteBtn) unmuteBtn.style.display = 'block';
+                    const shareBtn = document.getElementById('kick-share-btn');
+                    if (shareBtn) shareBtn.style.display = 'block';
+                } else {
+                    loop.classList.add('active');
+                    document.getElementById('no-signal-msg').classList.add('visible');
+                }
+            } else if (type === 'yt') {
+                py.classList.add('active');
+                customBtn.style.display = 'flex';
+                // bgAudio.pause(); // Ya lo maneja stopAllMedia
+            } else {
+                loop.classList.add('active');
+            }
+        }
+
+        function closeNoSignal() {
+            document.getElementById('no-signal-msg').classList.remove('visible');
+        }
+
+        let isYtPlaying = false;
+
+        // Mantener changeVibe por compatibilidad con items que no se migraron
+        function changeVibe(videoId, vibeName, clickedElement) {
+            stopAllMedia();
+            showToast(`📺 Sintonizando: ${vibeName}...`);
+            document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
+            if (clickedElement) clickedElement.classList.add('active-vibe');
+            const player = document.getElementById('player-yt');
+            player.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
+            isYtPlaying = true;
+            document.getElementById('yt-icon').innerText = '⏸';
+            showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
+            switchSignal('yt');
+            setTimeout(() => {
+                const sidebar = document.getElementById('vibe-sidebar');
+                if (sidebar.classList.contains('open')) toggleVibeMenu();
+            }, 500);
+        }
+
+        // Nueva función: vibras vía Radio Browser con fallback automático
+        async function playVibeTag(tag, vibeName, clickedElement) {
+            stopAllMedia();
+            showToast(`📻 Sintonizando: ${vibeName}...`);
+            document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
+            if (clickedElement) clickedElement.classList.add('active-vibe');
+
+            try {
+                const baseUrl = await getRadioBrowserBaseUrl();
+                const res = await fetch(`${baseUrl}/json/stations/search?tag=${encodeURIComponent(tag)}&limit=10&order=votes&reverse=true&hidebroken=true`);
+                const data = await res.json();
+
+                if (!data || data.length === 0) {
+                    showToast(`❌ Sin señal para ${vibeName}`);
+                    return;
+                }
+
+                // Mezclar aleatoriamente para variar experiencia entre visitas
+                const shuffled = data.sort(() => Math.random() - 0.5);
+
+                // Fallback automático: intentar cada stream hasta que uno funcione
+                async function tryNext(idx) {
+                    if (idx >= shuffled.length) {
+                        showToast(`❌ Todas las señales de ${vibeName} están caídas`);
+                        return;
+                    }
+                    const station = shuffled[idx];
+                    const streamUrl = station.url_resolved || station.url;
+                    if (!streamUrl) { tryNext(idx + 1); return; }
+
+                    const audio = document.getElementById('radio-audio');
+                    audio.src = streamUrl;
+                    audio.load();
+
+                    try {
+                        await audio.play();
+                        // Éxito — actualizar interfaz
+                        switchSignal('default');
+                        showTicker(`VIBRA: ${vibeName.toUpperCase()} · ${station.name.toUpperCase()} · LA NUBE DE WILSON · `);
+                        document.getElementById('btn-radio-modal').classList.add('radio-active');
+                        const label = document.getElementById('radio-now-playing-label');
+                        if (label) label.innerText = `▶ ${vibeName.toUpperCase()} · ${station.name}`;
+                        setTimeout(() => {
+                            const sidebar = document.getElementById('vibe-sidebar');
+                            if (sidebar && sidebar.classList.contains('open')) toggleVibeMenu();
+                        }, 500);
+                    } catch(e) {
+                        // Este stream falló — intentar el siguiente silenciosamente
+                        console.warn(`Stream caído (${station.name}), probando siguiente...`);
+                        tryNext(idx + 1);
+                    }
+                }
+
+                tryNext(0);
+
+            } catch(err) {
+                console.error('playVibeTag error:', err);
+                showToast('❌ Error de conexión al sintonizar');
+            }
+        }
+
+        function toggleYtPlay() {
+            const iframe = document.getElementById('player-yt');
+            const icon   = document.getElementById('yt-icon');
+            if (isYtPlaying) {
+                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                icon.innerText = '▶';
+            } else {
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                icon.innerText = '⏸';
+            }
+            isYtPlaying = !isYtPlaying;
+        }
+
+        function toggleVibeMenu() {
+            const sidebar = document.getElementById('vibe-sidebar');
+            if (sidebar) sidebar.classList.toggle('open');
+        }
+
+        /* -----------------------------------------------
+           TICKER — grupos de 2 con blur-fade
+           Duración grupo: 5500ms | Entrada: 1800ms | Salida: 1170ms
+        ----------------------------------------------- */
+        let _tkItems    = [];
+        let _tkIdx      = 0;
+        let _tkCurrent  = null;
+        let _tkTimer    = null;
+        const TK_GROUP  = 2;
+        const TK_STAY   = 5500;
+        const TK_ENTER  = 1800;
+        const TK_EXIT   = 1170;
+
+        function _tkBuildEl(group) {
+            const el = document.createElement('div');
+            el.className = 'ticker-group';
+            el.innerHTML = group.map((item, i) =>
+                item + (i < group.length - 1
+                    ? '<span class="ticker-group-sep">•</span>'
+                    : '')
+            ).join('');
+            return el;
+        }
+
+        function _tkShowNext() {
+            const stage = document.getElementById('feed-main-ticker');
+            if (!stage || !_tkItems.length) return;
+
+            const group = [];
+            for (let i = 0; i < TK_GROUP; i++)
+                group.push(_tkItems[(_tkIdx + i) % _tkItems.length]);
+            _tkIdx = (_tkIdx + TK_GROUP) % _tkItems.length;
+
+            const newEl = _tkBuildEl(group);
+
+            if (_tkCurrent) {
+                const old = _tkCurrent;
+                old.classList.remove('tk-visible');
+                old.classList.add('tk-exiting');
+                setTimeout(() => old.remove(), TK_EXIT + 50);
+            }
+
+            newEl.classList.add('tk-entering');
+            stage.appendChild(newEl);
+            _tkCurrent = newEl;
+            setTimeout(() => {
+                newEl.classList.remove('tk-entering');
+                newEl.classList.add('tk-visible');
+            }, TK_ENTER);
+        }
+
+        function showTicker(text) {
+            // Parsear el string separado por • en ítems individuales
+            _tkItems = text.split('•').map(s => s.trim()).filter(Boolean);
+            _tkIdx = 0;
+
+            clearInterval(_tkTimer);
+            _tkCurrent = null;
+
+            _tkShowNext();
+            _tkTimer = setInterval(_tkShowNext, TK_STAY);
+
+            // Sincronizar feed ticker
+            _syncFeedTicker(text);
+        }
+
+        /* -----------------------------------------------
+           FEED TICKER — ticker secundario dentro del feed
+        ----------------------------------------------- */
+        let _feedTkItems  = [];
+        let _feedTkIdx    = 0;
+        let _feedTkCurrent = null;
+        let _feedTkTimer  = null;
+
+        function _feedTkShowNext() {
+            const stage = document.getElementById('feed-main-ticker');
+            if (!stage || !_feedTkItems.length) return;
+            const group = [];
+            for (let i = 0; i < TK_GROUP; i++)
+                group.push(_feedTkItems[(_feedTkIdx + i) % _feedTkItems.length]);
+            _feedTkIdx = (_feedTkIdx + TK_GROUP) % _feedTkItems.length;
+            const newEl = _tkBuildEl(group);
+            if (_feedTkCurrent) {
+                const old = _feedTkCurrent;
+                old.classList.remove('tk-visible');
+                old.classList.add('tk-exiting');
+                setTimeout(() => old.remove(), TK_EXIT + 50);
+            }
+            newEl.classList.add('tk-entering');
+            stage.appendChild(newEl);
+            _feedTkCurrent = newEl;
+            setTimeout(() => {
+                newEl.classList.remove('tk-entering');
+                newEl.classList.add('tk-visible');
+            }, TK_ENTER);
+        }
+
+        function _syncFeedTicker(text) {
+            const loading = document.getElementById('feed-ticker-loading');
+            const ticker  = document.getElementById('feed-main-ticker');
+            const dot     = document.getElementById('feed-ticker-dot');
+            if (loading) loading.style.display = 'none';
+            if (ticker)  ticker.style.display  = 'flex';
+            if (dot)     dot.style.display      = 'inline-block';
+            _feedTkItems = text.split('•').map(s => s.trim()).filter(Boolean);
+            _feedTkIdx   = 0;
+            clearInterval(_feedTkTimer);
+            _feedTkCurrent = null;
+            if (ticker) ticker.innerHTML = '';
+            _feedTkShowNext();
+            _feedTkTimer = setInterval(_feedTkShowNext, TK_STAY);
+        }
+
+        /* -----------------------------------------------
+           CLIMA EN EL FEED — carga diferida y silenciosa
+        ----------------------------------------------- */
+        const SJ_LAT = -31.5375;
+        const SJ_LON = -68.5364;
+
+        async function _fetchClimaData(lat, lon) {
+            const [wRes, gRes] = await Promise.all([
+                fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,precipitation&wind_speed_unit=kmh`),
+                fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`)
+            ]);
+            const w = await wRes.json();
+            const g = await gRes.json();
+            return { w, g };
+        }
+
+        async function loadFeedClima() {
+            const climaText = document.getElementById('feed-clima-text');
+            const climaDot  = document.getElementById('feed-clima-dot');
+            if (!climaText) return;
+
+            try {
+                // Primero cargamos San Juan por defecto
+                const { w: wSJ, g: gSJ } = await _fetchClimaData(SJ_LAT, SJ_LON);
+                const cSJ   = wSJ.current;
+                const emoSJ = WMO_EMOJI[cSJ.weathercode] || '🌡️';
+                const desSJ = WMO_CODES[cSJ.weathercode] || '';
+                climaText.style.color = 'rgba(255,204,0,0.75)';
+                climaText.textContent = `${emoSJ} SAN JUAN ${Math.round(cSJ.temperature_2m)}° · ST ${Math.round(cSJ.apparent_temperature)}° · ${desSJ.toUpperCase()} · 💧${cSJ.relative_humidity_2m}% · 💨${Math.round(cSJ.wind_speed_10m)} KM/H`;
+                if (climaDot) climaDot.style.display = 'inline-block';
+
+                // Después intentamos geolocalización sin bloquear
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        async pos => {
+                            try {
+                                const { latitude: lat, longitude: lon } = pos.coords;
+                                // Solo actualizar si no estamos en San Juan (diferencia > 50km aprox)
+                                const dist = Math.sqrt(Math.pow(lat - SJ_LAT, 2) + Math.pow(lon - SJ_LON, 2));
+                                if (dist < 0.5) return; // Estamos cerca de SJ, no hacer otro fetch
+                                const { w, g } = await _fetchClimaData(lat, lon);
+                                const c    = w.current;
+                                const city = g.address?.city || g.address?.town || g.address?.village || 'Tu ubicación';
+                                const emo  = WMO_EMOJI[c.weathercode] || '🌡️';
+                                const des  = WMO_CODES[c.weathercode] || '';
+                                climaText.textContent = `${emo} ${city.toUpperCase()} ${Math.round(c.temperature_2m)}° · ST ${Math.round(c.apparent_temperature)}° · ${des.toUpperCase()} · 💧${c.relative_humidity_2m}% · 💨${Math.round(c.wind_speed_10m)} KM/H`;
+                            } catch(e) { /* silencioso — ya tenemos SJ */ }
+                        },
+                        () => { /* sin permiso — San Juan queda */ },
+                        { timeout: 6000, maximumAge: 300000 }
+                    );
+                }
+            } catch(e) {
+                if (climaText) {
+                    climaText.style.color = '#2a2a2a';
+                    climaText.textContent = 'SIN DATOS DE CLIMA';
+                }
+            }
+        }
+
+        async function updateTicker() {
+            try {
+                const [b, c, bt, et] = await Promise.all([
+                    fetch('https://api.bluelytics.com.ar/v2/latest').then(r => r.json()),
+                    fetch('https://api.exchangerate-api.com/v4/latest/USD').then(r => r.json()),
+                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT').then(r => r.json()),
+                    fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT').then(r => r.json())
+                ]);
+                
+                const r       = c.rates;
+                const blue    = b.blue.value_sell;
+                const oficial = b.oficial.value_sell;
+                const tarjeta = (oficial * 1.60).toFixed(2);
+                
+                showTicker(
+                    `DÓLAR BLUE: $${blue} • ` +
+                    `OFICIAL: $${oficial} • ` +
+                    `TARJETA: $${tarjeta} • ` +
+                    `EURO BLUE: $${b.blue_euro.value_sell} • ` +
+                    `REAL (BR): $${(blue/r.BRL).toFixed(2)} • ` +
+                    `P.CHILENO: $${(blue/r.CLP).toFixed(2)} • ` +
+                    `P.URUGUAYO: $${(blue/r.UYU).toFixed(2)} • ` +
+                    `GUARANÍ (PY): ₲${(blue/r.PYG).toFixed(2)} • ` +
+                    `BOLIVIANO: $b${(blue/r.BOB).toFixed(2)} • ` +
+                    `SOL PERUANO: S/${(blue/r.PEN).toFixed(2)} • ` +
+                    `P.COLOMBIANO: $${(blue/r.COP).toFixed(2)} • ` +
+                    `BOLÍVAR (VE): Bs${(blue/r.VES).toFixed(2)} • ` +
+                    `P.MEXICANO: $${(blue/r.MXN).toFixed(2)} • ` +
+                    `WON COREANO (KRW): ₩${r.KRW} • ` +
+                    `YEN JAPONÉS (JPY): ¥${r.JPY} • ` +
+                    `DÓLAR AUSTRALIANO: $${(blue/r.AUD).toFixed(2)} • ` +
+                    `BTC: U$D ${parseFloat(bt.price).toLocaleString()} • ` +
+                    `ETH: U$D ${parseFloat(et.price).toLocaleString()} • ` +
+                    `LA NUBE DE WILSON • `
+                );
+            } catch (e) {
+                showTicker('ERROR DE CONEXIÓN CON MERCADOS • LA NUBE DE WILSON • ');
+            }
+        }
+
+        let sponsorInterval = null;
+        let sponsorProgressTimer = null;
+
+        function startSponsors() {
+            const box = document.getElementById('sponsor-ad');
+            const progressBar = document.getElementById('sponsor-progress');
+            let idx = 0;
+            if (sponsors.length === 0) { box.innerHTML = ''; return; }
+            if (sponsorInterval) clearInterval(sponsorInterval);
+            if (sponsorProgressTimer) clearInterval(sponsorProgressTimer);
+
+            const DEFAULT_DURATION = 10000; // 10s por defecto
+
+            const show = () => {
+                const col = sponsors[idx].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                // Columnas del sheet: url, link, duracion_ms, tipo (imagen|gif|video)
+                const url      = (col[0] || '').replace(/"/g, '').trim();
+                const linkUrl  = (col[1] || '').replace(/"/g, '').trim();
+                const durMs    = parseInt((col[2] || '').replace(/"/g, '').trim(), 10) || DEFAULT_DURATION;
+                // tipo: 'video' para mp4/webm, cualquier otra cosa = imagen o gif
+                const rawTipo  = (col[3] || '').replace(/"/g, '').trim().toLowerCase();
+                const isVideo  = rawTipo === 'video' || /\.(mp4|webm|ogg)$/i.test(url);
+
+                if (!url) { idx = (idx + 1) % sponsors.length; return; }
+
+                // Limpiar contenido previo (mantener barra)
+                // Eliminar solo hijos que no sean #sponsor-progress
+                Array.from(box.children).forEach(c => { if (c.id !== 'sponsor-progress') c.remove(); });
+
+                let media;
+                if (isVideo) {
+                    media = document.createElement('video');
+                    media.src = url;
+                    media.autoplay = true;
+                    media.loop = true;
+                    media.muted = true;
+                    media.playsInline = true;
+                } else {
+                    media = document.createElement('img');
+                    media.src = url;
+                    media.alt = 'Sponsor';
+                }
+
+                if (linkUrl) {
+                    const a = document.createElement('a');
+                    a.href = linkUrl;
+                    a.target = '_blank';
+                    a.rel = 'noopener';
+                    a.style.cssText = 'display:flex;width:100%;height:100%;align-items:center;justify-content:center;';
+                    a.appendChild(media);
+                    box.appendChild(a);
+                } else {
+                    box.appendChild(media);
+                }
+
+                // Barra de progreso animada
+                if (progressBar) {
+                    progressBar.style.transition = 'none';
+                    progressBar.style.width = '0%';
+                    // Forzar reflow
+                    void progressBar.offsetWidth;
+                    progressBar.style.transition = `width ${durMs}ms linear`;
+                    progressBar.style.width = '100%';
+                }
+
+                idx = (idx + 1) % sponsors.length;
+                // Programar el siguiente con la duración de este sponsor
+                sponsorInterval = setTimeout(show, durMs);
+            };
+
+            show();
+        }
+
+        async function fetchData() {
+            const now = Date.now();
+            const newsUrl     = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+            const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
+            try {
+                const res = await fetch(newsUrl);
+                const text = await res.text();
+                const allRows = text.split('\n').filter(r => r.trim() !== '');
+                // Fila 0 = encabezados, Fila 1 = D2 control de stream (on/off), Fila 2+ = noticias
+                const controlRow = allRows[1] || '';
+                const controlCols = controlRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const streamState = (controlCols[3] || '').replace(/"/g, '').trim().toLowerCase();
+                const isLive = streamState === 'on';
+                // Las noticias reales arrancan desde la fila 3 (índice 2 del array)
+                allNews = allRows.slice(2).filter(r => r.trim() !== '').reverse().slice(0, 70);
+                const resSpo = await fetch(sponsorsUrl);
+                const textSpo = await resSpo.text();
+                sponsors = textSpo.split('\n').slice(1).filter(r => r.trim() !== '');
+                startSponsors();
+                const liveDot = document.getElementById('live-dot');
+                const wasLive = liveDot.classList.contains('live');
+                liveDot.classList.toggle('live', isLive);
+                // Sincronizar dot y clase del botón Stream en el feed-row
+                const streamDotFeed = document.getElementById('stream-dot-feed');
+                if (streamDotFeed) streamDotFeed.classList.toggle('live', isLive);
+                const btnStream = document.getElementById('btn-stream');
+                if (btnStream) btnStream.classList.toggle('live-on', isLive);
+                // Si el stream pasó de ON a OFF mientras el usuario lo estaba viendo → cortar y mostrar cartel
+                if (wasLive && !isLive && document.getElementById('player-kick').classList.contains('active')) {
+                    stopAllMedia();
+                    document.getElementById('player-kick').classList.remove('active');
+                    document.getElementById('initial-loop').classList.add('active');
+                    document.getElementById('no-signal-msg').classList.add('visible');
+                }
+                lastFetchTime = Date.now();
+                checkDeepLinking();
+            } catch (e) { console.error('Error cargando:', e); }
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-content');
+            container.innerHTML = '';
+            allNews.forEach((row, index) => {
+                const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                if (col.length < 4) return;
+                const title = col[0].replace(/"/g, '');
+                const content = col[1].replace(/"/g, '');
+                const author = (col[2] || 'Redacción').replace(/"/g, '').trim();
+                const status = col[3].trim().toLowerCase();
+                const cat = (col[4] || 'data').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s/g, '');
+                const img = (col[5] || '').trim().replace(/"/g, '');
+                const date = (col[6] || '').replace(/"/g, '').trim();
+                const link = (col[7] || '').replace(/"/g, '').trim();
+                const noteId = `nota-${allNews.length - index}`;
+                
+                if (status === 'publicar') {
+                    const previewLen = 300;
+                    // Cortar en la última palabra completa antes de previewLen
+                    let cutAt = previewLen;
+                    if (content.length > previewLen) {
+                        // Buscar el último punto, punto y coma, o salto de línea antes del límite
+                        const punctMatch = content.slice(0, previewLen).search(/[.!?\n][^.!?\n]*$/);
+                        if (punctMatch > previewLen * 0.5) {
+                            cutAt = punctMatch + 1; // incluir el signo de puntuación
+                        } else {
+                            // Si no hay puntuación cerca, cortar en la última palabra completa
+                            const lastSpace = content.lastIndexOf(' ', previewLen);
+                            cutAt = lastSpace > previewLen * 0.7 ? lastSpace : previewLen;
+                        }
+                    }
+                    const preview = content.length > cutAt ? content.slice(0, cutAt).trimEnd() + '…' : content;
+                    const extra = content.length > cutAt ? content.slice(cutAt).trimStart() : '';
+                    const hasExtra = extra.length > 0;
+                    const extraId = `extra-${noteId}`;
+                    const btnId = `btn-${noteId}`;
+                    const card = document.createElement('div');
+                    card.className = `note-card cat-${cat}`;
+                    card.id = noteId;
+
+                    card.innerHTML = `
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <span style="color:var(--highlight);font-size:0.7rem;font-weight:bold;opacity:0.8;white-space:nowrap;flex-shrink:0;">[ ${cat.toUpperCase()} ]</span>
+                            <div style="text-align:right;">
+                                <span style="color:var(--accent-green);font-size:0.7rem;font-style:italic;display:block;">✍️ ${author}</span>
+                                <span style="color:gray;font-size:0.6rem;display:block;">📅 ${date}</span>
+                            </div>
+                        </div>
+                        ${img ? `<img src="${img}" class="note-img">` : ''}
+                        <h2 class="note-title">${title}</h2>
+                        <div class="note-content">${preview}</div>
+                        ${hasExtra ? `
+                        <div class="note-extra-content" id="${extraId}">
+                            <div class="note-content" style="padding-top:6px;">${extra}</div>
+                            ${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}
+                        </div>
+                        <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
+                            LEER MÁS <span>↓</span>
+                        </button>` : `${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}`}
+                        <div class="share-bar">
+                            <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
+                            <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                }
+            });
+            document.getElementById('timeline-overlay').scrollTo(0, 0);
+            document.getElementById('timeline-overlay').classList.add('open');
+        }
+
+        async function openTimeline(category) {
+            const now = Date.now();
+            const needsRefresh = (now - lastFetchTime) > FETCH_COOLDOWN;
+
+            if (allNews.length === 0) {
+                // Primera vez: mostrar skeleton mientras carga
+                const container = document.getElementById('timeline-content');
+                container.innerHTML = `
+                    <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
+                        <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+                        CARGANDO FEED...
+                    </div>`;
+                document.getElementById('timeline-overlay').scrollTo(0, 0);
+                document.getElementById('timeline-overlay').classList.add('open');
+                await fetchData();
+                renderTimeline();
+            } else {
+                // Datos ya disponibles: abrir instantáneo
+                renderTimeline();
+                // Refrescar en background si los datos son viejos
+                if (needsRefresh) {
+                    fetchData().then(() => {
+                        // Si el overlay sigue abierto, actualizar silenciosamente
+                        if (document.getElementById('timeline-overlay').classList.contains('open')) {
+                            renderTimeline();
+                        }
+                    });
+                }
+            }
+        }
+
+        function toggleReadMore(extraId, btnId) {
+            const extra = document.getElementById(extraId);
+            const btn   = document.getElementById(btnId);
+            const isOpen = extra.classList.toggle('expanded');
+            btn.innerHTML = isOpen ? 'LEER MENOS <span>↑</span>' : 'LEER MÁS <span>↓</span>';
+        }
+
+        function closeTimeline() { document.getElementById('timeline-overlay').classList.remove('open'); window.history.pushState(null, null, ' '); }
+
+        /* =============================================
+           FEED LOCAL — Google News RSS San Juan
+        ============================================= */
+        let feedLocalLoaded = false;
+        let feedLocalLoading = false;
+
+        /* =============================================
+           GEOLOCALIZACIÓN — detección por IP + GPS opcional
+        ============================================= */
+        let userCity     = null;
+        let userRegion   = null;
+        let userCityGPS  = false;
+        let ipDetecting  = false;
+
+        async function detectarUbicacionPorIP() {
+            if (userCity || ipDetecting) return;
+            ipDetecting = true;
+            try {
+                const cached   = localStorage.getItem('fl_city');
+                const cachedRg = localStorage.getItem('fl_region');
+                const cachedTs = parseInt(localStorage.getItem('fl_city_ts') || '0');
+                const CACHE_TTL = 1000 * 60 * 60 * 24;
+                if (cached && (Date.now() - cachedTs) < CACHE_TTL) {
+                    userCity    = cached;
+                    userRegion  = cachedRg || null;
+                    userCityGPS = localStorage.getItem('fl_city_gps') === '1';
+                    ipDetecting = false;
+                    return;
+                }
+                const res  = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                if (data && data.city) {
+                    userCity   = data.city;
+                    userRegion = data.region || null;
+                    localStorage.setItem('fl_city',    userCity);
+                    localStorage.setItem('fl_region',  userRegion || '');
+                    localStorage.setItem('fl_city_ts', Date.now().toString());
+                    localStorage.setItem('fl_city_gps','0');
+                }
+            } catch(e) {
+                console.warn('IP geoloc falló:', e);
+            } finally {
+                ipDetecting = false;
+            }
+        }
+
+        async function mejorarConGPS() {
+            if (!navigator.geolocation) {
+                showToast('Tu navegador no soporta GPS');
+                return;
+            }
+            showToast('Solicitando ubicación GPS...');
+            navigator.geolocation.getCurrentPosition(
+                async (pos) => {
+                    try {
+                        const { latitude: lat, longitude: lon } = pos.coords;
+                        const res  = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`);
+                        const data = await res.json();
+                        const city   = data.address?.city || data.address?.town || data.address?.village || data.address?.county || null;
+                        const region = data.address?.state || null;
+                        if (city) {
+                            userCity    = city;
+                            userRegion  = region;
+                            userCityGPS = true;
+                            localStorage.setItem('fl_city',    userCity);
+                            localStorage.setItem('fl_region',  userRegion || '');
+                            localStorage.setItem('fl_city_ts', Date.now().toString());
+                            localStorage.setItem('fl_city_gps','1');
+                            // Recargar el feed con la ciudad nueva
+                            feedLocalLoaded  = false;
+                            feedLocalLoading = false;
+                            fetchFeedLocal();
+                            showToast(`📍 Ubicación: ${userCity}`);
+                        }
+                    } catch(e) {
+                        showToast('No se pudo obtener la ciudad');
+                    }
+                },
+                () => showToast('Permiso de ubicación denegado'),
+                { timeout: 8000 }
+            );
+        }
+
+        /* =============================================
+           FEED LOCAL
+        ============================================= */
+        async function openFeedLocal() {
+            const overlay = document.getElementById('feed-local-overlay');
+            if (overlay.classList.contains('open')) {
+                closeFeedLocal();
+                return;
+            }
+            document.getElementById('btn-clima').classList.add('local-active');
+            overlay.classList.add('open');
+            overlay.scrollTo(0, 0);
+
+            if (!feedLocalLoaded && !feedLocalLoading) {
+                // Si la detección de IP aún no terminó, esperarla (máx 2s) antes de buscar noticias
+                if (ipDetecting) {
+                    const container = document.getElementById('feed-local-content');
+                    container.innerHTML = `
+                        <div id="feed-local-header">🌩️ Feed Local<span>Detectando tu ubicación...</span></div>
+                        <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
+                            <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ffaa00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+                            OBTENIENDO UBICACIÓN...
+                        </div>`;
+                    let waited = 0;
+                    await new Promise(resolve => {
+                        const check = setInterval(() => {
+                            waited += 100;
+                            if (!ipDetecting || waited >= 2000) { clearInterval(check); resolve(); }
+                        }, 100);
+                    });
+                }
+                fetchFeedLocal();
+            }
+        }
+
+        function closeFeedLocal() {
+            document.getElementById('feed-local-overlay').classList.remove('open');
+            document.getElementById('btn-clima').classList.remove('local-active');
+        }
+
+        async function fetchFeedLocal() {
+            if (feedLocalLoading) return;
+            feedLocalLoading = true;
+
+            const ciudad = userCity || 'Argentina';
+            const esGPS  = userCityGPS;
+
+            const container = document.getElementById('feed-local-content');
+            container.innerHTML = `
+                <div id="feed-local-header">
+                    🌩️ Feed Local
+                    <span>${ciudad} · Google News</span>
+                </div>
+                <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
+                    <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ffaa00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+                    CARGANDO NOTICIAS LOCALES...
+                </div>`;
+
+            try {
+                // Query precisa: ciudad + provincia entre comillas para resultados estrictamente locales
+                const ciudadQ = `"${ciudad}"`;
+                const regionQ = userRegion && userRegion !== ciudad ? ` "${userRegion}"` : '';
+                const query   = encodeURIComponent(`${ciudadQ}${regionQ} noticias`);
+                const rssUrl  = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
+
+                // Lista de proxies actualizada y más estable
+                const proxies = [
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
+                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
+                    `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
+                ];
+
+                let xmlText = null;
+                for (const proxyUrl of proxies) {
+                    try {
+                        // Aumentamos el timeout a 10 segundos (10000 ms)
+                        const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(10000) });
+                        if (res.ok) {
+                            const text = await res.text();
+                            // Verificamos que realmente sea un XML de RSS y no una página de error de Google
+                            if (text.includes('<item>')) { 
+                                xmlText = text; 
+                                break; 
+                            }
+                        }
+                    } catch(e) { 
+                        // Falla silenciosa, intentamos con el siguiente proxy de la lista
+                        console.warn(`Falló el proxy: ${proxyUrl}`);
+                    }
+                }
+
+                if (!xmlText) throw new Error('Todos los proxies fallaron o fueron bloqueados por Google');
+
+                // Parser XML nativo 
+                const parser  = new DOMParser();
+                const doc     = parser.parseFromString(xmlText, 'text/xml');
+                const itemEls = Array.from(doc.querySelectorAll('item')).slice(0, 20);
+
+                if (itemEls.length === 0) throw new Error('RSS vacío');
+
+                const items = itemEls.map(el => ({
+                    title:       el.querySelector('title')?.textContent || '',
+                    link:        el.querySelector('link')?.textContent  || '',
+                    pubDate:     el.querySelector('pubDate')?.textContent || '',
+                    author:      el.querySelector('source')?.textContent || '',
+                    description: el.querySelector('description')?.textContent || '',
+                    thumbnail:   el.querySelector('enclosure')?.getAttribute('url') || '',
+                }));
+
+                renderFeedLocal(items, ciudad, esGPS);
+                feedLocalLoaded = true;
+            } catch(err) {
+                console.error('Feed Local error:', err);
+                container.innerHTML = `
+                    <div id="feed-local-header">🌩️ Feed Local<span>${ciudad}</span></div>
+                    <div style="padding:40px;text-align:center;color:#555;font-size:0.85rem;">
+                        No se pudieron cargar las noticias locales.<br>Intentá de nuevo más tarde.
+                    </div>`;
+            } finally {
+                feedLocalLoading = false;
+            }
+        }
+
+        function renderFeedLocal(items, ciudad, esGPS) {
+            const container  = document.getElementById('feed-local-content');
+            const previewLen = 300;
+            const subtitulo  = esGPS ? `📍 ${ciudad} · GPS · Google News` : `📡 ${ciudad} · por IP · Google News`;
+            const btnGPS     = esGPS ? '' : `<button onclick="mejorarConGPS()" style="margin-top:4px;background:none;border:1px solid rgba(255,160,0,0.3);color:#ffaa00;font-size:0.62rem;padding:3px 10px;border-radius:20px;cursor:pointer;letter-spacing:1px;">📍 Mejorar con GPS</button>`;
+
+            let html = `
+                <div id="feed-local-header">
+                    🌩️ Feed Local
+                    <span>${subtitulo}</span>
+                    ${btnGPS}
+                </div>`;
+
+            items.forEach((item, i) => {
+                const title    = (item.title || '').replace(/ - .*$/, '').trim();
+                const fullText = stripHtml(item.description || item.content || '');
+                const source   = item.author || extractDomain(item.link || '');
+                const pubDate  = item.pubDate ? formatFeedDate(item.pubDate) : '';
+                const img      = item.thumbnail || item.enclosure?.link || extractImg(item.description || '');
+
+                let cutAt = previewLen;
+                if (fullText.length > previewLen) {
+                    const punctMatch = fullText.slice(0, previewLen).search(/[.!?\n][^.!?\n]*$/);
+                    if (punctMatch > previewLen * 0.5) {
+                        cutAt = punctMatch + 1;
+                    } else {
+                        const lastSpace = fullText.lastIndexOf(' ', previewLen);
+                        cutAt = lastSpace > previewLen * 0.7 ? lastSpace : previewLen;
+                    }
+                }
+                const preview  = fullText.length > cutAt ? fullText.slice(0, cutAt).trimEnd() + '…' : fullText;
+                const extra    = fullText.length > cutAt ? fullText.slice(cutAt).trimStart() : '';
+                const hasExtra = extra.length > 0;
+                const extraId  = `fl-extra-${i}`;
+                const btnId    = `fl-btn-${i}`;
+
+                html += `
+                    <div class="note-card" style="border-left-color:#ffaa00;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <span style="color:#ffaa00;font-size:0.7rem;font-weight:bold;opacity:0.8;white-space:nowrap;flex-shrink:0;">[ LOCAL ]</span>
+                            <div style="text-align:right;">
+                                <span style="color:var(--accent-green);font-size:0.7rem;font-style:italic;display:block;">📰 ${source}</span>
+                                <span style="color:gray;font-size:0.6rem;display:block;">📅 ${pubDate}</span>
+                            </div>
+                        </div>
+                        ${img ? `<img src="${img}" class="note-img" onerror="this.style.display='none'">` : ''}
+                        <h2 class="note-title">${title}</h2>
+                        <div class="note-content">${preview}</div>
+                        ${hasExtra ? `
+                        <div class="note-extra-content" id="${extraId}">
+                            <div class="note-content" style="padding-top:6px;">${extra}</div>
+                        </div>
+                        <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
+                            LEER MÁS <span>↓</span>
+                        </button>` : ''}
+                        <div class="share-bar">
+                            <button class="share-btn" onclick="navigator.clipboard.writeText('${escapeJs(item.link || '')}').then(()=>showToast('Link copiado'))">🔗 Copiar Link</button>
+                        </div>
+                    </div>`;
+            });
+
+            container.innerHTML = html;
+            document.getElementById('feed-local-overlay').scrollTo(0, 0);
+        }
+
+        // Helpers del Feed Local
+        function stripHtml(html) {
+            const tmp = document.createElement('div');
+            tmp.innerHTML = html;
+            return (tmp.textContent || tmp.innerText || '').replace(/\s+/g, ' ').trim();
+        }
+        function extractImg(html) {
+            const m = html.match(/<img[^>]+src=["']([^"']+)["']/i);
+            return m ? m[1] : '';
+        }
+        function extractDomain(url) {
+            try { return new URL(url).hostname.replace('www.', ''); } catch { return ''; }
+        }
+        function formatFeedDate(dateStr) {
+            try {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('es-AR', { day:'2-digit', month:'short', year:'numeric' });
+            } catch { return dateStr; }
+        }
+        function escapeJs(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function checkDeepLinking() {
+            const hash = window.location.hash;
+            if (hash === '#stream') {
+                // Alguien abrió el link de invitación al stream en vivo
+                const isLive = document.getElementById('live-dot').classList.contains('live');
+                if (isLive) {
+                    setTimeout(() => switchSignal('kick'), 400);
+                    // Limpiar el hash de la URL sin recargar la página
+                    history.replaceState(null, '', window.location.pathname);
+                }
+            } else if (hash && hash.startsWith('#nota-')) {
+                openTimeline('all');
+                setTimeout(() => { const el = document.getElementById(hash.substring(1)); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 800);
+            }
+        }
+
+        function shareStream() {
+            const url = `${window.location.origin}${window.location.pathname}#stream`;
+            const text = '📡 ¡Estamos en vivo en La Nube de Wilson! Entrá acá:';
+            if (navigator.share) {
+                navigator.share({ title: 'La Nube de Wilson — EN VIVO', text, url });
+            } else {
+                navigator.clipboard.writeText(url).then(() => showToast('🔗 Link del stream copiado'));
+            }
+        }
+
+        function shareNote(id, title) {
+            const url = `${window.location.origin}${window.location.pathname}#${id}`;
+            const text = `Visto en La Nube de Wilson: ${title}`;
+            if (navigator.share) { navigator.share({ title: 'La Nube de Wilson', text, url }); } else { window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + url)}`); }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg; toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function copyLink(id) {
+            const url = `${window.location.origin}${window.location.pathname}#${id}`;
+            navigator.clipboard.writeText(url).then(() => { showToast('¡Link copiado! 🔗'); });
+        }
+
+        const unlockAudio = () => { 
+            // Iniciar audio ambiental solo si nada más está sonando (ni YT ni Kick activos)
+            const ytActive   = document.getElementById('player-yt').classList.contains('active');
+            const kickActive = document.getElementById('player-kick').classList.contains('active');
+            if (bgAudio && bgAudio.paused && !ytActive && !kickActive) { 
+                bgAudio.play().catch(() => {}); 
+            } 
+        };
+
+        function kickUnmute() {
+            // El usuario hizo tap/click explícito — el navegador mobile ya permite el audio
+            const pk = document.getElementById('player-kick');
+            // Recargar sin muted=true para activar el audio
+            pk.src = 'https://player.kick.com/lanubedewilson';
+            // Ocultar el botón una vez activado
+            const unmuteBtn = document.getElementById('kick-unmute-btn');
+            if (unmuteBtn) unmuteBtn.style.display = 'none';
+            showToast('🔊 Audio del stream activado');
+        }
+
+        /* =============================================
+           RADIO SIDEBAR LOGIC
+        ============================================= */
+        const RADIO_STATIONS = [
+           // ==========================================
+            // SAN JUAN - CAPITAL Y GRAN SAN JUAN
+            // ==========================================
+            { name: 'Pop Life (FM 107.7)', url: 'https://pop-life-107.smurua4.workers.dev/', location: 'San Juan' },
+            { name: 'Light FM (FM 97.3)', url: 'https://host.serviceinfinito.com.ar:7000/;stream', location: 'San Juan' },
+            { name: 'Armonía FM (FM 96.7)', url: 'https://streaming6.locucionar.com:24162/stream', location: 'San Juan' }, 
+            { name: 'Master Classics 24/7', url: 'https://sc.host-live.com:8182/;', location: 'San Juan' }, 
+            { name: 'Rock and Play ', url: 'https://host.serviceinfinito.com.ar:7002/;stream', location: 'San Juan' }, 
+            { name: 'Radio Sports (FM 89.9)', url: 'https://streaming.gostreaming.com.ar/8004/;stream', location: 'San Juan' }, 
+            { name: 'Lider (FM 104.3)', url: 'https://stream.arcast.tv:8443/lidersanjuan/lidersanjuan.stream/playlist.m3u8', location: 'San Juan' }, 
+            { name: 'LV5 Radio Sarmiento (FM104.7)',url:'https://stream.arcast.tv:8443/sarmiento/sarmiento.stream/playlist.m3u8', location: 'San Juan' }, 
+            { name: 'LV1 Radio Colòn (AM 560)', url: 'https://host.serviceinfinito.com.ar:7004/;stream ', location: 'San Juan' },
+            { name: 'Estación Claridad (FM 97.1)', url: 'https://solid9.streamupsolutions.com/proxy/liijwyyg?mp=/stream', location: 'San Juan' }, 
+            { name: 'Radio La Voz (FM 100.5)', url: 'https://host.serviceinfinito.com.ar:7003/;stream', location: 'San Juan' }, 
+            { name: 'Amanecer  (FM 102.9)', url: 'https://cdn1.tvlin.net/icecast/amanecer/icecast.audio', location: 'San Juan' }, 
+            { name: 'FM Zeta  (FM 94.7)', url: 'https://streaming.radiosenlinea.com.ar/8334/stream/1/', location: 'San Juan' }, 
+            { name: 'Cadena Vida  (FM 95.3)', url: 'https://host.serviceinfinito.com.ar:7006/;stream', location: 'San Juan' },
+            { name: 'Radio Nacional  (AM 910)', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad23', location: 'San Juan' },
+            { name: 'Del Sol  (FM 91.9)', url: 'https://streaming3.locucionar.com/proxy/diariodelsol?mp=/stream', location: 'San Juan' },
+            { name: 'Cosmos (FM 93.5)', url: 'https://s28.myradiostream.com/:28240/;', location: 'San Juan' }, 
+            { name: 'Antena 1 (FM 91.5)', url: 'https://sc.netradiofm.com/p/9008/', location: 'San Juan' }, 
+            { name: 'Radio Universidad (FM 93.1)', url: 'https://srs.unsj.edu.ar:8443/stream', location: 'San Juan' },            
+            { name: 'CNN Radio San Juan (FM 94.1)', url: 'https://streaming.radiosenlinea.com.ar:10796/;', location: 'San Juan' },
+            { name: 'Radio La Red San Juan (FM 89.3)', url: 'https://streaming.radiosenlinea.com.ar:10929/;;;stream.mp3', location: 'San Juan' },            
+            { name: 'Radio Perfil (AM 1190)', url: 'https://jireh-1-hls-audio-us-isp.dps.live/hls-audio/4e252a65837b69e349d5d8c1033152b4/perfil/playlist/manifest/gotardisz/audio/1742986263/livestream1.m3u8', location: 'San Juan' },
+            { name: 'FM San Antonio (FM 92.9)', url: 'https://host.serviceinfinito.com.ar:7005/;stream', location: 'San Juan' },
+            { name: 'Radio Santa Cecilia (FM 91.7)', url: 'https://01.solumedia.com.ar:8492/stream', location: 'San Juan' },            
+            { name: 'Radio Manantial (FM 99.3)', url: 'https://edge02.radiohdvivo.com/manantial993', location: 'San Juan' },
+           
+  // ==========================================
+            // CABA Y BUENOS AIRES
+            // ==========================================
+            
+            { name: 'Mega (FM 98.3)', url: 'https://mega.stweb.tv/mega983/live/chunks.m3u8', location: 'Buenos Aires' },
+            { name: 'Urbana Play (FM 104.3)', url: 'https://cdn.instream.audio:9660/stream', location: 'Buenos Aires' },
+            { name: 'Los 40 (FM 105.5)', url: 'https://radios.solumedia.com:6158/stream?icy=http', location: 'Buenos Aires' },
+            { name: 'La 100 (FM 99.9)', url: 'https://27353.live.streamtheworld.com/FM999_56AAC.aac', location: 'Buenos Aires' },
+            { name: 'Aspen (FM 102.3)', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/ASPEN.mp3' , location: 'Buenos Aires' },
+
+            { name: 'Vorterix (FM 92.1)', url: 'https://ice2.edge-apps.net/radio1_high-20057.audio' , location: 'Buenos Aires' },
+
+            { name: 'La Nación + Música (FM 104.9)', url: 'https://stream.radio.co/s2ed3bec0a/listen' , location: 'Buenos Aires' },
+
+            { name: 'Metro (FM 95.1)', url: 'https://27383.live.streamtheworld.com/METROAAC_SC' , location: 'Buenos Aires' },
+
+            { name: 'Mitre (FM 105.9)', url: 'https://18183.live.streamtheworld.com/AM790_56AAC.aac' , location: 'Buenos Aires' },
+
+            { name: 'Milenium (FM 106.7)', url: 'https://sonicpanel.hostradios.com/8002/stream' , location: 'Buenos Aires' },
+
+            { name: 'Arpeggio (FM 89.5)', url: 'https://cloudstream2032.conectarhosting.com/8074/stream' , location: 'Buenos Aires' },
+
+            { name: 'La Boca (FM 90.1)', url: 'https://s24.myradiostream.com/14984/listen.mp3' , location: 'Buenos Aires' },
+
+            { name: 'Delta (FM 90.3)', url: 'https://cdn.instream.audio//:9069//stream' , location: 'Buenos Aires' },
+
+            { name: 'Nacional Rock (FM 93.7)', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad1' , location: 'Buenos Aires' },
+
+            { name: 'Concepto (FM 95.5)', url: 'https://radios.solumedia.com:6002/stream' , location: 'Buenos Aires' },
+
+            { name: 'Nacional Clásica (FM 96.7)', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad37' , location: 'Buenos Aires' },
+
+            { name: 'Cultura (FM 97.9)', url: 'https://usa5.fastcast4u.com/proxy/radiocultura?mp=/1' , location: 'Buenos Aires' },
+
+            { name: 'Nacional Folklorica (FM 98.7)', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad38' , location: 'Buenos Aires' },
+
+            { name: 'Sonido (FM 87.8)', url: 'https://streaming.radiosenlinea.com.ar/8780/stream/1/' , location: 'Buenos Aires' },
+
+            { name: 'Continental (FM 104.3)', url: 'https://frontend.radiohdvivo.com/continental/live' , location: 'Buenos Aires' },
+
+            { name: 'Radio 10 (FM 101.5)', url: 'https://radio10.stweb.tv/radio10/live/chunks.m3u8' , location: 'Buenos Aires' },
+
+            { name: 'Radio Zónica', url: 'https://streamlky.alsolnet.com/radiozonica' , location: 'Buenos Aires' },
+
+            { name: 'Radio Nacional (FM 87.9)', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad1' , location: 'Buenos Aires' },
+
+            { name: 'CNN Radio (FM 95.1)', url: 'https://unlimited2-ar.dps.live/cnn-ar/aac/icecast.audio' , location: 'Buenos Aires' },
+
+            { name: 'Radio Génesis (FM 97.5)', url: 'https://01.solumedia.com.ar:8216/;' , location: 'Buenos Aires' },
+
+            { name: 'Onda Latina (FM 101.1)', url: 'https://streaming2.locucionar.com/proxy/ondalatina?mp=/stream' , location: 'Buenos Aires' },
+
+            { name: 'Del Plata (FM 95.7)', url: 'https://streaming01.shockmedia.com.ar:10217/stream' , location: 'Buenos Aires' },
+
+               
+        
+            // ==========================================
+            // CÓRDOBA
+            // ==========================================
+           
+            { name: 'Cadena 3 (FM 100.5)', url: 'https://liveradio.mediainbox.net/radio3.mp3' , location: 'Córdoba' },
+
+            { name: 'Radio Popular (FM 92.3))', url: 'https://c3ny1.mediainbox.net/popular.mp3' , location: 'Córdoba' },
+
+            { name: 'Mía FM (FM 104.1)', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/FM1041_56AAC.aac' , location: 'Córdoba' },
+
+            { name: 'Radio Mitre (FM 97.9)', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/AM810_56AAC.aac' , location: 'Córdoba' },
+
+            { name: 'Gamba  (FM 106.3)', url: 'https://servidor1.hostradios.com:8132/stream' , location: 'Córdoba' },
+
+            { name: 'Shopping Classics (FM 96.1)', url: 'https://stream4.suenas.net/shoppingclassics' , location: 'Córdoba' },
+
+            { name: 'SRT Radio Universidad (FM 102.3)', url: 'https://radios.solumedia.com:6276/stream' , location: 'Córdoba' },
+
+            { name: 'Pobre Johnny (FM 88.9)', url: 'https://stream4.suenas.net/pobrejohnny' , location: 'Córdoba' },
+
+            { name: 'Loca Suelta (FM 94.7)', url: 'https://stream4.suenas.net/locasuelta' , location: 'Córdoba' },
+
+            { name: 'Radio Suquía (FM 96.5)', url: 'https://streaming01.shockmedia.com.ar:10945/stream/1/' , location: 'Córdoba' },
+
+
+            // ==========================================
+            // MENDOZA
+            // ==========================================
+            { name: 'Estación del Sol (Mendoza)', url: 'https://estaciondelsolonline.com.ar:8000/radio.aac' , location: 'Mendoza' },
+
+            { name: 'Radio Nihuil (AM 680)', url: 'https://playerservices.streamtheworld.com/api/livestream-redirect/NIHUIL_AM680AAC_SC' , location: 'Mendoza' },
+
+            { name: 'LV10 Radio de Cuyo', url: 'https://streamserver-2.xyz/listen/lvdiez/radio.aac' , location: 'Mendoza' },
+
+            { name: 'MDZ Radio (FM 105.5)', url: 'https://streaming6.locucionar.com:24110/stream' , location: 'Mendoza' },
+
+            { name: 'FM Montecristo (FM 93.7)', url: 'https://icecast.grupoamericainterior.com.ar/Monte' , location: 'Mendoza' },
+
+            { name: 'Radio Mitre (FM 100.3)', url: 'https://27353.live.streamtheworld.com/FM1003_56AAC.aac' , location: 'Mendoza' },
+
+            { name: 'Brava (FM 94.9)', url: 'https://27403.live.streamtheworld.com/BRAVA_FM949_SC' , location: 'Mendoza' },
+
+            { name: 'Red 101 (FM 101.5', url: 'https://masservidor.net/8052/stream' , location: 'Mendoza' },
+
+            { name: 'Radio Universidad (FM 96.5)', url: 'https://fm.uncu.edu.ar/' , location: 'Mendoza' },
+
+            { name: 'Radio UTN (FM 94.5)', url: 'https://fm945s.frm.utn.edu.ar/FMUTN' , location: 'Mendoza' },
+
+
+            // ==========================================
+            // SANTA FE
+            // ==========================================
+            { name: 'LT10 (FM 106.5)', url: 'https://radio.arcast.net:1060/stream' , location: 'Santa Fe' },
+
+            { name: 'LT2 Radio 2 (FM 90.1)', url: 'https://streaming320tb.locucionar.com/proxy/radio2?mp=/stream/1/' , location: 'Santa Fe' },
+
+            { name: 'FM Vida (FM 97.9)', url: 'https://streaming450tb.locucionar.com/proxy/fmvida979?mp=/stream' , location: 'Santa Fe' },
+
+            { name: 'Radio Boing (FM 97.1)', url: 'https://streaming.redboing.com/radio/8000/radio.aac' , location: 'Santa Fe' },
+
+            { name: 'Aire de Santa Fe (FM 97.3)', url: 'https://streaming.redboing.com/radio/8000/radio.aac' , location: 'Santa Fe' },
+
+            { name: 'LT8 La Ocho (FM 92.9))', url: 'https://stream.lt8.com.ar:8443/lt8radio.mp3' , location: 'Santa Fe' },
+
+            { name: 'LT9 Radio Brigadier López (FM 105.5)', url: 'https://streaming1.locucionar.com/proxy/lt9' , location: 'Santa Fe' },
+
+            { name: 'Estación del Siglo (FM 99.5)', url: 'https://stream.lt8.com.ar:8443/delsiglo995.mp3' , location: 'Santa Fe' },
+
+            { name: 'CNN Radio Rosario (FM 89.5)', url: 'https://media425.digitar.net:8141/radio.mp3' , location: 'Santa Fe' },
+
+            { name: 'FM Tango Rosario (FM 98.7)', url: 'https://server.laradio.online/proxy/jorge_cetta?1725731935654=&mp=/stream' , location: 'Santa Fe' },
+
+
+             // ==========================================
+            // SAN LUIS          
+            // ==========================================
+            { name: 'LRA 29 Radio Nacional (FM 96.7)', url: 'https://sa.mp3.icecast.magma.edge-access.net/sc_rad29' , location: 'San Luis' },
+
+            { name: 'Radio Dimensión (FM 102.7)', url: 'https://streaming.gostreaming.com.ar/8198/;' , location: 'San Luis' },
+
+            { name: 'Radio Universidad (FM 97.9)', url: 'https://01.solumedia.com.ar:8366/stream' , location: 'San Luis' },
+
+            { name: 'Radio Popular (FM 98.5)', url: 'https://sonicpanel.hostradios.com/8094/stream' , location: 'San Luis' },
+
+            
+            // ==========================================
+            // NEUQUÉN            
+            // ==========================================
+            { name: 'La Red (FM 93.7)', url: 'https://server.laradio.online/proxy/julian_liyo?mp=/stream' , location: 'Neuquén' },
+
+            { name: 'LU19 (AM 690)', url: 'https://sonic.host-live.com/8064/stream' , location: 'Neuquén' },
+
+            { name: 'LU5 Radio Neuquén (AM 600)', url: 'https://sonic.host-live.com/8064/stream' , location: 'Neuquén' },
+
+            { name: 'AM550 La Primera (AM 550)', url: 'https://sonic.host-live.com/8296/stream' , location: 'Neuquén' },
+
+
+            // ==========================================
+            // CHUBUT
+            // ==========================================
+            { name: 'Radio 3 (Trelew)', url: 'https://radio01.ferozo.com/proxy/ra01000981?mp=/stream' , location: 'Chubut' },
+
+            { name: 'FM Del Mar (Comodoro Riv.)', url: 'https://icecast.gesatel.com.ar:8443/vivo' , location: 'Chubut' },
+
+            
+            // ==========================================
+            //CHILE
+            // ==========================================           
+           { name: 'Sonar FM (FM 105.3)', url: 'https://mdstrm.com/audio/5c915724519bce27671c4d15/live.m3u8' , location: 'Chile' },
+
+           { name: 'Radio Bío Bío (FM 94.5)', url: 'https://unlimited2-ar.dps.live/biobioconcepcion/aac/icecast.audio' , location: 'Chile' },
+
+           { name: 'ADN Radio (FM 91.7)', url: 'https://24233.live.streamtheworld.com/ADNAAC.aac' , location: 'Chile' },
+
+           { name: 'FM Dos (FM 98.5)', url: 'https://29319.live.streamtheworld.com/FMDOSAAC.aac' , location: 'Chile' },
+
+          
+
+          
+            // ==========================================
+            // Estados Unidos
+            // ==========================================
+            { name: 'KEXP Seattle',       url: 'https://kexp.streamguys1.com/kexp64.aac' , location: 'Estados Unidos' },
+
+            { name: 'NPR Washington D.C. ',       url: 'https://npr-ice.streamguys1.com/live.mp3' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · Global',       url: 'http://stream.radioparadise.com/global-flacm' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · Mellow',       url: 'http://stream.radioparadise.com/mellow-flacm' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · Rock',         url: 'http://stream.radioparadise.com/rock-flacm' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · Main Mix',     url: 'http://stream.radioparadise.com/flacm' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · Beyond',       url: 'http://stream.radioparadise.com/beyond-flacm' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · 2050',         url: 'http://stream.radioparadise.com/radio2050-flacm' , location: 'Estados Unidos' },
+
+            { name: 'Radio Paradise · Serenity',     url: 'http://stream.radioparadise.com/serenity' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Folk Forward',         url: 'http://ice2.somafm.com/folkfwd-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Groove Salad FLAC',   url: 'https://hls.somafm.com/hls/groovesalad/FLAC/program.m3u8' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · GS Unprocessed',      url: 'https://hls.somafm.com/hls/gs-unprocessed/FLAC/program.m3u8' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Groove Salad 320',    url: 'https://hls.somafm.com/hls/groovesalad/320k/program.m3u8' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Reggae',              url: 'http://ice6.somafm.com/reggae-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Seventies',           url: 'http://ice4.somafm.com/seventies-320-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Underground 80s',     url: 'http://ice6.somafm.com/u80s-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Boot Liquor',         url: 'http://ice2.somafm.com/bootliquor-320-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Lush',               url: 'http://ice5.somafm.com/lush-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Covers',             url: 'http://ice4.somafm.com/covers-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Indie Pop',          url: 'http://ice4.somafm.com/indiepop-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Thistle',            url: 'http://ice6.somafm.com/thistle-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Dubstep',            url: 'http://ice1.somafm.com/dubstep-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · 7Soul',              url: 'http://ice4.somafm.com/7soul-128-aac' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Bossa Nova',         url: 'http://ice2.somafm.com/bossa-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Tiki Time',          url: 'http://ice6.somafm.com/tikitime-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · DEF CON',            url: 'http://ice2.somafm.com/defcon-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Synphaera',          url: 'http://ice6.somafm.com/synphaera-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Drone Zone',         url: 'http://ice2.somafm.com/dronezone-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Dark Zone',          url: 'http://ice2.somafm.com/darkzone-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Sonic Universe',     url: 'http://ice6.somafm.com/sonicuniverse-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'SomaFM · Insound',            url: 'http://ice4.somafm.com/insound-256-mp3' , location: 'Estados Unidos' },
+
+            { name: 'Radio Calico HTTPS',          url: 'https://radio3.radio-calico.com:8443/calico' , location: 'Estados Unidos' },
+
+            { name: 'Organ Live',                  url: 'https://play.organlive.com:7010/320' , location: 'Estados Unidos' },
+
+            { name: 'Folk Alley 128',              url: 'http://freshgrass.streamguys1.com/folkalley-128mp3' , location: 'Estados Unidos' },
+
+
+             // ==========================================
+            // Gran Bretaña
+            // ==========================================
+            { name: 'BBC Radio 1',url: 'http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d320000.norewind.m3u8/bbc_radio_one-audio%3d320000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'BBC Radio 2',   url: 'http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d320000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'BBC Radio 3',url: 'http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d320000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'BBC Radio 4 FM',url: 'http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d320000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'BBC Radio 5 Live', url: 'http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d320000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'BBC 6 Music',  url: 'http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d320000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'BBC Radio Norfolk', url: 'http://as-hls-ww-live.akamaized.net/pool_61510571/live/ww/bbc_radio_norfolk/bbc_radio_norfolk.isml/bbc_radio_norfolk-audio%3d96000.norewind.m3u8' , location: 'Gran Bretaña' },
+
+            { name: 'NME Radio 1',                   url: 'http://listen-nme.sharp-stream.com/nme1high.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'NME Radio 2',                   url: 'http://listen-nme.sharp-stream.com/nme2high.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Nation 60s',               url: 'http://listen-nation.sharp-stream.com/nation60sdab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Nation 70s',               url: 'http://listen-nation.sharp-stream.com/nationradio70s-dab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Nation 80s',               url: 'http://listen-nation.sharp-stream.com/nationradio80s-dab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Nation 90s',               url: 'http://listen-nation.sharp-stream.com/nationradio90s-dab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Nation 00s',               url: 'http://listen-nation.sharp-stream.com/nationradio00sdab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Nation Hits',              url: 'http://listen-nation.sharp-stream.com/nationhitsdab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Love Nation',              url: 'http://listen-nation.sharp-stream.com/lovenationdab.mp3' , location: 'Gran Bretaña' },
+
+            { name: 'Insanity Radio FLAC',         url: 'https://stream.cor.insanityradio.com/insanity.flac' , location: 'Gran Bretaña' },
+
+            { name: 'Radio Caroline Oldies',       url: 'https://happy.radiocaroline319.nl/listen/caroline_oldies/radio320.mp3' , location: 'Gran Bretaña' },
+
+            
+               
+                    
+            // ==========================================
+            //Alemania
+            // ==========================================
+            { name: 'Radio Monster · Top Hits',    url: 'http://tophits.radiomonster.fm/320.mp3' , location: 'Alemania' },
+
+            { name: 'Radio Monster · Evergreens',  url: 'http://evergreens.radiomonster.fm/320.mp3' , location: 'Alemania' },
+
+            { name: 'Radio Monster · Dance',       url: 'http://dance.radiomonster.fm/320.mp3' , location: 'Alemania' },
+
+            { name: 'Zappa FLAC',                url: 'https://streams.norbert.de/zappa.flac' , location: 'Alemania' },
+
+            { name: 'Punk Rockers FLAC',        url: 'https://stream.punkrockers-radio.de:8443/prr.flac' , location: 'Alemania' },
+
+             
+            // ==========================================
+            //Francia
+            // ==========================================
+            { name: 'Piano Stream',              url: 'http://stream.p-node.org/piano' , location: 'Francia' },
+
+            { name: 'Le Son Parisien FLAC',     url: 'http://stream.lesonparisien.com/live.flac' , location: 'Francia' },
+
+            { name: 'Frequence 3 HTTPS',       url: 'https://frequence3.net-radio.fr/frequence3.flac' , location: 'Francia' },
+
+            { name: 'Frequence 3 FLAC',            url: 'http://master.net-radio.fr:80/frequence3.flac' , location: 'Francia' },
+
+
+             // ==========================================
+            //Nueva Zelanda
+            // ==========================================
+            { name: 'The Cheese NZ FLAC',          url: 'https://station.thecheese.co.nz/listen/the_cheese/flac' , location: 'Nueva Zelanda' },
+
+            { name: 'Radio New Zealand National',          url: 'https://radionz.streamguys1.com/national/national/playlist.m3u8' , location: 'Nueva Zelanda' },
+           
+           
+            // ==========================================
+            //Monaco
+            // ==========================================
+            { name: 'Magic Radio FLAC',            url: 'http://flac.magic-radio.net/flac' , location: 'Mónaco' },
+
+
+           
+            
+            // ==========================================
+            //Bulgaria
+            // ========================================== 
+            { name: 'Easy Radio BG FLAC',          url: 'http://live.easyradio.bg/flac' , location: 'Bulgaria' },
+
+
+            // ==========================================
+            //Austria
+            // ========================================== 
+            { name: 'Kronehit Ultra HD',          url: 'https://secureonair.krone.at/kronehit-ultra-hd.aac' , location: 'Austria' },
+
+            
+            // ==========================================
+            //Chipre
+            // ========================================== 
+            { name: 'DanceWave FLAC',             url: 'http://dancewave.online/dance.flac.ogg' , location: 'Chipre' },
+
+            { name: 'Retro DanceWave FLAC',       url: 'http://retro.dancewave.online/retrodance.flac.ogg' , location: 'Chipre' },
+
+            { name: 'JoyHits FLAC',               url: 'http://joyhits.online/joyhits.flac.ogg' , location: 'Chipre' },
+
+           
+            // ==========================================
+            //Suiza
+            // ========================================== 
+            { name: 'Radio X OGG',                url: 'https://mp3.radiox.ch/standard.ogg' , location: 'Suiza' },
+
+            { name: 'OpenSky Radio FLAC',         url: 'https://audio.opensky.radio:8082/flac?_res_tag_=audio' , location: 'Suiza' },
+
+
+           
+            
+            // ==========================================
+            //Canada
+            // ==========================================
+             { name: 'Lapfox Radio FLAC',         url: 'https://radio.lapfoxradio.com/radio/8000/stream-flac.flac' , location: 'Canadá' },
+
+            
+             
+            // ==========================================
+            //Paises Bajos
+            // ==========================================     
+            { name: 'Haarlem Shuffle FLAC',    url: 'https://stream.tbmp.nl:8000/haarlemshuffle.flac' , location: 'Países Bajos' },
+
+             
+            // ==========================================
+            //Italia
+            // ==========================================
+             { name: 'NCRadio 320',                   url: 'http://live.ncradio.fm/320' , location: 'Italia' },
+
+            
+        ];
+
+
+        let radioAudio = document.getElementById('radio-audio');
+        let activeRadioIndex = -1;
+        let activeRadioEl = null;
+
+        // --- RADIO: acordeón por región ---
+        const openLocations = new Set();
+
+        function buildRadioList() {
+            renderRadioAccordion();
+        }
+
+        function getLocations() {
+            const seen = new Set();
+            const ordered = [];
+            RADIO_STATIONS.forEach(s => {
+                if (!seen.has(s.location)) { seen.add(s.location); ordered.push(s.location); }
+            });
+            return ordered;
+        }
+
+        function getLocationFlag(loc) {
+            const codes = {
+                'San Juan':         'ar',
+                'Buenos Aires':     'ar',
+                'Córdoba':          'ar',
+                'Mendoza':          'ar',
+                'Santa Fe':         'ar',
+                'San Luis':         'ar',
+                'Neuquén':          'ar',
+                'Chubut':           'ar',
+                'Chile':            'cl',
+                'Bolivia':          'bo',
+                'Brasil':           'br',
+                'Colombia':         'co',
+                'Ecuador':          'ec',
+                'Perú':             'pe',
+                'Uruguay':          'uy',
+                'Venezuela':        've',
+                'Estados Unidos':   'us',
+                'Canadá':           'ca',
+                'México':           'mx',
+                'Costa Rica':       'cr',
+                'El Salvador':      'sv',
+                'Guatemala':        'gt',
+                'Honduras':         'hn',
+                'Jamaica':          'jm',
+                'Nicaragua':        'ni',
+                'Puerto Rico':      'pr',
+                'Rep. Dominicana':  'do',
+                'Trinidad y Tobago':'tt',
+                'Alemania':         'de',
+                'Austria':          'at',
+                'Bélgica':          'be',
+                'Bulgaria':         'bg',
+                'Rep. Checa':       'cz',
+                'Chipre':           'cy',
+                'Croacia':          'hr',
+                'Dinamarca':        'dk',
+                'España':           'es',
+                'Finlandia':        'fi',
+                'Francia':          'fr',
+                'Gran Bretaña':     'gb',
+                'Grecia':           'gr',
+                'Hungría':          'hu',
+                'Irlanda':          'ie',
+                'Italia':           'it',
+                'Mónaco':           'mc',
+                'Noruega':          'no',
+                'Nueva Zelanda':    'nz',
+                'Países Bajos':     'nl',
+                'Polonia':          'pl',
+                'Portugal':         'pt',
+                'Rumanía':          'ro',
+                'Serbia':           'rs',
+                'Suecia':           'se',
+                'Suiza':            'ch',
+                'Ucrania':          'ua',
+                'Ghana':            'gh',
+                'Kenia':            'ke',
+                'Marruecos':        'ma',
+                'Nigeria':          'ng',
+                'Sudáfrica':        'za',
+                'Corea del Sur':    'kr',
+                'Filipinas':        'ph',
+                'Hong Kong':        'hk',
+                'India':            'in',
+                'Indonesia':        'id',
+                'Israel':           'il',
+                'Japón':            'jp',
+                'Malasia':          'my',
+                'Singapur':         'sg',
+                'Tailandia':        'th',
+                'Taiwán':           'tw',
+                'Turquía':          'tr',
+            };
+            const code = codes[loc];
+            if (code) return `<span class="fi fi-${code}"></span>`;
+            return '📻';
+        }
+
+        function renderRadioAccordion() {
+            const container = document.getElementById('radio-list');
+            if (!container) return;
+            container.innerHTML = '';
+            const locations = getLocations();
+            locations.forEach(loc => {
+                const stations = [];
+                RADIO_STATIONS.forEach((s, i) => { if (s.location === loc) stations.push({...s, idx: i}); });
+                const count = stations.length;
+                const hasActive = activeRadioIndex >= 0 && RADIO_STATIONS[activeRadioIndex] && RADIO_STATIONS[activeRadioIndex].location === loc;
+                const isOpen = openLocations.has(loc);
+
+                const group = document.createElement('div');
+                group.className = 'radio-accordion-group';
+
+                const header = document.createElement('div');
+                header.className = 'radio-accordion-header' + (isOpen ? ' open' : '') + (hasActive ? ' has-active' : '');
+                header.innerHTML =
+                    '<span class="radio-acc-sigla">' + getLocationFlag(loc) + '</span>'
+                    + '<span class="radio-acc-name">' + loc + '</span>'
+                    + '<span class="radio-acc-count">' + count + '</span>'
+                    + (hasActive ? '<span class="radio-acc-live">\uD83D\uDD0A</span>' : '')
+                    + '<span class="radio-acc-chevron">&#8250;</span>';
+
+                const body = document.createElement('div');
+                body.className = 'radio-accordion-body' + (isOpen ? ' open' : '');
+
+                stations.forEach(function(st) {
+                    const item = document.createElement('div');
+                    item.className = 'radio-item';
+                    item.id = 'radio-item-' + st.idx;
+                    if (activeRadioIndex === st.idx) item.classList.add('active-radio');
+                    item.innerHTML = '<div class="radio-dot"></div>'
+                        + '<span class="radio-name">' + st.name + '</span>'
+                        + '<span class="radio-speaker">\uD83D\uDD0A</span>';
+                    item.onclick = (function(idx, el){ return function(){ playRadioStation(idx, el); }; })(st.idx, item);
+                    body.appendChild(item);
+                });
+
+                header.onclick = function() {
+                    const nowOpen = header.classList.toggle('open');
+                    body.classList.toggle('open', nowOpen);
+                    if (nowOpen) { openLocations.add(loc); }
+                    else         { openLocations.delete(loc); }
+                    // Refresh has-active without rebuilding the whole list
+                    if (hasActive) header.classList.add('has-active');
+                };
+
+                group.appendChild(header);
+                group.appendChild(body);
+                container.appendChild(group);
+            });
+
+            // Entrada final — siempre al fondo del scroll
+            const gardenEntry = document.createElement('div');
+            gardenEntry.className = 'radio-garden-entry';
+            gardenEntry.innerHTML = '<span class="radio-garden-flag">🌍</span><span class="radio-garden-label">Radio Garden</span><span class="radio-garden-arrow">↗</span>';
+            gardenEntry.onclick = () => { stopAllMedia(); window.open('https://radio.garden', '_blank'); };
+            container.appendChild(gardenEntry);
+        }
+
+
+        function playRadioStation(idx, el) {
+            stopAllMedia();
+
+            document.querySelectorAll('.radio-item.active-radio').forEach(i => i.classList.remove('active-radio'));
+            document.querySelectorAll('.radio-item.connecting').forEach(i => i.classList.remove('connecting'));
+
+            activeRadioIndex = idx;
+            activeRadioEl = el;
+            el.classList.add('connecting');
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            const station = RADIO_STATIONS[idx];
+            radioAudio.src = station.url;
+
+            // Cuando el audio empieza a sonar → quitar connecting, poner active
+            const onPlaying = () => {
+                el.classList.remove('connecting');
+                el.classList.add('active-radio');
+                document.getElementById('radio-now-playing-label').innerText = '▶ ' + station.name.toUpperCase();
+                radioAudio.removeEventListener('playing', onPlaying);
+                radioAudio.removeEventListener('error', onError);
+            };
+            const onError = () => {
+                el.classList.remove('connecting');
+                showToast('❌ Sin señal: ' + station.name);
+                radioAudio.removeEventListener('playing', onPlaying);
+                radioAudio.removeEventListener('error', onError);
+            };
+            radioAudio.addEventListener('playing', onPlaying);
+            radioAudio.addEventListener('error', onError);
+
+            radioAudio.play().catch(() => {});
+
+            switchSignal('default');
+            document.getElementById('radio-now-playing-label').innerText = '⏳ ' + station.name.toUpperCase();
+            document.getElementById('btn-radio-modal').classList.add('radio-active');
+
+            // Actualizar cabeceras del acordeón para reflejar región activa
+            document.querySelectorAll('.radio-accordion-header').forEach(h => {
+                h.classList.remove('has-active');
+                const liveEl = h.querySelector('.radio-acc-live');
+                if (liveEl) liveEl.remove();
+            });
+            const activeLoc = station.location;
+            document.querySelectorAll('.radio-accordion-header').forEach(h => {
+                const nameEl = h.querySelector('.radio-acc-name');
+                if (nameEl && nameEl.textContent === activeLoc) {
+                    h.classList.add('has-active');
+                    if (!h.querySelector('.radio-acc-live')) {
+                        const lv = document.createElement('span');
+                        lv.className = 'radio-acc-live';
+                        lv.textContent = '\uD83D\uDD0A';
+                        const chev = h.querySelector('.radio-acc-chevron');
+                        h.insertBefore(lv, chev);
+                    }
+                }
+            });
+        }
+
+        function stopRadioIfActive() {
+            // Este método ahora es redundante con stopAllMedia, pero lo mantengo por compatibilidad
+            stopAllMedia();
+        }
+
+        /* =============================================
+           RADIO BROWSER API — carga dinámica
+        ============================================= */
+        let radioBrowserLoaded  = false;
+        let radioBrowserLoading = false;
+
+        async function getRadioBrowserBaseUrl() {
+            try {
+                const res = await fetch('https://all.api.radio-browser.info/json/servers');
+                const servers = await res.json();
+                if (servers && servers.length > 0) {
+                    return 'https://' + servers[Math.floor(Math.random() * servers.length)].name;
+                }
+            } catch(e) { /* silencioso */ }
+            return 'https://de1.api.radio-browser.info';
+        }
+
+        async function fetchRadiosFromAPI() {
+            if (radioBrowserLoaded || radioBrowserLoading) return;
+            radioBrowserLoading = true;
+
+            const container = document.getElementById('radio-list');
+            if (container) {
+                const ghostNames = [
+                    // San Juan
+                    'Light FM (FM 97.3)', 'LV5 Radio Sarmiento', 'CNN Radio San Juan',
+                    'Lider (FM 104.3)', 'Radio Universidad',
+                    // Buenos Aires
+                    'Mega (FM 98.3)', 'La 100 (FM 99.9)', 'Mitre (FM 105.9)',
+                    'Urbana Play (FM 104.3)', 'Nacional Rock (FM 93.7)',
+                    // Estados Unidos
+                    'NPR News', 'iHeart Radio', 'WNYC New York',
+                    'KROQ Los Angeles', 'WBEZ Chicago'
+                ];
+
+                const ghostHTML = ghostNames.map((name, i) => `
+                    <div class="radio-ghost-item" style="animation-delay:${(i * 0.11).toFixed(2)}s">
+                        <div class="radio-ghost-dot"></div>
+                        <span class="radio-ghost-name">${name}</span>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `
+                    <style>
+                        .radio-ghost-header {
+                            padding: 10px 14px 6px;
+                            font-family: 'Bebas Neue', cursive;
+                            font-size: 0.7rem;
+                            letter-spacing: 0.2em;
+                            color: rgba(180,100,0,0.35);
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                        }
+                        .radio-ghost-header::after {
+                            content: '';
+                            flex: 1;
+                            height: 1px;
+                            background: rgba(180,100,0,0.1);
+                        }
+                        .radio-ghost-item {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            padding: 9px 14px;
+                            border-bottom: 1px solid rgba(255,255,255,0.025);
+                            animation: ghostPulse 2s ease-in-out infinite;
+                            pointer-events: none;
+                            user-select: none;
+                        }
+                        .radio-ghost-dot {
+                            width: 6px; height: 6px;
+                            border-radius: 50%;
+                            background: rgba(180,100,0,0.18);
+                            flex-shrink: 0;
+                        }
+                        .radio-ghost-name {
+                            font-family: 'DM Sans', sans-serif;
+                            font-size: 0.82rem;
+                            color: rgba(255,255,255,0.09);
+                            letter-spacing: 0.02em;
+                            font-weight: 400;
+                        }
+                        @keyframes ghostPulse {
+                            0%, 100% { opacity: 0.25; }
+                            50%       { opacity: 0.75; }
+                        }
+                        .radio-ghost-label {
+                            text-align: center;
+                            padding: 14px 16px 10px;
+                            font-family: 'Bebas Neue', cursive;
+                            font-size:
+                            letter-spacing: 0.18em;
+                            color: rgba(180,100,0,0.45);
+                        }
+                        .radio-ghost-signal {
+                            display: inline-block;
+                            animation: ghostPulse 1.2s ease-in-out infinite;
+                        }
+                    </style>
+                    <div class="radio-ghost-label">
+                        <span class="radio-ghost-signal">📡</span> SINTONIZANDO ANTENAS...
+                    </div>
+                    <div class="radio-ghost-header">Emisoras</div>
+                    ${ghostHTML}
+                `;
+            }
+            try {
+                const base = await getRadioBrowserBaseUrl();
+
+                // q con timeout: si un país tarda más de 4s, devuelve [] y no frena al resto
+                const q = (cc, lim=8) => {
+                    const ctrl = new AbortController();
+                    const timer = setTimeout(() => ctrl.abort(), 4000);
+                    return fetch(
+                        `${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`,
+                        { signal: ctrl.signal }
+                    )
+                    .then(r => r.json())
+                    .catch(() => [])
+                    .finally(() => clearTimeout(timer));
+                };
+
+                // Países en paralelo — límites reducidos para carga rápida
+                const [
+                    resAR, resMZA, resCBA,
+                    resCL, resBO, resBR, resCO, resEC, resPE, resUY, resVE,
+                    resUS, resCA, resMX, resCR, resSV, resGT, resHN, resJM, resNI, resPR, resDO, resTT,
+                    resDE, resAT, resBE, resBG, resCZ, resDK, resES, resFI, resFR, resGB,
+                    resGR, resHR, resHU, resIE, resIT, resNL, resNO, resPL, resPT,
+                    resRO, resRS, resSE, resCH, resUA,
+                    resGH, resKE, resNG, resMA, resZA,
+                    resPH, resHK, resIN, resID, resIL, resJP, resMY, resKR, resSG, resTH, resTW, resTR
+                ] = await Promise.all([
+                    // Argentina — con timeout propio
+                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),5000); return fetch(`${base}/json/stations/search?countrycode=AR&limit=40&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
+                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),4000); return fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
+                    (() => { const ctrl = new AbortController(); setTimeout(()=>ctrl.abort(),4000); return fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]); })(),
+                    // Latinoamérica
+                    q('CL',8), q('BO',6), q('BR',8), q('CO',6), q('EC',6),
+                    q('PE',6), q('UY',6), q('VE',6),
+                    // Norte y Centro América
+                    q('US',8), q('CA',6), q('MX',6), q('CR',5), q('SV',5),
+                    q('GT',5), q('HN',5), q('JM',5), q('NI',5), q('PR',5),
+                    q('DO',5), q('TT',5),
+                    // Europa
+                    q('DE',8), q('AT',6), q('BE',6), q('BG',6), q('CZ',6),
+                    q('DK',6), q('ES',8), q('FI',6), q('FR',8), q('GB',8),
+                    q('GR',6), q('HR',5), q('HU',6), q('IE',6), q('IT',8),
+                    q('NL',6), q('NO',6), q('PL',6), q('PT',6),
+                    q('RO',6), q('RS',5), q('SE',6), q('CH',6), q('UA',6),
+                    // África
+                    q('GH',5), q('KE',5), q('NG',5), q('MA',5), q('ZA',6),
+                    // Asia y Oriente Medio
+                    q('PH',5), q('HK',5), q('IN',8), q('ID',6), q('IL',5),
+                    q('JP',8), q('MY',5), q('KR',6), q('SG',5), q('TH',5),
+                    q('TW',5), q('TR',6)
+                ]);
+
+                const map = (arr, loc) => arr
+                    .map(s => ({
+                        name: (s.name||'').trim() || 'Radio',
+                        url:  (s.url_resolved || s.url || '').trim(),
+                        location: loc
+                    }))
+                    .filter(s => s.url);
+
+                // Separar Argentina por provincia vs. Buenos Aires
+                const argProvincias = new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé','san luis','neuquén','neuquen','chubut']);
+                const apiSJ = resAR
+                    .filter(s => (s.state||'').toLowerCase().includes('san juan'))
+                    .map(s => ({ name:(s.name||'').trim()||'Radio', url:(s.url_resolved||s.url||'').trim(), location:'San Juan' }))
+                    .filter(s=>s.url);
+                const apiBA = resAR
+                    .filter(s => !argProvincias.has((s.state||'').toLowerCase()))
+                    .slice(0,20)
+                    .map(s => ({ name:(s.name||'').trim()||'Radio', url:(s.url_resolved||s.url||'').trim(), location:'Buenos Aires' }))
+                    .filter(s=>s.url);
+
+                // Mapa completo: código → nombre en español (para el acordeón)
+                const apiStations = [
+                    ...apiSJ,
+                    ...apiBA,
+                    ...map(resMZA, 'Mendoza'),
+                    ...map(resCBA, 'Córdoba'),
+                    ...map(resCL,  'Chile'),
+                    ...map(resBO,  'Bolivia'),
+                    ...map(resBR,  'Brasil'),
+                    ...map(resCO,  'Colombia'),
+                    ...map(resEC,  'Ecuador'),
+                    ...map(resPE,  'Perú'),
+                    ...map(resUY,  'Uruguay'),
+                    ...map(resVE,  'Venezuela'),
+                    ...map(resUS,  'Estados Unidos'),
+                    ...map(resCA,  'Canadá'),
+                    ...map(resMX,  'México'),
+                    ...map(resCR,  'Costa Rica'),
+                    ...map(resSV,  'El Salvador'),
+                    ...map(resGT,  'Guatemala'),
+                    ...map(resHN,  'Honduras'),
+                    ...map(resJM,  'Jamaica'),
+                    ...map(resNI,  'Nicaragua'),
+                    ...map(resPR,  'Puerto Rico'),
+                    ...map(resDO,  'Rep. Dominicana'),
+                    ...map(resTT,  'Trinidad y Tobago'),
+                    ...map(resDE,  'Alemania'),
+                    ...map(resAT,  'Austria'),
+                    ...map(resBE,  'Bélgica'),
+                    ...map(resBG,  'Bulgaria'),
+                    ...map(resCZ,  'Rep. Checa'),
+                    ...map(resDK,  'Dinamarca'),
+                    ...map(resES,  'España'),
+                    ...map(resFI,  'Finlandia'),
+                    ...map(resFR,  'Francia'),
+                    ...map(resGB,  'Gran Bretaña'),
+                    ...map(resGR,  'Grecia'),
+                    ...map(resHR,  'Croacia'),
+                    ...map(resHU,  'Hungría'),
+                    ...map(resIE,  'Irlanda'),
+                    ...map(resIT,  'Italia'),
+                    ...map(resNL,  'Países Bajos'),
+                    ...map(resNO,  'Noruega'),
+                    ...map(resPL,  'Polonia'),
+                    ...map(resPT,  'Portugal'),
+                    ...map(resRO,  'Rumanía'),
+                    ...map(resRS,  'Serbia'),
+                    ...map(resSE,  'Suecia'),
+                    ...map(resCH,  'Suiza'),
+                    ...map(resUA,  'Ucrania'),
+                    ...map(resGH,  'Ghana'),
+                    ...map(resKE,  'Kenia'),
+                    ...map(resNG,  'Nigeria'),
+                    ...map(resMA,  'Marruecos'),
+                    ...map(resZA,  'Sudáfrica'),
+                    ...map(resPH,  'Filipinas'),
+                    ...map(resHK,  'Hong Kong'),
+                    ...map(resIN,  'India'),
+                    ...map(resID,  'Indonesia'),
+                    ...map(resIL,  'Israel'),
+                    ...map(resJP,  'Japón'),
+                    ...map(resMY,  'Malasia'),
+                    ...map(resKR,  'Corea del Sur'),
+                    ...map(resSG,  'Singapur'),
+                    ...map(resTH,  'Tailandia'),
+                    ...map(resTW,  'Taiwán'),
+                    ...map(resTR,  'Turquía'),
+                ];
+
+                // Fusionar con las locales evitando duplicados por nombre
+                const existingNames = new Set(RADIO_STATIONS.map(s => s.name.trim().toLowerCase()));
+                const newStations = apiStations.filter(s => !existingNames.has(s.name.toLowerCase()));
+                RADIO_STATIONS.push(...newStations);
+
+                radioBrowserLoaded  = true;
+                radioBrowserLoading = false;
+                renderRadioAccordion();
+
+            } catch(err) {
+                console.error('Radio Browser API error:', err);
+                radioBrowserLoaded  = true;
+                radioBrowserLoading = false;
+                renderRadioAccordion();
+            }
+        }
+
+        function toggleRadioSidebar() {
+            const sidebar = document.getElementById('radio-sidebar');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.contains('open');
+            if (isOpen) {
+                sidebar.classList.remove('open');
+            } else {
+                sidebar.classList.add('open');
+                if (!radioBrowserLoaded && !radioBrowserLoading) {
+                    // Usuario más rápido que la carga de fondo: cargar ahora
+                    fetchRadiosFromAPI();
+                } else if (radioBrowserLoaded) {
+                    // Ya cargó en fondo: solo redibujar
+                    renderRadioAccordion();
+                }
+                // Si radioBrowserLoading === true: ya está corriendo, el skeleton se ve solo
+            }
+        }
+
+        /* =============================================
+           CLIMA
+        ============================================= */
+        const WMO_CODES = {
+            0:'Despejado',1:'Mayormente despejado',2:'Parcialmente nublado',3:'Nublado',
+            45:'Niebla',48:'Niebla con escarcha',51:'Llovizna leve',53:'Llovizna moderada',
+            55:'Llovizna intensa',61:'Lluvia leve',63:'Lluvia moderada',65:'Lluvia intensa',
+            71:'Nieve leve',73:'Nieve moderada',75:'Nieve intensa',80:'Chubascos leves',
+            81:'Chubascos moderados',82:'Chubascos fuertes',95:'Tormenta',96:'Tormenta con granizo',
+            99:'Tormenta fuerte con granizo'
+        };
+        const WMO_EMOJI = {
+            0:'☀️',1:'🌤️',2:'⛅',3:'☁️',45:'🌫️',48:'🌫️',
+            51:'🌦️',53:'🌦️',55:'🌧️',61:'🌧️',63:'🌧️',65:'🌧️',
+            71:'🌨️',73:'🌨️',75:'❄️',80:'🌦️',81:'🌦️',82:'⛈️',
+            95:'⛈️',96:'⛈️',99:'⛈️'
+        };
+
+        function openClimaModal() {
+            document.getElementById('clima-modal').classList.add('visible');
+            document.getElementById('clima-content').innerHTML =
+                '<div class="clima-loading"><div class="clima-spinner"></div>OBTENIENDO UBICACIÓN...</div>';
+            if (!navigator.geolocation) {
+                document.getElementById('clima-content').innerHTML =
+                    '<div class="clima-error">Tu navegador no soporta geolocalización.</div>';
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(
+                async pos => {
+                    const { latitude: lat, longitude: lon } = pos.coords;
+                    document.getElementById('clima-content').innerHTML =
+                        '<div class="clima-loading"><div class="clima-spinner"></div>CARGANDO DATOS...</div>';
+                    try {
+                        const [wRes, gRes] = await Promise.all([
+                            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weathercode,precipitation&wind_speed_unit=kmh`),
+                            fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`)
+                        ]);
+                        const w = await wRes.json();
+                        const g = await gRes.json();
+                        const c = w.current;
+                        const code = c.weathercode;
+                        const city = g.address?.city || g.address?.town || g.address?.village || g.address?.county || 'Tu ubicación';
+                        const country = g.address?.country || '';
+                        const emoji = WMO_EMOJI[code] || '🌡️';
+                        const desc  = WMO_CODES[code]  || 'Sin datos';
+                        document.getElementById('clima-content').innerHTML = `
+                            <p class="clima-city">${city}</p>
+                            <p style="font-size:0.72rem;color:#444;margin-bottom:6px;letter-spacing:0.06em;">${country.toUpperCase()}</p>
+                            <div style="display:flex;align-items:center;gap:14px;">
+                                <span style="font-size:3.5rem;line-height:1">${emoji}</span>
+                                <div>
+                                    <p class="clima-temp">${Math.round(c.temperature_2m)}°</p>
+                                    <p class="clima-desc">${desc}</p>
+                                </div>
+                            </div>
+                            <div class="clima-grid">
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Sensación</p>
+                                    <p class="clima-item-val">${Math.round(c.apparent_temperature)}°C</p>
+                                </div>
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Humedad</p>
+                                    <p class="clima-item-val">${c.relative_humidity_2m}%</p>
+                                </div>
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Viento</p>
+                                    <p class="clima-item-val">${Math.round(c.wind_speed_10m)} km/h</p>
+                                </div>
+                                <div class="clima-item">
+                                    <p class="clima-item-label">Precipit.</p>
+                                    <p class="clima-item-val">${c.precipitation} mm</p>
+                                </div>
+                            </div>
+                        `;
+                    } catch(e) {
+                        document.getElementById('clima-content').innerHTML =
+                            '<div class="clima-error">No se pudo cargar el clima. Verificá tu conexión.</div>';
+                    }
+                },
+                err => {
+                    document.getElementById('clima-content').innerHTML =
+                        '<div class="clima-error">Permiso de ubicación denegado.<br><span style="font-size:0.75rem;color:#333">Habilitalo en la configuración del navegador.</span></div>';
+                },
+                { timeout: 8000 }
+            );
+        }
+
+        function closeClimaModal() {
+            document.getElementById('clima-modal').classList.remove('visible');
+        }
+
+        /* =============================================
+           TENDENCIAS X
+        ============================================= */
+
+        /* Verificación liviana del estado del stream — solo lee la fila de control,
+           no recarga noticias ni sponsors. Se ejecuta cada 2 minutos. */
+        async function checkStreamStatus() {
+            try {
+                const now = Date.now();
+                const url = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?output=csv&t=${now}`;
+                const res  = await fetch(url);
+                const text = await res.text();
+                const rows = text.split('\n');
+                const controlRow  = rows[1] || '';
+                const controlCols = controlRow.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                const streamState = (controlCols[3] || '').replace(/"/g, '').trim().toLowerCase();
+                const isLive  = streamState === 'on';
+                const liveDot = document.getElementById('live-dot');
+                const wasLive = liveDot.classList.contains('live');
+                liveDot.classList.toggle('live', isLive);
+                const streamDotFeed = document.getElementById('stream-dot-feed');
+                if (streamDotFeed) streamDotFeed.classList.toggle('live', isLive);
+                const btnStream = document.getElementById('btn-stream');
+                if (btnStream) btnStream.classList.toggle('live-on', isLive);
+                // Si el stream se cayó mientras el usuario lo miraba → cortar
+                if (wasLive && !isLive && document.getElementById('player-kick').classList.contains('active')) {
+                    stopAllMedia();
+                    document.getElementById('player-kick').classList.remove('active');
+                    document.getElementById('initial-loop').classList.add('active');
+                    document.getElementById('no-signal-msg').classList.add('visible');
+                }
+            } catch (e) { /* silencioso */ }
+        }
+
+        window.onload = () => {
+            // 1. Noticias primero — carga inmediata para que el Feed esté listo
+            fetchData();
+            // 2. Ticker y clima se cargan 2 s después para no retrasar la vista de noticias
+            setTimeout(() => {
+                updateTicker();
+                loadFeedClima();
+                setInterval(updateTicker, 60000);
+            }, 2000);
+            // 3. Sponsors aparecen a los 3 s con fade suave — dan tiempo al usuario de orientarse
+            setTimeout(() => {
+                const footer = document.querySelector('.sponsor-footer');
+                if (footer) footer.style.opacity = '1';
+            }, 3000);
+            // El stream (on/off) se verifica cada 2 minutos
+            setInterval(checkStreamStatus, 120000);
+
+            // 4. CARGA DIFERIDA — cuando el navegador esté libre:
+            //    a) Detectar ubicación por IP (para el Feed Local)
+            //    b) Precargar radios (para el botón Radio)
+            const tareasIdle = () => {
+                detectarUbicacionPorIP();
+                if (!radioBrowserLoaded && !radioBrowserLoading) {
+                    fetchRadiosFromAPI();
+                }
+            };
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(tareasIdle, { timeout: 5000 });
+            } else {
+                // Fallback para Safari y navegadores antiguos
+                setTimeout(tareasIdle, 3000);
+            }
+        };
+        window.addEventListener('click', unlockAudio, { once: true });
+        window.addEventListener('touchstart', unlockAudio, { once: true });
+    </script>
+</body>
+</html>
