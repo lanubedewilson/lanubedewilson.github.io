@@ -2262,7 +2262,7 @@
            GEOLOCALIZACIÓN — detección por IP + GPS opcional
         ============================================= */
         let userCity     = null;
-        let userRegion   = null; // provincia/estado para query más precisa
+        let userRegion   = null;
         let userCityGPS  = false;
         let ipDetecting  = false;
 
@@ -2275,8 +2275,8 @@
                 const cachedTs = parseInt(localStorage.getItem('fl_city_ts') || '0');
                 const CACHE_TTL = 1000 * 60 * 60 * 24;
                 if (cached && (Date.now() - cachedTs) < CACHE_TTL) {
-                    userCity   = cached;
-                    userRegion = cachedRg || null;
+                    userCity    = cached;
+                    userRegion  = cachedRg || null;
                     userCityGPS = localStorage.getItem('fl_city_gps') === '1';
                     ipDetecting = false;
                     return;
@@ -2285,7 +2285,7 @@
                 const data = await res.json();
                 if (data && data.city) {
                     userCity   = data.city;
-                    userRegion = data.region || null; // ej: "San Juan", "Mendoza"
+                    userRegion = data.region || null;
                     localStorage.setItem('fl_city',    userCity);
                     localStorage.setItem('fl_region',  userRegion || '');
                     localStorage.setItem('fl_city_ts', Date.now().toString());
@@ -2394,14 +2394,13 @@
                 </div>`;
 
             try {
-                // Query precisa: ciudad entre comillas + provincia si está disponible
-                // Ej: "San Juan" provincia OR "Chimbas" → resultados muy locales
-                const ciudadQ  = `"${ciudad}"`;
-                const regionQ  = userRegion && userRegion !== ciudad ? ` "${userRegion}"` : '';
-                const query    = encodeURIComponent(`${ciudadQ}${regionQ} noticias`);
-                const rssUrl   = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
+                // Query precisa: ciudad + provincia entre comillas para resultados estrictamente locales
+                const ciudadQ = `"${ciudad}"`;
+                const regionQ = userRegion && userRegion !== ciudad ? ` "${userRegion}"` : '';
+                const query   = encodeURIComponent(`${ciudadQ}${regionQ} noticias`);
+                const rssUrl  = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
 
-                // Tres proxies CORS de fallback — se prueban en orden hasta que uno funcione
+                // Tres proxies CORS en cadena — se prueba el siguiente si el anterior falla
                 const proxies = [
                     `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`,
                     `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
@@ -2421,9 +2420,9 @@
 
                 if (!xmlText) throw new Error('Todos los proxies fallaron');
 
-                // Parsear el XML del RSS directamente — sin depender de rss2json
-                const parser = new DOMParser();
-                const doc    = parser.parseFromString(xmlText, 'text/xml');
+                // Parser XML nativo — sin dependencia de rss2json
+                const parser  = new DOMParser();
+                const doc     = parser.parseFromString(xmlText, 'text/xml');
                 const itemEls = Array.from(doc.querySelectorAll('item')).slice(0, 20);
 
                 if (itemEls.length === 0) throw new Error('RSS vacío');
