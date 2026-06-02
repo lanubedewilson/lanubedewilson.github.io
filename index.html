@@ -2126,7 +2126,7 @@
             }
         }
 
-        async function openFeedLocal() {
+        function openFeedLocal() {
             const overlay = document.getElementById('feed-local-overlay');
             if (overlay.classList.contains('open')) {
                 closeFeedLocal();
@@ -2137,22 +2137,6 @@
             overlay.scrollTo(0, 0);
 
             if (!feedLocalLoaded && !feedLocalLoading) {
-                if (ipDetecting) {
-                    const container = document.getElementById('feed-local-content');
-                    container.innerHTML = `
-                        <div id="feed-local-header">🌩️ Feed Local<span>Detectando tu ubicación...</span></div>
-                        <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
-                            <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ffaa00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
-                            OBTENIENDO UBICACIÓN...
-                        </div>`;
-                    let waited = 0;
-                    await new Promise(resolve => {
-                        const check = setInterval(() => {
-                            waited += 100;
-                            if (!ipDetecting || waited >= 2000) { clearInterval(check); resolve(); }
-                        }, 100);
-                    });
-                }
                 fetchFeedLocal();
             }
         }
@@ -2166,58 +2150,47 @@
             if (feedLocalLoading) return;
             feedLocalLoading = true;
 
-            const ciudad = userCity || 'Argentina';
-            const esGPS  = userCityGPS;
-
-            // FIX 4: intentar mostrar cache instantáneo mientras se actualiza en background
-            const FEED_CACHE_TTL = 1000 * 60 * 120; // 2 horas
-            const cacheKey    = `fl_items_${(ciudad).toLowerCase().replace(/\s+/g,'_')}`;
-            const cacheTs     = parseInt(localStorage.getItem(cacheKey + '_ts') || '0');
-            const cacheRaw    = localStorage.getItem(cacheKey);
+            // Feed fijo San Juan — caché de 30 min (noticias locales cambian rápido)
+            const FEED_CACHE_TTL = 1000 * 60 * 30;
+            const cacheKey  = 'fl_items_sanjuan';
+            const cacheTs   = parseInt(localStorage.getItem(cacheKey + '_ts') || '0');
+            const cacheRaw  = localStorage.getItem(cacheKey);
             const cacheValido = cacheRaw && (Date.now() - cacheTs) < FEED_CACHE_TTL;
 
             const container = document.getElementById('feed-local-content');
 
             if (cacheValido) {
-                // Mostrar cache inmediatamente
                 try {
                     const cachedItems = JSON.parse(cacheRaw);
-                    renderFeedLocal(cachedItems, ciudad, esGPS, true); // true = fromCache
+                    renderFeedLocal(cachedItems, true);
                     feedLocalLoaded  = true;
                     feedLocalLoading = false;
-                    // Actualizar en background sin bloquear UI
-                    _fetchFeedLocalNetwork(ciudad, esGPS, cacheKey, container);
+                    _fetchFeedLocalNetwork(cacheKey, container);
                     return;
                 } catch(e) {
                     localStorage.removeItem(cacheKey);
                 }
             }
 
-            // Sin cache válido: mostrar spinner y cargar
             container.innerHTML = `
                 <div id="feed-local-header">
-                    🌩️ Feed Local
-                    <span>${ciudad} · Google News</span>
+                    🌩️ Noticias San Juan
+                    <span>📡 Google News · San Juan</span>
                 </div>
                 <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
                     <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ffaa00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
                     CARGANDO NOTICIAS LOCALES...
                 </div>`;
 
-            await _fetchFeedLocalNetwork(ciudad, esGPS, cacheKey, container);
+            await _fetchFeedLocalNetwork(cacheKey, container);
         }
 
-        async function _fetchFeedLocalNetwork(ciudad, esGPS, cacheKey, container) {
+        async function _fetchFeedLocalNetwork(cacheKey, container) {
             try {
-                // FIX 3: usar provincia/región como término principal para cubrir ~200 km de radio
-                const ciudadQ  = `"${ciudad}"`;
-                const regionQ  = userRegion && userRegion !== ciudad ? ` "${userRegion}"` : '';
-                // Si tenemos región (provincia), buscar también por ella para ampliar el radio geográfico
-                const queryTermino = userRegion && userRegion !== ciudad
-                    ? encodeURIComponent(`${regionQ.trim()} noticias`)       // búsqueda por provincia primero
-                    : encodeURIComponent(`${ciudadQ} noticias`);
-                const query = queryTermino;
-                const rssUrl  = `https://news.google.com/rss/search?q=${query}&hl=es-419&gl=AR&ceid=AR:es-419`;
+                // URL fija del topic geográfico San Juan en Google News.
+                // Mismas noticias que el usuario ve en news.google.com sección local San Juan.
+                // El /rss/ delante de topics convierte cualquier topic de Google News en RSS.
+                const rssUrl = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 
                 const proxies = [
                     `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
@@ -2225,7 +2198,7 @@
                     `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
                 ];
 
-                // FIX 1: proxies en paralelo — gana el más rápido
+                // Proxies en paralelo — gana el más rápido
                 let xmlText = null;
                 try {
                     xmlText = await Promise.any(
@@ -2256,19 +2229,18 @@
                     thumbnail:   el.querySelector('enclosure')?.getAttribute('url') || '',
                 }));
 
-                renderFeedLocal(items, ciudad, esGPS, false);
+                renderFeedLocal(items, false);
                 feedLocalLoaded = true;
-                // FIX 4: guardar en cache
+                // Guardar en caché
                 try {
                     localStorage.setItem(cacheKey, JSON.stringify(items));
                     localStorage.setItem(cacheKey + '_ts', Date.now().toString());
-                } catch(e) { /* localStorage lleno, ignorar */ }
+                } catch(e) { /* localStorage lleno */ }
             } catch(err) {
                 console.error('Feed Local error:', err);
-                // Solo mostrar error si el contenedor no tiene noticias ya renderizadas
                 if (!container.querySelector('.note-card')) {
                     container.innerHTML = `
-                        <div id="feed-local-header">🌩️ Feed Local<span>${ciudad}</span></div>
+                        <div id="feed-local-header">🌩️ Noticias San Juan<span>San Juan</span></div>
                         <div style="padding:40px;text-align:center;color:#555;font-size:0.85rem;">
                             No se pudieron cargar las noticias locales.<br>Intentá de nuevo más tarde.
                         </div>`;
@@ -2278,23 +2250,17 @@
             }
         }
 
-        function renderFeedLocal(items, ciudad, esGPS, fromCache) {
+        function renderFeedLocal(items, fromCache) {
             const container  = document.getElementById('feed-local-content');
             const previewLen = 300;
-            const subtitulo  = esGPS ? `📍 ${ciudad} · GPS · Google News` : `📡 ${ciudad} · por IP · Google News`;
-            const btnGPS     = esGPS ? '' : `<button onclick="mejorarConGPS()" style="margin-top:8px;background:none;border:1px solid rgba(255,160,0,0.3);color:#ffaa00;font-size:0.62rem;padding:3px 10px;border-radius:20px;cursor:pointer;letter-spacing:1px;">📍 Mejorar con GPS</button>`;
-            // FIX 4: indicador sutil si viene del cache
-            const cacheTag   = fromCache ? `<span style="font-size:0.55rem;color:#333;letter-spacing:1px;margin-left:8px;">· desde caché</span>` : '';
+            const cacheTag   = fromCache
+                ? `<span style="font-size:0.55rem;color:#444;letter-spacing:1px;margin-left:8px;">· actualizando...</span>`
+                : '';
 
             let html = `
                 <div id="feed-local-header">
-                    🌩️ Feed Local
-                    <span>${subtitulo}${cacheTag}</span>
-                    <div style="margin-top: 14px; display: flex; gap: 8px; justify-content: center; align-items: center; padding: 0 5%;">
-                        <input type="text" id="input-manual-city" placeholder="Escribe otra ciudad o provincia..." onkeypress="handleManualCityEnter(event)" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" style="flex: 1; padding: 8px 14px; border-radius: var(--radius-btn); border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--white-bone); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; outline: none; transition: 0.3s; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-                        <button onclick="cambiarUbicacionManual()" style="background: var(--accent-dim); border: 1px solid rgba(0,212,255,0.3); color: var(--accent); font-family: 'Bebas Neue', cursive; font-size: 0.9rem; letter-spacing: 1px; padding: 6px 14px; border-radius: var(--radius-btn); cursor: pointer; transition: 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.2)'" onmouseout="this.style.background='var(--accent-dim)'">BUSCAR</button>
-                    </div>
-                    ${btnGPS}
+                    🌩️ Noticias San Juan
+                    <span>📡 Google News · San Juan${cacheTag}</span>
                 </div>`;
 
             items.forEach((item, i) => {
@@ -3052,7 +3018,7 @@
             } catch (e) { }
         }
 
-        // FIX 2: variable para prefetch silencioso
+        // Prefetch silencioso: el feed RSS es fijo, no necesita IP ni GPS
         let prefetchDone = false;
 
         window.onload = () => {
@@ -3069,21 +3035,20 @@
             setInterval(checkStreamStatus, 120000);
 
             const tareasIdle = () => {
-                // FIX 2: detectar ubicación y prefetchear noticias en background
-                detectarUbicacionPorIP().then(() => {
-                    if (!prefetchDone && !feedLocalLoaded && !feedLocalLoading) {
-                        prefetchDone = true;
-                        fetchFeedLocal(); // corre en background, sin abrir el overlay
-                    }
-                });
+                // Prefetch del feed local en background: cuando el usuario toque
+                // el botón Local, las noticias ya estarán listas en caché.
+                if (!prefetchDone && !feedLocalLoaded && !feedLocalLoading) {
+                    prefetchDone = true;
+                    fetchFeedLocal();
+                }
                 if (!radioBrowserLoaded && !radioBrowserLoading) {
                     fetchRadiosFromAPI();
                 }
             };
             if ('requestIdleCallback' in window) {
-                requestIdleCallback(tareasIdle, { timeout: 5000 });
+                requestIdleCallback(tareasIdle, { timeout: 4000 });
             } else {
-                setTimeout(tareasIdle, 3000);
+                setTimeout(tareasIdle, 2500);
             }
         };
         window.addEventListener('click', unlockAudio, { once: true });
