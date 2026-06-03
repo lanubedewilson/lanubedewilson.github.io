@@ -694,7 +694,16 @@
             border-left-color: #ffaa00;
         }
         #feed-local-overlay .note-card::before {
-            border-color: #ffaa00;
+            display: none !important;  /* sin círculo de timeline en feed local */
+        }
+        .fl-card {
+            background: var(--surface-1);
+            border-radius: var(--radius-card, 8px);
+            margin-bottom: 20px;
+            position: relative;
+            border-left: 3px solid #ffaa00;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+            overflow: hidden;
         }
 
         #feed-local-header {
@@ -2186,132 +2195,147 @@
         }
 
         async function _fetchFeedLocalNetwork(cacheKey, container) {
-            try {
-                // URL fija del topic geográfico San Juan en Google News.
-                // Mismas noticias que el usuario ve en news.google.com sección local San Juan.
-                // El /rss/ delante de topics convierte cualquier topic de Google News en RSS.
-                const rssUrl = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
+            // RSS directos de medios locales de San Juan
+            // Estos feeds sí incluyen imágenes (media:content, enclosure, og:image en description)
+            // Se consumen en paralelo via proxy CORS y se mezclan ordenados por fecha
+            const FUENTES = [
+                {
+                    nombre: 'Diario de Cuyo',
+                    url:    'https://www.diariodecuyo.com.ar/rss/rss.xml',
+                    domain: 'diariodecuyo.com.ar',
+                },
+                {
+                    nombre: 'Diario Huarpe',
+                    url:    'https://www.diariohuarpe.com/feed/',
+                    domain: 'diariohuarpe.com',
+                },
+                {
+                    nombre: 'San Juan 8',
+                    url:    'https://www.sanjuan8.com/rss/rss.xml',
+                    domain: 'sanjuan8.com',
+                },
+                {
+                    nombre: 'Tiempo de San Juan',
+                    url:    'https://www.tiempodesanjuan.com/rss/rss.xml',
+                    domain: 'tiempodesanjuan.com',
+                },
+                {
+                    nombre: 'El Zonda',
+                    url:    'https://www.diarioelzondasj.com.ar/feed/',
+                    domain: 'diarioelzondasj.com.ar',
+                },
+            ];
 
-                const proxies = [
-                    `https://api.allorigins.win/raw?url=${encodeURIComponent(rssUrl)}`,
-                    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(rssUrl)}`,
-                    `https://corsproxy.io/?${encodeURIComponent(rssUrl)}`
-                ];
+            const proxies = [
+                url => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+                url => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+                url => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            ];
 
-                // Proxies en paralelo — gana el más rápido
-                let xmlText = null;
+            // Fetch de un RSS individual con fallback de proxies en paralelo
+            async function fetchRSS(fuente) {
                 try {
-                    xmlText = await Promise.any(
-                        proxies.map(url =>
-                            fetch(url, { signal: AbortSignal.timeout(8000) })
+                    const xml = await Promise.any(
+                        proxies.map(proxyFn =>
+                            fetch(proxyFn(fuente.url), { signal: AbortSignal.timeout(8000) })
                                 .then(r => { if (!r.ok) throw new Error('no ok'); return r.text(); })
                                 .then(t => { if (!t.includes('<item>')) throw new Error('sin items'); return t; })
                         )
                     );
+                    return parsearRSS(xml, fuente);
                 } catch(e) {
-                    console.warn('Todos los proxies fallaron en paralelo:', e);
+                    console.warn(`RSS falló: ${fuente.nombre}`, e.message);
+                    return [];
                 }
+            }
 
-                if (!xmlText) throw new Error('Todos los proxies fallaron');
+            // Parsear XML de un RSS y extraer items con imagen
+            function parsearRSS(xml, fuente) {
+                try {
+                    const doc   = new DOMParser().parseFromString(xml, 'text/xml');
+                    const items = Array.from(doc.querySelectorAll('item')).slice(0, 8);
+                    return items.map(el => {
+                        // Imagen: buscar en media:content, enclosure, o description CDATA
+                        const mediaContent = el.querySelector('content')
+                                          || doc.querySelector('media\:content, content');
+                        // Intentar todos los namespaces posibles
+                        const nsImg = el.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content')[0]
+                                   || el.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'thumbnail')[0];
+                        const enclosure = el.querySelector('enclosure');
 
-                const parser  = new DOMParser();
-                const doc     = parser.parseFromString(xmlText, 'text/xml');
-                const itemEls = Array.from(doc.querySelectorAll('item')).slice(0, 20);
+                        // Extraer img del CDATA del description
+                        const rawDesc = el.querySelector('description')?.textContent || '';
+                        const descDiv = document.createElement('div');
+                        descDiv.innerHTML = rawDesc;
+                        const imgFromDesc = descDiv.querySelector('img')?.getAttribute('src') || '';
 
-                if (itemEls.length === 0) throw new Error('RSS vacío');
+                        // Texto limpio de la descripción
+                        const descText = descDiv.textContent?.trim() || '';
 
-                const items = itemEls.map(el => {
-                    const guidEl   = el.querySelector('guid');
-                    const sourceEl = el.querySelector('source');
-                    // sourceUrl: URL directa al artículo en el medio original
-                    const sourceUrl = sourceEl?.getAttribute('url') || '';
-                    const guid      = guidEl?.textContent || '';
+                        // Prioridad de imagen: media:content > enclosure > img en description
+                        const thumbnail = nsImg?.getAttribute('url')
+                                       || enclosure?.getAttribute('url')
+                                       || imgFromDesc
+                                       || '';
 
-                    // El <description> de Google News llega como CDATA con HTML adentro:
-                    // <![CDATA[<a href="..."><img src="..." /></a> Texto descripción...]]>
-                    // DOMParser en text/xml lo entrega como texto plano con entidades HTML.
-                    // Lo re-parseamos como HTML para extraer imagen y texto limpio.
-                    const rawDesc   = el.querySelector('description')?.textContent || '';
-                    const descDiv   = document.createElement('div');
-                    descDiv.innerHTML = rawDesc; // re-parsea el HTML embebido en el CDATA
+                        // Guid o link
+                        const guid = el.querySelector('guid')?.textContent || '';
+                        const link = el.querySelector('link')?.textContent || guid;
 
-                    // Imagen: buscar <img src="..."> dentro del CDATA
-                    const imgEl     = descDiv.querySelector('img');
-                    const thumbnail = imgEl?.getAttribute('src') || '';
+                        return {
+                            title:     (el.querySelector('title')?.textContent || '').replace(/ - .*$/, '').trim(),
+                            link:      link,
+                            pubDate:   el.querySelector('pubDate')?.textContent || '',
+                            author:    fuente.nombre,
+                            domain:    fuente.domain,
+                            thumbnail: thumbnail,
+                            description: descText,
+                        };
+                    }).filter(item => item.title);
+                } catch(e) {
+                    console.warn('Error parseando RSS de', fuente.nombre, e);
+                    return [];
+                }
+            }
 
-                    // Descripción limpia: texto visible sin el HTML
-                    const descText  = descDiv.textContent?.trim() || '';
+            try {
+                // Lanzar todos los feeds en paralelo
+                const resultados = await Promise.allSettled(FUENTES.map(fetchRSS));
+                let items = resultados
+                    .filter(r => r.status === 'fulfilled')
+                    .flatMap(r => r.value);
 
-                    return {
-                        title:       el.querySelector('title')?.textContent || '',
-                        link:        guid || el.querySelector('link')?.textContent || '',
-                        pubDate:     el.querySelector('pubDate')?.textContent || '',
-                        author:      sourceEl?.textContent || '',
-                        sourceUrl:   sourceUrl,
-                        description: descText,    // texto limpio sin HTML
-                        thumbnail:   thumbnail,   // imagen extraída del CDATA
-                    };
+                if (items.length === 0) throw new Error('Ningún RSS respondió');
+
+                // Ordenar por fecha más reciente y tomar los 20 más nuevos
+                items.sort((a, b) => {
+                    const da = a.pubDate ? new Date(a.pubDate) : new Date(0);
+                    const db = b.pubDate ? new Date(b.pubDate) : new Date(0);
+                    return db - da;
                 });
+                items = items.slice(0, 20);
 
                 renderFeedLocal(items, false);
                 feedLocalLoaded = true;
+
                 // Guardar en caché
                 try {
                     localStorage.setItem(cacheKey, JSON.stringify(items));
                     localStorage.setItem(cacheKey + '_ts', Date.now().toString());
                 } catch(e) { /* localStorage lleno */ }
+
             } catch(err) {
                 console.error('Feed Local error:', err);
-                if (!container.querySelector('.note-card')) {
+                if (!container.querySelector('.fl-card')) {
                     container.innerHTML = `
                         <div id="feed-local-header">🌩️ Noticias San Juan<span>San Juan</span></div>
                         <div style="padding:40px;text-align:center;color:#555;font-size:0.85rem;">
-                            No se pudieron cargar las noticias locales.<br>Intentá de nuevo más tarde.
+                            No se pudieron cargar las noticias locales.<br>Intentá de nuevo en unos minutos.
                         </div>`;
                 }
             } finally {
                 feedLocalLoading = false;
             }
-        }
-
-        // Extrae dominio limpio de una URL
-        function getDomain(url) {
-            try { return new URL(url).hostname.replace(/^www\./, ''); } catch(e) { return ''; }
-        }
-
-        // Devuelve URL de favicon via Google S2 — siempre disponible, sin CORS
-        function faviconUrl(domain) {
-            return `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
-        }
-
-        // Carga lazy la imagen OG del artículo real usando sourceUrl (URL directa al medio)
-        // Solo se ejecuta cuando la card entra en pantalla (IntersectionObserver)
-        function lazyLoadOGImage(sourceUrl, imgEl) {
-            if (!sourceUrl) return;
-            // Intentar via allorigins — funciona con URLs de medios locales sin CORS
-            const fetchUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(sourceUrl)}`;
-            fetch(fetchUrl, { signal: AbortSignal.timeout(8000) })
-                .then(r => { if (!r.ok) throw new Error('no ok'); return r.text(); })
-                .then(html => {
-                    // Buscar og:image en cualquier orden de atributos
-                    const patterns = [
-                        /property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
-                        /content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
-                        /name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
-                        /content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
-                    ];
-                    for (const pat of patterns) {
-                        const m = html.match(pat);
-                        if (m && m[1] && m[1].startsWith('http')) {
-                            imgEl.src = m[1];
-                            imgEl.style.objectFit  = 'cover';
-                            imgEl.style.padding    = '0';
-                            imgEl.style.opacity    = '1';
-                            return;
-                        }
-                    }
-                })
-                .catch(() => { /* silencioso — el favicon ya se ve */ });
         }
 
         function renderFeedLocal(items, fromCache) {
@@ -2330,14 +2354,14 @@
                 const title     = (item.title || '').replace(/ - .*$/, '').trim();
                 const source    = item.author || '';
                 const sourceUrl = item.sourceUrl || '';
-                const domain    = getDomain(sourceUrl || item.link || '');
+                const domain    = item.domain || getDomain(item.link || '');
                 const favicon   = faviconUrl(domain || 'news.google.com');
                 const pubDate   = item.pubDate ? formatFeedDate(item.pubDate) : '';
-                const shareUrl  = sourceUrl || item.link || '';
+                const shareUrl  = item.link || '';
                 const shareText = encodeURIComponent(`${title}\n${shareUrl}`);
                 const imgId     = `fl-img-${i}`;
 
-                // thumbnail ya viene extraído del CDATA del <description>
+                // thumbnail viene del RSS directo del medio (media:content, enclosure, o img en description)
                 const thumb     = item.thumbnail || '';
                 // Descripción: ya viene limpia del parser (textContent del CDATA)
                 const desc      = (item.description || '')
@@ -2347,7 +2371,7 @@
                     : desc;
 
                 html += `
-                    <div class="note-card" style="border-left-color:#ffaa00;padding:0;overflow:hidden;">
+                    <div class="fl-card">
                         <!-- Imagen de portada -->
                         <div style="position:relative;width:100%;height:180px;background:#0d0d0d;overflow:hidden;border-radius:var(--radius-card) var(--radius-card) 0 0;">
                             <img id="${imgId}"
@@ -2409,22 +2433,7 @@
             container.innerHTML = html;
             document.getElementById('feed-local-overlay').scrollTo(0, 0);
 
-            // Lazy-load OG solo para los que no traen thumbnail en el CDATA
-            items.forEach((item, i) => {
-                if (!item.thumbnail && item.sourceUrl) {
-                    const imgEl = document.getElementById(`fl-img-${i}`);
-                    if (!imgEl) return;
-                    const obs = new IntersectionObserver(entries => {
-                        entries.forEach(e => {
-                            if (e.isIntersecting) {
-                                lazyLoadOGImage(item.sourceUrl, imgEl);
-                                obs.disconnect();
-                            }
-                        });
-                    }, { rootMargin: '150px' });
-                    obs.observe(imgEl);
-                }
-            });
+            // Las imágenes ya vienen del RSS directo — no se necesita lazy-load adicional
         }
 
         function stripHtml(html) {
