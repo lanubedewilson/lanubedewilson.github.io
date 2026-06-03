@@ -2221,21 +2221,35 @@
                 if (itemEls.length === 0) throw new Error('RSS vacío');
 
                 const items = itemEls.map(el => {
-                    // En Google News RSS el link real está en <guid> o en el atributo href de <link>
                     const guidEl   = el.querySelector('guid');
                     const sourceEl = el.querySelector('source');
-                    // <source url="https://diariodecuyo.com.ar/..."> es el dominio real del medio
+                    // sourceUrl: URL directa al artículo en el medio original
                     const sourceUrl = sourceEl?.getAttribute('url') || '';
-                    // El guid de Google News es la URL del artículo en google.com
-                    const guid = guidEl?.textContent || '';
+                    const guid      = guidEl?.textContent || '';
+
+                    // El <description> de Google News llega como CDATA con HTML adentro:
+                    // <![CDATA[<a href="..."><img src="..." /></a> Texto descripción...]]>
+                    // DOMParser en text/xml lo entrega como texto plano con entidades HTML.
+                    // Lo re-parseamos como HTML para extraer imagen y texto limpio.
+                    const rawDesc   = el.querySelector('description')?.textContent || '';
+                    const descDiv   = document.createElement('div');
+                    descDiv.innerHTML = rawDesc; // re-parsea el HTML embebido en el CDATA
+
+                    // Imagen: buscar <img src="..."> dentro del CDATA
+                    const imgEl     = descDiv.querySelector('img');
+                    const thumbnail = imgEl?.getAttribute('src') || '';
+
+                    // Descripción limpia: texto visible sin el HTML
+                    const descText  = descDiv.textContent?.trim() || '';
+
                     return {
                         title:       el.querySelector('title')?.textContent || '',
                         link:        guid || el.querySelector('link')?.textContent || '',
                         pubDate:     el.querySelector('pubDate')?.textContent || '',
                         author:      sourceEl?.textContent || '',
-                        sourceUrl:   sourceUrl,   // URL directa al medio (sin pasar por Google)
-                        description: el.querySelector('description')?.textContent || '',
-                        thumbnail:   el.querySelector('enclosure')?.getAttribute('url') || '',
+                        sourceUrl:   sourceUrl,
+                        description: descText,    // texto limpio sin HTML
+                        thumbnail:   thumbnail,   // imagen extraída del CDATA
                     };
                 });
 
@@ -2313,38 +2327,34 @@
                 </div>`;
 
             items.forEach((item, i) => {
-                const title      = (item.title || '').replace(/ - .*$/, '').trim();
-                const source     = item.author || '';
-                // sourceUrl es la URL directa al artículo en el medio (sin pasar por Google)
-                const sourceUrl  = item.sourceUrl || '';
-                const domain     = getDomain(sourceUrl || item.link || '');
-                const favicon    = faviconUrl(domain || 'news.google.com');
-                const pubDate    = item.pubDate ? formatFeedDate(item.pubDate) : '';
-                const link       = item.link || '';
-                const imgId      = `fl-img-${i}`;
+                const title     = (item.title || '').replace(/ - .*$/, '').trim();
+                const source    = item.author || '';
+                const sourceUrl = item.sourceUrl || '';
+                const domain    = getDomain(sourceUrl || item.link || '');
+                const favicon   = faviconUrl(domain || 'news.google.com');
+                const pubDate   = item.pubDate ? formatFeedDate(item.pubDate) : '';
+                const shareUrl  = sourceUrl || item.link || '';
+                const shareText = encodeURIComponent(`${title}\n${shareUrl}`);
+                const imgId     = `fl-img-${i}`;
 
-                // Imagen del description HTML si el medio la incluye
-                const imgFromDesc = extractImg(item.description || '');
-
-                // Descripción limpia
-                const fullText = stripHtml(item.description || '')
+                // thumbnail ya viene extraído del CDATA del <description>
+                const thumb     = item.thumbnail || '';
+                // Descripción: ya viene limpia del parser (textContent del CDATA)
+                const desc      = (item.description || '')
                     .replace(title, '').replace(source, '').trim();
-                const preview  = fullText.length > 220
-                    ? fullText.slice(0, fullText.lastIndexOf(' ', 220) || 220).trimEnd() + '…'
-                    : fullText;
-
-                const shareText = encodeURIComponent(`${title}\n${sourceUrl || link}`);
-                const shareUrl  = sourceUrl || link;
+                const preview   = desc.length > 240
+                    ? desc.slice(0, desc.lastIndexOf(' ', 240) || 240).trimEnd() + '…'
+                    : desc;
 
                 html += `
                     <div class="note-card" style="border-left-color:#ffaa00;padding:0;overflow:hidden;">
                         <!-- Imagen de portada -->
                         <div style="position:relative;width:100%;height:180px;background:#0d0d0d;overflow:hidden;border-radius:var(--radius-card) var(--radius-card) 0 0;">
                             <img id="${imgId}"
-                                 src="${imgFromDesc || favicon}"
+                                 src="${thumb || favicon}"
                                  alt=""
-                                 style="width:100%;height:100%;object-fit:${imgFromDesc ? 'cover' : 'contain'};padding:${imgFromDesc ? '0' : '40px'};opacity:${imgFromDesc ? '1' : '0.3'};transition:opacity 0.4s,object-fit 0s;"
-                                 onerror="this.src='${favicon}';this.style.objectFit='contain';this.style.padding='40px';this.style.opacity='0.3';">
+                                 style="width:100%;height:100%;object-fit:${thumb ? 'cover' : 'contain'};padding:${thumb ? '0' : '40px'};opacity:${thumb ? '1' : '0.28'};transition:opacity 0.4s;"
+                                 onerror="this.src='${favicon}';this.style.objectFit='contain';this.style.padding='40px';this.style.opacity='0.28';">
                             <!-- Badge fuente -->
                             <div style="position:absolute;bottom:8px;left:10px;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);border-radius:20px;padding:3px 10px;display:flex;align-items:center;gap:6px;">
                                 <img src="${favicon}" style="width:14px;height:14px;border-radius:2px;object-fit:contain;" onerror="this.style.display='none'">
@@ -2358,7 +2368,7 @@
                         <div style="padding:14px 16px 12px;">
                             <div style="color:gray;font-size:0.6rem;margin-bottom:6px;">📅 ${pubDate}</div>
                             <h2 class="note-title" style="margin-bottom:8px;">${title}</h2>
-                            ${preview ? `<div class="note-content">${preview}</div>` : ''}
+                            ${preview ? `<div class="note-content" style="font-size:0.82rem;line-height:1.5;color:#aaa;">${preview}</div>` : ''}
                             <!-- Acciones -->
                             <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
                                 <a href="${shareUrl}" target="_blank" rel="noopener"
@@ -2399,21 +2409,20 @@
             container.innerHTML = html;
             document.getElementById('feed-local-overlay').scrollTo(0, 0);
 
-            // Lazy-load de imagen OG: solo para cards sin imagen en el RSS,
-            // usando sourceUrl (URL directa al medio, sin redirección de Google)
+            // Lazy-load OG solo para los que no traen thumbnail en el CDATA
             items.forEach((item, i) => {
-                if (!extractImg(item.description || '') && item.sourceUrl) {
+                if (!item.thumbnail && item.sourceUrl) {
                     const imgEl = document.getElementById(`fl-img-${i}`);
                     if (!imgEl) return;
-                    const observer = new IntersectionObserver((entries) => {
-                        entries.forEach(entry => {
-                            if (entry.isIntersecting) {
+                    const obs = new IntersectionObserver(entries => {
+                        entries.forEach(e => {
+                            if (e.isIntersecting) {
                                 lazyLoadOGImage(item.sourceUrl, imgEl);
-                                observer.disconnect();
+                                obs.disconnect();
                             }
                         });
                     }, { rootMargin: '150px' });
-                    observer.observe(imgEl);
+                    obs.observe(imgEl);
                 }
             });
         }
