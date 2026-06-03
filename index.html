@@ -2248,8 +2248,8 @@
                         pubDate:     el.querySelector('pubDate')?.textContent || '',
                         author:      sourceEl?.textContent || '',
                         sourceUrl:   sourceUrl,
-                        description: descText,  // texto limpio del CDATA
-                        // thumbnail del CDATA omitido: es el logo del medio, no la foto del artículo
+                        description: descText,    // texto limpio sin HTML
+                        thumbnail:   thumbnail,   // imagen extraída del CDATA
                     };
                 });
 
@@ -2279,48 +2279,39 @@
             try { return new URL(url).hostname.replace(/^www\./, ''); } catch(e) { return ''; }
         }
 
-        // Favicon via Google S2 — siempre disponible, sin CORS
+        // Devuelve URL de favicon via Google S2 — siempre disponible, sin CORS
         function faviconUrl(domain) {
             return `https://www.google.com/s2/favicons?sz=128&domain=${domain}`;
         }
 
-        // Cache en memoria para imágenes ya resueltas (evita llamadas repetidas)
-        const _imgCache = {};
-
-        // Carga la imagen real del artículo usando microlink.io
-        // Recibe el guid (URL de Google News) que microlink sigue y resuelve al artículo real
-        function lazyLoadOGImage(articleUrl, imgEl) {
-            if (!articleUrl) return;
-
-            // Usar cache en memoria si ya fue resuelta antes
-            if (_imgCache[articleUrl]) {
-                _applyImage(imgEl, _imgCache[articleUrl]);
-                return;
-            }
-
-            const api = `https://api.microlink.io/?url=${encodeURIComponent(articleUrl)}&meta=false`;
-            fetch(api, { signal: AbortSignal.timeout(8000) })
-                .then(r => { if (!r.ok) throw new Error('microlink no ok'); return r.json(); })
-                .then(json => {
-                    const img = json?.data?.image?.url || json?.data?.screenshot?.url || '';
-                    if (img) {
-                        _imgCache[articleUrl] = img;
-                        _applyImage(imgEl, img);
+        // Carga lazy la imagen OG del artículo real usando sourceUrl (URL directa al medio)
+        // Solo se ejecuta cuando la card entra en pantalla (IntersectionObserver)
+        function lazyLoadOGImage(sourceUrl, imgEl) {
+            if (!sourceUrl) return;
+            // Intentar via allorigins — funciona con URLs de medios locales sin CORS
+            const fetchUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(sourceUrl)}`;
+            fetch(fetchUrl, { signal: AbortSignal.timeout(8000) })
+                .then(r => { if (!r.ok) throw new Error('no ok'); return r.text(); })
+                .then(html => {
+                    // Buscar og:image en cualquier orden de atributos
+                    const patterns = [
+                        /property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+                        /content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
+                        /name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
+                        /content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
+                    ];
+                    for (const pat of patterns) {
+                        const m = html.match(pat);
+                        if (m && m[1] && m[1].startsWith('http')) {
+                            imgEl.src = m[1];
+                            imgEl.style.objectFit  = 'cover';
+                            imgEl.style.padding    = '0';
+                            imgEl.style.opacity    = '1';
+                            return;
+                        }
                     }
                 })
-                .catch(() => { /* silencioso — favicon ya visible */ });
-        }
-
-        function _applyImage(imgEl, src) {
-            if (!imgEl || !src) return;
-            const temp = new Image();
-            temp.onload = () => {
-                imgEl.src            = src;
-                imgEl.style.objectFit  = 'cover';
-                imgEl.style.padding    = '0';
-                imgEl.style.opacity    = '1';
-            };
-            temp.src = src;
+                .catch(() => { /* silencioso — el favicon ya se ve */ });
         }
 
         function renderFeedLocal(items, fromCache) {
@@ -2346,8 +2337,8 @@
                 const shareText = encodeURIComponent(`${title}\n${shareUrl}`);
                 const imgId     = `fl-img-${i}`;
 
-                // Siempre arranca con favicon — microlink carga la imagen real en background
-                const thumb     = '';  // el thumbnail del CDATA es logo del medio, no usamos
+                // thumbnail ya viene extraído del CDATA del <description>
+                const thumb     = item.thumbnail || '';
                 // Descripción: ya viene limpia del parser (textContent del CDATA)
                 const desc      = (item.description || '')
                     .replace(title, '').replace(source, '').trim();
@@ -2418,22 +2409,21 @@
             container.innerHTML = html;
             document.getElementById('feed-local-overlay').scrollTo(0, 0);
 
-            // Lazy-load con microlink: usa el link (guid de Google News)
-            // microlink resuelve la redirección y devuelve la og:image del artículo real
+            // Lazy-load OG solo para los que no traen thumbnail en el CDATA
             items.forEach((item, i) => {
-                const articleUrl = item.link || item.sourceUrl || '';
-                if (!articleUrl) return;
-                const imgEl = document.getElementById(`fl-img-${i}`);
-                if (!imgEl) return;
-                const obs = new IntersectionObserver(entries => {
-                    entries.forEach(e => {
-                        if (e.isIntersecting) {
-                            lazyLoadOGImage(articleUrl, imgEl);
-                            obs.disconnect();
-                        }
-                    });
-                }, { rootMargin: '200px' });
-                obs.observe(imgEl);
+                if (!item.thumbnail && item.sourceUrl) {
+                    const imgEl = document.getElementById(`fl-img-${i}`);
+                    if (!imgEl) return;
+                    const obs = new IntersectionObserver(entries => {
+                        entries.forEach(e => {
+                            if (e.isIntersecting) {
+                                lazyLoadOGImage(item.sourceUrl, imgEl);
+                                obs.disconnect();
+                            }
+                        });
+                    }, { rootMargin: '150px' });
+                    obs.observe(imgEl);
+                }
             });
         }
 
