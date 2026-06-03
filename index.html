@@ -2250,9 +2250,39 @@
             }
         }
 
+        // Mapa de logos por dominio — fallback cuando el RSS no trae imagen
+        const SOURCE_LOGOS = {
+            'diariodecuyo.com.ar':      'https://www.diariodecuyo.com.ar/favicon.ico',
+            'diariohuarpe.com':         'https://diariohuarpe.com/favicon.ico',
+            'sanjuan8.com':             'https://www.sanjuan8.com/favicon.ico',
+            'diarioelzondasj.com.ar':   'https://www.diarioelzondasj.com.ar/favicon.ico',
+            'diariolaprovinciasj.com':  'https://diariolaprovinciasj.com/favicon.ico',
+            'diariomovil.info':         'https://diariomovil.info/favicon.ico',
+            'infosanjuan.com.ar':       'https://infosanjuan.com.ar/favicon.ico',
+        };
+
+        // Resuelve la URL real de un artículo (Google News redirige) para extraer la imagen OG
+        // de forma lazy: la carga solo cuando la card ya está visible en pantalla.
+        function lazyLoadOGImage(articleUrl, imgEl, placeholderUrl) {
+            if (!articleUrl) return;
+            // Extraer dominio del link de Google News para pedir la OG image via allorigins
+            const realUrl = articleUrl; // es un link google.com que redirige al artículo
+            const fetchUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(realUrl)}`;
+            fetch(fetchUrl, { signal: AbortSignal.timeout(6000) })
+                .then(r => r.text())
+                .then(html => {
+                    const m = html.match(/<meta[^>]+(?:property="og:image"|name="twitter:image")[^>]+content="([^"]+)"/i)
+                             || html.match(/<meta[^>]+content="([^"]+)"[^>]+(?:property="og:image"|name="twitter:image")/i);
+                    if (m && m[1]) {
+                        imgEl.src = m[1];
+                        imgEl.style.display = 'block';
+                    }
+                })
+                .catch(() => { /* silencioso */ });
+        }
+
         function renderFeedLocal(items, fromCache) {
             const container  = document.getElementById('feed-local-content');
-            const previewLen = 300;
             const cacheTag   = fromCache
                 ? `<span style="font-size:0.55rem;color:#444;letter-spacing:1px;margin-left:8px;">· actualizando...</span>`
                 : '';
@@ -2264,55 +2294,110 @@
                 </div>`;
 
             items.forEach((item, i) => {
-                const title    = (item.title || '').replace(/ - .*$/, '').trim();
-                const fullText = stripHtml(item.description || item.content || '');
-                const source   = item.author || extractDomain(item.link || '');
-                const pubDate  = item.pubDate ? formatFeedDate(item.pubDate) : '';
-                const img      = item.thumbnail || item.enclosure?.link || extractImg(item.description || '');
+                const title   = (item.title || '').replace(/ - .*$/, '').trim();
+                const source  = item.author || extractDomain(item.link || '');
+                const domain  = extractDomain(item.link || '');
+                const pubDate = item.pubDate ? formatFeedDate(item.pubDate) : '';
+                const link    = item.link || '';
 
-                let cutAt = previewLen;
-                if (fullText.length > previewLen) {
-                    const punctMatch = fullText.slice(0, previewLen).search(/[.!?\n][^.!?\n]*$/);
-                    if (punctMatch > previewLen * 0.5) {
-                        cutAt = punctMatch + 1;
-                    } else {
-                        const lastSpace = fullText.lastIndexOf(' ', previewLen);
-                        cutAt = lastSpace > previewLen * 0.7 ? lastSpace : previewLen;
-                    }
-                }
-                const preview  = fullText.length > cutAt ? fullText.slice(0, cutAt).trimEnd() + '…' : fullText;
-                const extra    = fullText.length > cutAt ? fullText.slice(cutAt).trimStart() : '';
-                const hasExtra = extra.length > 0;
-                const extraId  = `fl-extra-${i}`;
-                const btnId    = `fl-btn-${i}`;
+                // Intentar extraer imagen embebida en el <description> HTML del RSS
+                const imgFromDesc = extractImg(item.description || '');
+                // Favicon/logo del medio como fallback
+                const logoUrl = SOURCE_LOGOS[domain] || `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+                // ID único para lazy-load
+                const imgId   = `fl-img-${i}`;
+
+                // Descripción limpia (sin html, sin repetir el título)
+                const fullText = stripHtml(item.description || '').replace(title, '').replace(source, '').trim();
+                const preview  = fullText.length > 220
+                    ? fullText.slice(0, fullText.lastIndexOf(' ', 220)).trimEnd() + '…'
+                    : fullText;
+
+                // Texto para compartir
+                const shareText = encodeURIComponent(`${title}\n${link}`);
 
                 html += `
-                    <div class="note-card" style="border-left-color:#ffaa00;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                            <span style="color:#ffaa00;font-size:0.7rem;font-weight:bold;opacity:0.8;white-space:nowrap;flex-shrink:0;">[ LOCAL ]</span>
-                            <div style="text-align:right;">
-                                <span style="color:var(--accent-green);font-size:0.7rem;font-style:italic;display:block;">📰 ${source}</span>
-                                <span style="color:gray;font-size:0.6rem;display:block;">📅 ${pubDate}</span>
+                    <div class="note-card" style="border-left-color:#ffaa00;padding:0;overflow:hidden;">
+                        <!-- Imagen de portada -->
+                        <div style="position:relative;width:100%;height:160px;background:#111;overflow:hidden;border-radius:var(--radius-card) var(--radius-card) 0 0;">
+                            <img id="${imgId}"
+                                 src="${imgFromDesc || logoUrl}"
+                                 alt="${title}"
+                                 style="width:100%;height:100%;object-fit:${imgFromDesc ? 'cover' : 'contain'};padding:${imgFromDesc ? '0' : '30px'};opacity:${imgFromDesc ? '1' : '0.4'};transition:opacity 0.3s;"
+                                 onerror="this.src='${logoUrl}';this.style.objectFit='contain';this.style.padding='30px';this.style.opacity='0.35';">
+                            <!-- Badge fuente -->
+                            <div style="position:absolute;bottom:8px;left:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);border-radius:20px;padding:3px 10px;display:flex;align-items:center;gap:6px;">
+                                <img src="${logoUrl}" style="width:14px;height:14px;border-radius:2px;object-fit:contain;" onerror="this.style.display='none'">
+                                <span style="color:#ccc;font-size:0.65rem;font-style:italic;">${source}</span>
+                            </div>
+                            <div style="position:absolute;top:8px;right:10px;background:rgba(255,170,0,0.15);border:1px solid rgba(255,170,0,0.35);border-radius:20px;padding:2px 8px;">
+                                <span style="color:#ffaa00;font-size:0.6rem;font-weight:bold;letter-spacing:1px;">LOCAL</span>
                             </div>
                         </div>
-                        ${img ? `<img src="${img}" class="note-img" onerror="this.style.display='none'">` : ''}
-                        <h2 class="note-title">${title}</h2>
-                        <div class="note-content">${preview}</div>
-                        ${hasExtra ? `
-                        <div class="note-extra-content" id="${extraId}">
-                            <div class="note-content" style="padding-top:6px;">${extra}</div>
-                        </div>
-                        <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
-                            LEER MÁS <span>↓</span>
-                        </button>` : ''}
-                        <div class="share-bar">
-                            <button class="share-btn" onclick="navigator.clipboard.writeText('${escapeJs(item.link || '')}').then(()=>showToast('Link copiado'))">🔗 Copiar Link</button>
+                        <!-- Contenido -->
+                        <div style="padding:14px 16px 12px;">
+                            <div style="color:gray;font-size:0.6rem;margin-bottom:6px;">📅 ${pubDate}</div>
+                            <h2 class="note-title" style="margin-bottom:8px;">${title}</h2>
+                            ${preview ? `<div class="note-content">${preview}</div>` : ''}
+                            <!-- Acciones -->
+                            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+                                <a href="${link}" target="_blank" rel="noopener"
+                                   style="flex:1;min-width:100px;display:flex;align-items:center;justify-content:center;gap:6px;
+                                          background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);
+                                          color:var(--accent);font-family:'Bebas Neue',cursive;font-size:0.85rem;
+                                          letter-spacing:1px;padding:8px 12px;border-radius:var(--radius-btn);
+                                          text-decoration:none;transition:background 0.2s;"
+                                   onmouseover="this.style.background='rgba(0,212,255,0.15)'"
+                                   onmouseout="this.style.background='rgba(0,212,255,0.07)'">
+                                    🔗 IR A LA NOTA
+                                </a>
+                                <button onclick="if(navigator.share){navigator.share({title:'${escapeJs(title)}',url:'${escapeJs(link)}'})}else{window.open('https://api.whatsapp.com/send?text=${shareText}','_blank')}"
+                                   style="flex:1;min-width:100px;display:flex;align-items:center;justify-content:center;gap:6px;
+                                          background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.25);
+                                          color:#25d366;font-family:'Bebas Neue',cursive;font-size:0.85rem;
+                                          letter-spacing:1px;padding:8px 12px;border-radius:var(--radius-btn);
+                                          cursor:pointer;transition:background 0.2s;"
+                                   onmouseover="this.style.background='rgba(37,211,102,0.15)'"
+                                   onmouseout="this.style.background='rgba(37,211,102,0.07)'">
+                                    ↗ COMPARTIR
+                                </button>
+                                <button onclick="navigator.clipboard.writeText('${escapeJs(link)}').then(()=>showToast('Link copiado ✓'))"
+                                   style="display:flex;align-items:center;justify-content:center;gap:5px;
+                                          background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
+                                          color:#555;font-family:'Bebas Neue',cursive;font-size:0.85rem;
+                                          letter-spacing:1px;padding:8px 12px;border-radius:var(--radius-btn);
+                                          cursor:pointer;transition:background 0.2s;"
+                                   onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.color='#aaa'"
+                                   onmouseout="this.style.background='rgba(255,255,255,0.03)';this.style.color='#555'">
+                                    📋 COPIAR
+                                </button>
+                            </div>
                         </div>
                     </div>`;
             });
 
             container.innerHTML = html;
             document.getElementById('feed-local-overlay').scrollTo(0, 0);
+
+            // Lazy-load de imágenes OG para cards que no tienen imagen del RSS
+            items.forEach((item, i) => {
+                const imgFromDesc = extractImg(item.description || '');
+                if (!imgFromDesc && item.link) {
+                    const imgEl = document.getElementById(`fl-img-${i}`);
+                    if (imgEl) {
+                        // Usar IntersectionObserver para cargar solo cuando es visible
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                if (entry.isIntersecting) {
+                                    lazyLoadOGImage(item.link, imgEl, imgEl.src);
+                                    observer.disconnect();
+                                }
+                            });
+                        }, { rootMargin: '100px' });
+                        observer.observe(imgEl);
+                    }
+                }
+            });
         }
 
         function stripHtml(html) {
