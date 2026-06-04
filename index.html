@@ -3352,40 +3352,20 @@
             }
         }
 
-        // Promesa del prefetch en background — se resuelve antes de que el usuario toque el botón
-        let gnewsPrefetchPromise = null;
-
-        function prefetchGNews() {
-            if (gnewsPrefetchPromise) return;
-            gnewsPrefetchPromise = _doFetchGNewsRSS();
-        }
-
-        async function _doFetchGNewsRSS() {
-            // Promise.any: el primer proxy que responde BIEN gana y corta la espera de inmediato.
-            // (antes usábamos allSettled que esperaba a que TODOS terminen — hasta 8s de espera extra)
-            try {
-                return await Promise.any(
-                    GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
-                );
-            } catch(e) {
-                // AggregateError: todos fallaron — un reintento con timeout extendido
-                return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 15000);
-            }
-        }
-
         async function fetchGNewsRSS() {
-            // Si hay una promesa en vuelo o ya resuelta con éxito, la reutilizamos
-            if (gnewsPrefetchPromise) {
-                try {
-                    const result = await gnewsPrefetchPromise;
-                    return result; // ya está — cero espera extra
-                } catch(e) {
-                    // La promesa anterior falló (prefetch cayó). La descartamos y reintentamos.
-                    gnewsPrefetchPromise = null;
-                }
+            // Todos los proxies en paralelo — el primero en responder bien gana
+            const results = await Promise.allSettled(
+                GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
+            );
+            const winner = results.find(r => r.status === 'fulfilled');
+            if (winner) return winner.value;
+
+            // Si todos fallaron, reintentar el primero con mayor timeout
+            try {
+                return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 18000);
+            } catch(e) {
+                throw new Error('Todos los proxies fallaron: ' + e.message);
             }
-            gnewsPrefetchPromise = _doFetchGNewsRSS();
-            return gnewsPrefetchPromise;
         }
 
         function parseGNewsXML(xml) {
@@ -3501,7 +3481,7 @@ function openArticle(url, source) {
                     <div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
                         ⚠️ NO SE PUDO CARGAR<br>
                         <span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Los proxies CORS no responden ahora</span>
-                        <button onclick="gnewsLoaded=false;gnewsLoading=false;gnewsPrefetchPromise=null;openGNews()"
+                        <button onclick="gnewsLoaded=false;gnewsLoading=false;openGNews()"
                             style="margin-top:16px;background:none;border:1px solid #34a853;color:#34a853;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;">
                             🔄 REINTENTAR
                         </button>
@@ -3540,9 +3520,6 @@ function openArticle(url, source) {
                     prefetchDone = true;
                     fetchFeedLocal();
                 }
-                // Prefetch Google News en background: cuando el usuario toque el botón,
-                // el fetch ya estará corriendo (o terminado) — sin espera visible.
-                prefetchGNews();
                 if (!radioBrowserLoaded && !radioBrowserLoading) {
                     fetchRadiosFromAPI();
                 }
