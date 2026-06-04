@@ -3352,20 +3352,33 @@
             }
         }
 
-        async function fetchGNewsRSS() {
-            // Intentar todos los proxies en paralelo — el primero en responder bien gana
-            const results = await Promise.allSettled(
-                GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
-            );
-            const winner = results.find(r => r.status === 'fulfilled');
-            if (winner) return winner.value;
+        // Promesa del prefetch en background — se resuelve antes de que el usuario toque el botón
+        let gnewsPrefetchPromise = null;
 
-            // Si todos fallaron, reintentar el primero con mayor timeout (puede ser lentitud de red)
+        function prefetchGNews() {
+            if (gnewsPrefetchPromise) return;
+            gnewsPrefetchPromise = _doFetchGNewsRSS();
+        }
+
+        async function _doFetchGNewsRSS() {
+            // Promise.any: el primer proxy que responde BIEN gana y corta la espera de inmediato.
+            // (antes usábamos allSettled que esperaba a que TODOS terminen — hasta 8s de espera extra)
             try {
-                return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 18000);
+                return await Promise.any(
+                    GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
+                );
             } catch(e) {
-                throw new Error('Todos los proxies fallaron: ' + e.message);
+                // AggregateError: todos fallaron — un reintento con timeout extendido
+                return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 15000);
             }
+        }
+
+        async function fetchGNewsRSS() {
+            // Si el prefetch ya arrancó (o ya terminó), lo reutilizamos — cero espera extra
+            if (gnewsPrefetchPromise) return gnewsPrefetchPromise;
+            // Si el usuario tocó el botón antes del idle callback, arrancamos ahora mismo
+            gnewsPrefetchPromise = _doFetchGNewsRSS();
+            return gnewsPrefetchPromise;
         }
 
         function parseGNewsXML(xml) {
@@ -3520,6 +3533,9 @@ function openArticle(url, source) {
                     prefetchDone = true;
                     fetchFeedLocal();
                 }
+                // Prefetch Google News en background: cuando el usuario toque el botón,
+                // el fetch ya estará corriendo (o terminado) — sin espera visible.
+                prefetchGNews();
                 if (!radioBrowserLoaded && !radioBrowserLoading) {
                     fetchRadiosFromAPI();
                 }
