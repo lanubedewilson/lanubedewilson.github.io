@@ -3374,9 +3374,16 @@
         }
 
         async function fetchGNewsRSS() {
-            // Si el prefetch ya arrancó (o ya terminó), lo reutilizamos — cero espera extra
-            if (gnewsPrefetchPromise) return gnewsPrefetchPromise;
-            // Si el usuario tocó el botón antes del idle callback, arrancamos ahora mismo
+            // Si hay una promesa en vuelo o ya resuelta con éxito, la reutilizamos
+            if (gnewsPrefetchPromise) {
+                try {
+                    const result = await gnewsPrefetchPromise;
+                    return result; // ya está — cero espera extra
+                } catch(e) {
+                    // La promesa anterior falló (prefetch cayó). La descartamos y reintentamos.
+                    gnewsPrefetchPromise = null;
+                }
+            }
             gnewsPrefetchPromise = _doFetchGNewsRSS();
             return gnewsPrefetchPromise;
         }
@@ -3494,7 +3501,7 @@ function openArticle(url, source) {
                     <div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
                         ⚠️ NO SE PUDO CARGAR<br>
                         <span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Los proxies CORS no responden ahora</span>
-                        <button onclick="gnewsLoaded=false;gnewsLoading=false;openGNews()"
+                        <button onclick="gnewsLoaded=false;gnewsLoading=false;gnewsPrefetchPromise=null;openGNews()"
                             style="margin-top:16px;background:none;border:1px solid #34a853;color:#34a853;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;">
                             🔄 REINTENTAR
                         </button>
