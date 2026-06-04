@@ -3314,12 +3314,14 @@
         const GNEWS_RSS_URL = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 
         const GNEWS_PROXIES = [
+            // Proxy propio en Cloudflare Workers — siempre primero, es tuyo y no se cae
+            u => `https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`,
+            // Fallbacks gratuitos por si acaso
             u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
             u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
             u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
             u => `https://proxy.cors.sh/${u}`,
             u => `https://thingproxy.freeboard.io/fetch/${u}`,
-            u => `https://yacdn.org/serve/${u}`,
         ];
 
         function faviconUrlGN(domain) {
