@@ -1608,19 +1608,7 @@
         <div style="max-width:700px;width:100%;margin:18px auto 0;padding:0 5%;" id="gnews-content"></div>
     </div>
 
-    <!-- MODAL LECTOR DE NOTA -->
-    <div id="article-modal">
-        <div id="article-modal-bar">
-            <span id="article-modal-source">📰 NOTA</span>
-            <button id="article-modal-close" onclick="closeArticle()">×</button>
-        </div>
-        <div id="article-modal-notice">🎵 La música sigue sonando — cerrá con × para volver a las noticias</div>
-        <div id="article-modal-fallback">
-            <p>Este sitio no permite mostrarse dentro de la app.<br>Podés abrirlo en el navegador:</p>
-            <a id="article-modal-fallback-link" href="#" target="_blank" rel="noopener">🔗 ABRIR EN NAVEGADOR</a>
-        </div>
-        <iframe id="article-iframe" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-    </div>
+    
 
     <script>
         let allNews  = [];
@@ -3422,65 +3410,20 @@
             document.getElementById('gnews-overlay').scrollTo(0, 0);
         }
 
-        /**
- * Abre una nota dentro del modal usando un iframe y AllOrigins.
- * @param {string} url - El enlace original de la noticia (Google News).
+       /**
+ * Abre la nota en una pestaña nueva del navegador.
+ * @param {string} url - El enlace original de la noticia.
  * @param {string} source - El nombre del medio de noticias.
  */
 function openArticle(url, source) {
-    const modal    = document.getElementById('article-modal');
-    const iframe   = document.getElementById('article-iframe');
-    const srcLabel = document.getElementById('article-modal-source');
-    const fallback = document.getElementById('article-modal-fallback');
-    const fallbackLink = document.getElementById('article-modal-fallback-link');
+    // 1. Mostramos tu mensaje de por medio usando el Toast
+    showToast(`🎵 Abriendo ${source || 'la nota'}... ¡La música sigue sonando!`);
 
-    srcLabel.textContent = '📰 ' + (source || 'NOTA');
-    fallback.style.display = 'none';
-    iframe.style.display = 'block';
-
-    // =========================================================
-    // NUEVO PROXY: ALLORIGINS
-    // Este proxy resuelve la redirección de Google News en su 
-    // propio servidor y nos devuelve la página final.
-    // =========================================================
-    const proxiedUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-    
-    iframe.src = proxiedUrl;
-    fallbackLink.href = url; 
-    modal.classList.add('open');
-
-    // Manejo de errores
-    iframe.onerror = () => {
-        iframe.style.display = 'none';
-        fallback.style.display = 'flex';
-    };
-    
-    clearTimeout(iframe._fallbackTimer);
-    
-    // Mantenemos los 8 segundos de espera por si la conexión es lenta
-    iframe._fallbackTimer = setTimeout(() => {
-        try {
-            const doc = iframe.contentDocument;
-            if (!doc || doc.readyState === 'loading') {
-                iframe.style.display = 'none';
-                fallback.style.display = 'flex';
-            }
-        } catch(e) {
-            iframe.style.display = 'none';
-            fallback.style.display = 'flex';
-        }
-    }, 8000); 
+    // 2. Abrimos el enlace en una pestaña nueva de forma segura
+    window.open(url, '_blank', 'noopener,noreferrer');
 }
 
-        function closeArticle() {
-            const modal  = document.getElementById('article-modal');
-            const iframe = document.getElementById('article-iframe');
-            clearTimeout(iframe._fallbackTimer);
-            modal.classList.remove('open');
-            iframe.src = '';
-            document.getElementById('article-modal-fallback').style.display = 'none';
-            iframe.style.display = 'block';
-        }
+        
 
         async function openGNews() {
             const overlay = document.getElementById('gnews-overlay');
