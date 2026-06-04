@@ -577,7 +577,7 @@
             background: rgba(8,8,8,0.88);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            z-index: 500;
+            z-index: 600;
             transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
             overflow-y: auto;
             padding: 0 0 40px 0;
@@ -1469,16 +1469,6 @@
         </button>
     </div>
 
-    <!-- OVERLAY GOOGLE NEWS -->
-    <div id="gnews-overlay">
-        <span class="close-timeline" onclick="closeGNews()" style="border-color:rgba(52,168,83,0.3);color:#34a853;">×</span>
-        <div id="gnews-header">
-            📰 Google News — San Juan
-            <span>📡 Noticias · San Juan, Argentina</span>
-        </div>
-        <div style="max-width:700px;width:100%;margin:18px auto 0;padding:0 5%;" id="gnews-content"></div>
-    </div>
-
     <div class="sponsor-footer">
         <div id="sponsor-ad">
             <div id="sponsor-progress"></div>
@@ -1513,6 +1503,16 @@
             </button>
         </div>
         <div class="timeline-container" id="timeline-content"></div>
+    </div>
+
+    <!-- OVERLAY GOOGLE NEWS — z-index 600, encima del feed -->
+    <div id="gnews-overlay">
+        <span class="close-timeline" onclick="closeGNews()" style="border-color:rgba(52,168,83,0.3);color:#34a853;">×</span>
+        <div id="gnews-header">
+            📰 Google News — San Juan
+            <span>📡 Noticias · San Juan, Argentina</span>
+        </div>
+        <div style="max-width:700px;width:100%;margin:18px auto 0;padding:0 5%;" id="gnews-content"></div>
     </div>
 
     <script>
