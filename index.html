@@ -3315,8 +3315,11 @@
 
         const GNEWS_PROXIES = [
             u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-            u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+            u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
             u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+            u => `https://proxy.cors.sh/${u}`,
+            u => `https://thingproxy.freeboard.io/fetch/${u}`,
+            u => `https://yacdn.org/serve/${u}`,
         ];
 
         function faviconUrlGN(domain) {
@@ -3333,15 +3336,36 @@
             } catch { return dateStr; }
         }
 
+        async function tryProxy(proxyFn, url, timeout = 8000) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeout);
+            try {
+                const r = await fetch(proxyFn(url), { signal: controller.signal });
+                clearTimeout(timer);
+                if (!r.ok) throw new Error('http ' + r.status);
+                const t = await r.text();
+                if (!t.includes('<item>')) throw new Error('sin items');
+                return t;
+            } catch(e) {
+                clearTimeout(timer);
+                throw e;
+            }
+        }
+
         async function fetchGNewsRSS() {
-            const xml = await Promise.any(
-                GNEWS_PROXIES.map(proxyFn =>
-                    fetch(proxyFn(GNEWS_RSS_URL), { signal: AbortSignal.timeout(10000) })
-                        .then(r => { if (!r.ok) throw new Error('no ok'); return r.text(); })
-                        .then(t => { if (!t.includes('<item>')) throw new Error('sin items'); return t; })
-                )
+            // Intentar todos los proxies en paralelo — el primero en responder bien gana
+            const results = await Promise.allSettled(
+                GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
             );
-            return xml;
+            const winner = results.find(r => r.status === 'fulfilled');
+            if (winner) return winner.value;
+
+            // Si todos fallaron, reintentar el primero con mayor timeout (puede ser lentitud de red)
+            try {
+                return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 18000);
+            } catch(e) {
+                throw new Error('Todos los proxies fallaron: ' + e.message);
+            }
         }
 
         function parseGNewsXML(xml) {
@@ -3456,11 +3480,15 @@ function openArticle(url, source) {
                 container.innerHTML = `
                     <div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
                         ⚠️ NO SE PUDO CARGAR<br>
-                        <span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Intentá de nuevo</span>
+                        <span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Los proxies CORS no responden ahora</span>
                         <button onclick="gnewsLoaded=false;gnewsLoading=false;openGNews()"
-                            style="margin-top:16px;background:none;border:1px solid #34a853;color:#34a853;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">
-                            REINTENTAR
+                            style="margin-top:16px;background:none;border:1px solid #34a853;color:#34a853;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;">
+                            🔄 REINTENTAR
                         </button>
+                        <a href="https://news.google.com/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419" target="_blank" rel="noopener noreferrer"
+                            style="margin-top:12px;display:inline-block;background:none;border:1px solid #444;color:#444;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;text-decoration:none;">
+                            🌐 ABRIR EN GOOGLE NEWS
+                        </a>
                     </div>`;
             } finally {
                 gnewsLoading = false;
