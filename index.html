@@ -3422,41 +3422,63 @@
             document.getElementById('gnews-overlay').scrollTo(0, 0);
         }
 
-        function openArticle(url, source) {
-            const modal    = document.getElementById('article-modal');
-            const iframe   = document.getElementById('article-iframe');
-            const srcLabel = document.getElementById('article-modal-source');
-            const fallback = document.getElementById('article-modal-fallback');
-            const fallbackLink = document.getElementById('article-modal-fallback-link');
+        /**
+ * Abre una nota dentro del modal usando un iframe.
+ * @param {string} url - El enlace original de la noticia.
+ * @param {string} source - El nombre del medio de noticias.
+ */
+function openArticle(url, source) {
+    const modal    = document.getElementById('article-modal');
+    const iframe   = document.getElementById('article-iframe');
+    const srcLabel = document.getElementById('article-modal-source');
+    const fallback = document.getElementById('article-modal-fallback');
+    const fallbackLink = document.getElementById('article-modal-fallback-link');
 
-            srcLabel.textContent = '📰 ' + (source || 'NOTA');
-            fallback.style.display = 'none';
-            iframe.style.display = 'block';
-            iframe.src = url;
-            fallbackLink.href = url;
-            modal.classList.add('open');
+    srcLabel.textContent = '📰 ' + (source || 'NOTA');
+    fallback.style.display = 'none';
+    iframe.style.display = 'block';
 
-            // Si el iframe falla por X-Frame-Options, mostrar fallback
-            iframe.onerror = () => {
+    // =========================================================
+    // NUEVA LÓGICA: USO DE PROXY PARA EVITAR EL BLOQUEO
+    // =========================================================
+    // Envolvemos la URL original dentro del proxy. encodeURIComponent asegura 
+    // que la URL mantenga un formato seguro para el viaje.
+    const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+    
+    // Le asignamos al iframe la URL que pasa por el proxy
+    iframe.src = proxiedUrl;
+    
+    // El botón de abrir en navegador externo SIEMPRE debe tener la URL real
+    fallbackLink.href = url; 
+    modal.classList.add('open');
+
+    // =========================================================
+    // LÓGICA DE RESPALDO (FALLBACK)
+    // =========================================================
+    // Si el iframe falla por algún otro motivo, mantenemos tu pantalla de aviso
+    iframe.onerror = () => {
+        iframe.style.display = 'none';
+        fallback.style.display = 'flex';
+    };
+    
+    clearTimeout(iframe._fallbackTimer);
+    
+    // Aumentamos el tiempo de espera a 8 segundos (8000 ms) porque el proxy 
+    // puede agregar 1 o 2 segundos extra de demora en la carga de la página.
+    iframe._fallbackTimer = setTimeout(() => {
+        try {
+            const doc = iframe.contentDocument;
+            if (!doc || doc.readyState === 'loading') {
                 iframe.style.display = 'none';
                 fallback.style.display = 'flex';
-            };
-            // Timeout: si no cargó en 6s, asumir bloqueado y mostrar fallback
-            clearTimeout(iframe._fallbackTimer);
-            iframe._fallbackTimer = setTimeout(() => {
-                try {
-                    // Si el contentDocument es null o inaccessible, está bloqueado
-                    const doc = iframe.contentDocument;
-                    if (!doc || doc.readyState === 'loading') {
-                        iframe.style.display = 'none';
-                        fallback.style.display = 'flex';
-                    }
-                } catch(e) {
-                    iframe.style.display = 'none';
-                    fallback.style.display = 'flex';
-                }
-            }, 6000);
+            }
+        } catch(e) {
+            // Si salta un error de seguridad (CORS cruzado), mostramos el fallback
+            iframe.style.display = 'none';
+            fallback.style.display = 'flex';
         }
+    }, 8000); 
+}
 
         function closeArticle() {
             const modal  = document.getElementById('article-modal');
