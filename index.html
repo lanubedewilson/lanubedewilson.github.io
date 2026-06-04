@@ -533,6 +533,99 @@
             }
         }
 
+        /* MODAL LECTOR DE NOTA */
+        #article-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 900;
+            background: rgba(8,8,8,0.96);
+            display: none;
+            flex-direction: column;
+        }
+        #article-modal.open { display: flex; }
+
+        #article-modal-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--surface-1);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            gap: 10px;
+        }
+        #article-modal-source {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            color: #34a853;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        #article-modal-close {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--white-bone);
+            font-size: 1.4rem;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        #article-modal-close:hover { background: rgba(255,255,255,0.08); }
+
+        #article-modal-notice {
+            background: rgba(52,168,83,0.08);
+            border-bottom: 1px solid rgba(52,168,83,0.15);
+            padding: 6px 16px;
+            font-size: 0.65rem;
+            color: #34a853;
+            letter-spacing: 0.08em;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        #article-modal-fallback {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            gap: 16px;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        #article-modal-fallback p {
+            color: #555;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+        #article-modal-fallback a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0,212,255,0.07);
+            border: 1px solid rgba(0,212,255,0.25);
+            color: var(--accent);
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
+            padding: 10px 24px;
+            border-radius: var(--radius-btn);
+            text-decoration: none;
+        }
+
+        #article-iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            background: #fff;
+        }
+
         /* GOOGLE NEWS — verde Google */
         #btn-gnews {
             border-color: rgba(52,168,83,0.12);
@@ -1515,6 +1608,20 @@
         <div style="max-width:700px;width:100%;margin:18px auto 0;padding:0 5%;" id="gnews-content"></div>
     </div>
 
+    <!-- MODAL LECTOR DE NOTA -->
+    <div id="article-modal">
+        <div id="article-modal-bar">
+            <span id="article-modal-source">📰 NOTA</span>
+            <button id="article-modal-close" onclick="closeArticle()">×</button>
+        </div>
+        <div id="article-modal-notice">🎵 La música sigue sonando — cerrá con × para volver a las noticias</div>
+        <div id="article-modal-fallback">
+            <p>Este sitio no permite mostrarse dentro de la app.<br>Podés abrirlo en el navegador:</p>
+            <a id="article-modal-fallback-link" href="#" target="_blank" rel="noopener">🔗 ABRIR EN NAVEGADOR</a>
+        </div>
+        <iframe id="article-iframe" src="" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+    </div>
+
     <script>
         let allNews  = [];
         let sponsors = [];
@@ -2404,7 +2511,7 @@
         function renderFeedLocal(items, fromCache) {
             const container = document.getElementById('feed-local-content');
             const cacheTag  = fromCache
-                ? `<span style="font-size:0.55rem;color:#444;letter-spacing:1px;margin-left:12px;">· actualizando...</span>`
+                ? `<span style="font-size:0.55rem;color:#444;letter-spacing:1px;margin-left:8px;">· actualizando...</span>`
                 : '';
 
             let html = `
@@ -3301,7 +3408,7 @@
                         </div>
                         <div class="gn-title">${title}</div>
                         <div class="gn-actions">
-                            <a href="${link}" target="_blank" rel="noopener" class="gn-btn gn-btn-link">🔗 IR A LA NOTA</a>
+                            <button class="gn-btn gn-btn-link" onclick="openArticle('${esc(link)}', '${esc(sourceName)}')">🔗 VER NOTA</button>
                             <button class="gn-btn gn-btn-share"
                                 onclick="if(navigator.share){navigator.share({title:'${esc(title)}',url:'${esc(link)}'})}else{window.open('https://api.whatsapp.com/send?text=${shareText}','_blank')}">
                                 ↗ COMPARTIR
@@ -3313,6 +3420,52 @@
 
             container.innerHTML = html;
             document.getElementById('gnews-overlay').scrollTo(0, 0);
+        }
+
+        function openArticle(url, source) {
+            const modal    = document.getElementById('article-modal');
+            const iframe   = document.getElementById('article-iframe');
+            const srcLabel = document.getElementById('article-modal-source');
+            const fallback = document.getElementById('article-modal-fallback');
+            const fallbackLink = document.getElementById('article-modal-fallback-link');
+
+            srcLabel.textContent = '📰 ' + (source || 'NOTA');
+            fallback.style.display = 'none';
+            iframe.style.display = 'block';
+            iframe.src = url;
+            fallbackLink.href = url;
+            modal.classList.add('open');
+
+            // Si el iframe falla por X-Frame-Options, mostrar fallback
+            iframe.onerror = () => {
+                iframe.style.display = 'none';
+                fallback.style.display = 'flex';
+            };
+            // Timeout: si no cargó en 6s, asumir bloqueado y mostrar fallback
+            clearTimeout(iframe._fallbackTimer);
+            iframe._fallbackTimer = setTimeout(() => {
+                try {
+                    // Si el contentDocument es null o inaccessible, está bloqueado
+                    const doc = iframe.contentDocument;
+                    if (!doc || doc.readyState === 'loading') {
+                        iframe.style.display = 'none';
+                        fallback.style.display = 'flex';
+                    }
+                } catch(e) {
+                    iframe.style.display = 'none';
+                    fallback.style.display = 'flex';
+                }
+            }, 6000);
+        }
+
+        function closeArticle() {
+            const modal  = document.getElementById('article-modal');
+            const iframe = document.getElementById('article-iframe');
+            clearTimeout(iframe._fallbackTimer);
+            modal.classList.remove('open');
+            iframe.src = '';
+            document.getElementById('article-modal-fallback').style.display = 'none';
+            iframe.style.display = 'block';
         }
 
         async function openGNews() {
