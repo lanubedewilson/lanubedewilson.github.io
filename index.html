@@ -1632,7 +1632,6 @@
             <span class="nb-label">Stream</span>
         </button>
         <button id="btn-feed-main" class="nav-btn"
-            onmousedown="prefetchGNews()" ontouchstart="prefetchGNews()"
             onclick="openTimeline('all')" title="El Feed de la Nube">
             <span class="nb-emoji"><span id="dot-info" class="dot-info"></span></span>
             <span class="nb-label">INFO</span>
@@ -3642,6 +3641,13 @@ function openArticle(url, source) {
         };
         window.addEventListener('click', unlockAudio, { once: true });
         window.addEventListener('touchstart', unlockAudio, { once: true });
+
+        // Prefetch de Google News 500ms después del primer toque del usuario
+        function _scheduleGNewsPrefetch() {
+            setTimeout(() => prefetchGNews(), 500);
+        }
+        window.addEventListener('click',      _scheduleGNewsPrefetch, { once: true });
+        window.addEventListener('touchstart', _scheduleGNewsPrefetch, { once: true });
     </script>
 </body>
 </html>
