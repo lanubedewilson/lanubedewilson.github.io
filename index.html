@@ -1384,12 +1384,7 @@
            BARRA DE INFO EN EL FEED (ticker + clima)
         ============================================= */
         #feed-info-bar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: rgba(8,8,8,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: transparent;
             border-bottom: 1px solid var(--border);
             padding: 0;
             display: flex;
@@ -1478,20 +1473,24 @@
         /* =============================================
            GNEWS STICKY BAR — dentro del timeline overlay
         ============================================= */
-        #gnews-sticky-bar {
+        /* Contenedor sticky que agrupa ticker + clima + botón GNews */
+        #feed-sticky-header {
             position: sticky;
             top: 0;
             z-index: 20;
+            background: rgba(8,8,8,0.95);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        #gnews-sticky-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 10px;
             padding: 8px 5%;
-            background: rgba(8,8,8,0.92);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(52,168,83,0.12);
-            flex-shrink: 0;
+            border-top: 1px solid rgba(52,168,83,0.10);
         }
         #gnews-sticky-bar #feed-gnews-btn {
             display: flex;
@@ -1656,25 +1655,27 @@
     </div>
 
     <div id="timeline-overlay">
-        <div id="feed-info-bar">
-            <div id="feed-ticker-row">
-                <span id="feed-ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
-                <span id="feed-ticker-loading" style="display:inline-flex;align-items:center;gap:6px;color:#2a2a2a;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;">
-                    <div class="ticker-spinner"></div>
-                    MERCADOS...
-                </span>
-                <div class="ticker" id="feed-main-ticker" style="display:none;"></div>
+        <div id="feed-sticky-header">
+            <div id="feed-info-bar">
+                <div id="feed-ticker-row">
+                    <span id="feed-ticker-dot" style="display:none;width:5px;height:5px;background:var(--accent);border-radius:50%;flex-shrink:0;animation:pulse-fade 2s ease-in-out infinite;"></span>
+                    <span id="feed-ticker-loading" style="display:inline-flex;align-items:center;gap:6px;color:#2a2a2a;font-size:0.68rem;font-weight:500;letter-spacing:0.08em;">
+                        <div class="ticker-spinner"></div>
+                        MERCADOS...
+                    </span>
+                    <div class="ticker" id="feed-main-ticker" style="display:none;"></div>
+                </div>
+                <div id="feed-clima-row">
+                    <span id="feed-clima-dot"></span>
+                    <span id="feed-clima-text">CARGANDO CLIMA...</span>
+                </div>
             </div>
-            <div id="feed-clima-row">
-                <span id="feed-clima-dot"></span>
-                <span id="feed-clima-text">CARGANDO CLIMA...</span>
+            <div id="gnews-sticky-bar">
+                <button onclick="openGNews()" id="feed-gnews-btn">
+                    <span id="dot-gnews-btn" class="dot-gnews-pill"></span> GOOGLE NEWS — SAN JUAN
+                </button>
+                <span class="close-timeline" onclick="closeTimeline()" style="position:static;margin:0;background:rgba(8,8,8,0.6);">×</span>
             </div>
-        </div>
-        <div id="gnews-sticky-bar">
-            <button onclick="openGNews()" id="feed-gnews-btn">
-                <span id="dot-gnews-btn" class="dot-gnews-pill"></span> GOOGLE NEWS — SAN JUAN
-            </button>
-            <span class="close-timeline" onclick="closeTimeline()" style="position:static;margin:0;background:rgba(8,8,8,0.6);">×</span>
         </div>
         <div class="timeline-container" id="timeline-content"></div>
     </div>
@@ -3391,24 +3392,32 @@
         ============================================= */
         let gnewsLoaded  = false;
         let gnewsLoading = false;
-        let gnewsPrefetchStarted = false;
 
-        /* Prefetch silencioso: se dispara al mousedown/touchstart del botón INFO */
-        function prefetchGNews() {
-            if (gnewsPrefetchStarted || gnewsLoaded || gnewsLoading) return;
-            gnewsPrefetchStarted = true;
+        /* Promesa compartida del fetch en curso */
+        let gnewsFetchPromise = null;
+
+        function startGNewsFetch() {
+            if (gnewsFetchPromise) return gnewsFetchPromise;
             gnewsLoading = true;
-            fetchGNewsRSS()
+            gnewsFetchPromise = fetchGNewsRSS()
                 .then(xml => {
                     const items = parseGNewsXML(xml);
                     renderGNews(items);
                     gnewsLoaded = true;
+                    return items;
                 })
                 .catch(e => {
-                    console.warn('GNews prefetch falló, se reintentará al abrir:', e);
-                    gnewsPrefetchStarted = false; // permite reintento manual
+                    gnewsFetchPromise = null;
+                    throw e;
                 })
                 .finally(() => { gnewsLoading = false; });
+            return gnewsFetchPromise;
+        }
+
+        /* Prefetch silencioso al presionar el boton INFO */
+        function prefetchGNews() {
+            if (gnewsLoaded || gnewsFetchPromise) return;
+            startGNewsFetch().catch(() => {});
         }
 
         const GNEWS_RSS_URL = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
@@ -3552,33 +3561,22 @@ function openArticle(url, source) {
         
 
         async function openGNews() {
-            const overlay = document.getElementById('gnews-overlay');
+            const overlay   = document.getElementById('gnews-overlay');
+            const container = document.getElementById('gnews-content');
+
+            // Toggle: si ya está abierto, cerrar
             if (overlay.classList.contains('open')) {
                 closeGNews();
                 return;
             }
-            document.getElementById('btn-gnews') && document.getElementById('btn-gnews').classList.add('gnews-active');
+
             overlay.classList.add('open');
             overlay.scrollTo(0, 0);
 
-            // Si el prefetch ya terminó, el contenido ya está en pantalla — listo
+            // Ya cargado: mostrar lo que hay
             if (gnewsLoaded) return;
 
-            // Si el prefetch está en curso, mostrar un spinner liviano y esperar
-            if (gnewsLoading) {
-                const container = document.getElementById('gnews-content');
-                container.innerHTML = `
-                    <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
-                        <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#34a853;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
-                        CARGANDO GOOGLE NEWS...
-                    </div>`;
-                // El fetchGNewsRSS en curso ya va a llamar renderGNews cuando termine
-                return;
-            }
-
-            // Carga directa si por alguna razón no se prefetcheó
-            gnewsLoading = true;
-            const container = document.getElementById('gnews-content');
+            // Mostrar spinner mientras esperamos (prefetch en curso o fetch nuevo)
             container.innerHTML = `
                 <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
                     <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#34a853;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
@@ -3586,17 +3584,16 @@ function openArticle(url, source) {
                 </div>`;
 
             try {
-                const xml   = await fetchGNewsRSS();
-                const items = parseGNewsXML(xml);
-                renderGNews(items);
-                gnewsLoaded = true;
+                // startGNewsFetch() devuelve la promesa existente si ya hay un fetch en curso
+                await startGNewsFetch();
+                // renderGNews ya fue llamado dentro de startGNewsFetch cuando llegaron los datos
             } catch(e) {
                 console.error('Google News error:', e);
                 container.innerHTML = `
                     <div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
                         ⚠️ NO SE PUDO CARGAR<br>
                         <span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Los proxies CORS no responden ahora</span>
-                        <button onclick="gnewsLoaded=false;gnewsLoading=false;openGNews()"
+                        <button onclick="gnewsLoaded=false;gnewsFetchPromise=null;openGNews()"
                             style="margin-top:16px;background:none;border:1px solid #34a853;color:#34a853;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;">
                             🔄 REINTENTAR
                         </button>
@@ -3605,8 +3602,6 @@ function openArticle(url, source) {
                             🌐 ABRIR EN GOOGLE NEWS
                         </a>
                     </div>`;
-            } finally {
-                gnewsLoading = false;
             }
         }
 
