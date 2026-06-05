@@ -1445,6 +1445,86 @@
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* =============================================
+           TRES PUNTOS — secuencia de latido escalonado
+           stream-dot (rojo) → ya existe como .dot con pulse-fade 1.5s
+           dot-info   (cian) → delay 350ms después del rojo
+           dot-radio  (ámbar)→ delay 700ms después del rojo
+        ============================================= */
+
+        /* Punto cian — botón INFO */
+        .dot-info {
+            width: 10px; height: 10px;
+            background-color: #00D4FF;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px rgba(0,212,255,0.8);
+            animation: pulse-fade 1.5s infinite ease-in-out;
+            animation-delay: 350ms;
+        }
+
+        /* Punto ámbar — botón RADIO */
+        .dot-radio {
+            width: 10px; height: 10px;
+            background-color: #cc7700;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px rgba(200,119,0,0.8);
+            animation: pulse-fade 1.5s infinite ease-in-out;
+            animation-delay: 700ms;
+        }
+
+        /* =============================================
+           GNEWS STICKY BAR — dentro del timeline overlay
+        ============================================= */
+        #gnews-sticky-bar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 8px 5%;
+            background: rgba(8,8,8,0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(52,168,83,0.12);
+            flex-shrink: 0;
+        }
+        #gnews-sticky-bar #feed-gnews-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(52,168,83,0.07);
+            border: 1px solid rgba(52,168,83,0.25);
+            color: #34a853;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.82rem;
+            letter-spacing: 1.5px;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            justify-content: center;
+        }
+        #gnews-sticky-bar #feed-gnews-btn:hover {
+            background: rgba(52,168,83,0.15);
+            border-color: rgba(52,168,83,0.5);
+        }
+        /* Punto verde pulsante dentro del botón GNews */
+        .dot-gnews-pill {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #34a853;
+            display: inline-block;
+            box-shadow: 0 0 6px rgba(52,168,83,0.8);
+            animation: pulse-fade 1.5s infinite ease-in-out;
+            animation-delay: 350ms;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body>
@@ -1552,12 +1632,14 @@
             <span class="nb-emoji"><span id="stream-dot-feed" class="dot" style="width:10px;height:10px;margin:0"></span></span>
             <span class="nb-label">Stream</span>
         </button>
-        <button id="btn-feed-main" class="nav-btn" onclick="openTimeline('all')" title="El Feed de la Nube">
-            <span class="nb-emoji">☁️</span>
+        <button id="btn-feed-main" class="nav-btn"
+            onmousedown="prefetchGNews()" ontouchstart="prefetchGNews()"
+            onclick="openTimeline('all')" title="El Feed de la Nube">
+            <span class="nb-emoji"><span id="dot-info" class="dot-info"></span></span>
             <span class="nb-label">INFO</span>
         </button>
         <button id="btn-radio-modal" class="nav-btn" onclick="toggleRadioSidebar()" title="Emisoras de Radio">
-            <span class="nb-emoji">📻</span>
+            <span class="nb-emoji"><span id="dot-radio" class="dot-radio"></span></span>
             <span class="nb-label">Radio</span>
         </button>
     </div>
@@ -1588,12 +1670,11 @@
                 <span id="feed-clima-text">CARGANDO CLIMA...</span>
             </div>
         </div>
-        <span class="close-timeline" onclick="closeTimeline()">×</span>
-        <div style="display:flex;justify-content:center;padding:0 5% 4px;">
-            <button onclick="openGNews()" id="feed-gnews-btn"
-                style="display:flex;align-items:center;gap:8px;background:rgba(52,168,83,0.07);border:1px solid rgba(52,168,83,0.25);color:#34a853;font-family:'Bebas Neue',cursive;font-size:0.82rem;letter-spacing:1.5px;padding:8px 20px;border-radius:30px;cursor:pointer;transition:all 0.2s;">
-                📰 GOOGLE NEWS — SAN JUAN
+        <div id="gnews-sticky-bar">
+            <button onclick="openGNews()" id="feed-gnews-btn">
+                <span id="dot-gnews-btn" class="dot-gnews-pill"></span> GOOGLE NEWS — SAN JUAN
             </button>
+            <span class="close-timeline" onclick="closeTimeline()" style="position:static;margin:0;background:rgba(8,8,8,0.6);">×</span>
         </div>
         <div class="timeline-container" id="timeline-content"></div>
     </div>
@@ -3310,6 +3391,25 @@
         ============================================= */
         let gnewsLoaded  = false;
         let gnewsLoading = false;
+        let gnewsPrefetchStarted = false;
+
+        /* Prefetch silencioso: se dispara al mousedown/touchstart del botón INFO */
+        function prefetchGNews() {
+            if (gnewsPrefetchStarted || gnewsLoaded || gnewsLoading) return;
+            gnewsPrefetchStarted = true;
+            gnewsLoading = true;
+            fetchGNewsRSS()
+                .then(xml => {
+                    const items = parseGNewsXML(xml);
+                    renderGNews(items);
+                    gnewsLoaded = true;
+                })
+                .catch(e => {
+                    console.warn('GNews prefetch falló, se reintentará al abrir:', e);
+                    gnewsPrefetchStarted = false; // permite reintento manual
+                })
+                .finally(() => { gnewsLoading = false; });
+        }
 
         const GNEWS_RSS_URL = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 
@@ -3461,10 +3561,23 @@ function openArticle(url, source) {
             overlay.classList.add('open');
             overlay.scrollTo(0, 0);
 
+            // Si el prefetch ya terminó, el contenido ya está en pantalla — listo
             if (gnewsLoaded) return;
-            if (gnewsLoading) return;
-            gnewsLoading = true;
 
+            // Si el prefetch está en curso, mostrar un spinner liviano y esperar
+            if (gnewsLoading) {
+                const container = document.getElementById('gnews-content');
+                container.innerHTML = `
+                    <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
+                        <div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#34a853;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>
+                        CARGANDO GOOGLE NEWS...
+                    </div>`;
+                // El fetchGNewsRSS en curso ya va a llamar renderGNews cuando termine
+                return;
+            }
+
+            // Carga directa si por alguna razón no se prefetcheó
+            gnewsLoading = true;
             const container = document.getElementById('gnews-content');
             container.innerHTML = `
                 <div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">
