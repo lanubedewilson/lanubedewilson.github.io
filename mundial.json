@@ -1,0 +1,162 @@
+{
+  "_info": "Mundial FIFA 2026 — Fixture Fase de Grupos. Editar 'goles_local' y 'goles_visita' con los resultados. 'estado': 'pendiente' | 'en_juego' | 'FT'",
+  "_final_torneo": "2026-07-19",
+  "grupos": [
+    {
+      "nombre": "A",
+      "equipos": ["México","Sudáfrica","Corea del Sur","Chequia"],
+      "banderas": {"México":"mx","Sudáfrica":"za","Corea del Sur":"kr","Chequia":"cz"},
+      "partidos": [
+        {"local":"México","visita":"Sudáfrica","fecha":"11/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Corea del Sur","visita":"Chequia","fecha":"11/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Chequia","visita":"Sudáfrica","fecha":"18/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"México","visita":"Corea del Sur","fecha":"18/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Chequia","visita":"México","fecha":"24/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Sudáfrica","visita":"Corea del Sur","fecha":"24/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "B",
+      "equipos": ["Canadá","Bosnia y Herzegovina","Qatar","Suiza"],
+      "banderas": {"Canadá":"ca","Bosnia y Herzegovina":"ba","Qatar":"qa","Suiza":"ch"},
+      "partidos": [
+        {"local":"Canadá","visita":"Bosnia y Herzegovina","fecha":"12/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Qatar","visita":"Suiza","fecha":"13/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Suiza","visita":"Bosnia y Herzegovina","fecha":"18/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Canadá","visita":"Qatar","fecha":"18/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Suiza","visita":"Canadá","fecha":"24/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Bosnia y Herzegovina","visita":"Qatar","fecha":"24/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "C",
+      "equipos": ["Brasil","Marruecos","Haití","Escocia"],
+      "banderas": {"Brasil":"br","Marruecos":"ma","Haití":"ht","Escocia":"gb-sct"},
+      "partidos": [
+        {"local":"Haití","visita":"Escocia","fecha":"13/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Brasil","visita":"Marruecos","fecha":"13/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Brasil","visita":"Haití","fecha":"19/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Escocia","visita":"Marruecos","fecha":"19/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Escocia","visita":"Brasil","fecha":"24/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Marruecos","visita":"Haití","fecha":"24/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "D",
+      "equipos": ["Estados Unidos","Paraguay","Australia","Turquía"],
+      "banderas": {"Estados Unidos":"us","Paraguay":"py","Australia":"au","Turquía":"tr"},
+      "partidos": [
+        {"local":"Estados Unidos","visita":"Paraguay","fecha":"12/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Australia","visita":"Turquía","fecha":"14/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Turquía","visita":"Paraguay","fecha":"19/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Estados Unidos","visita":"Australia","fecha":"19/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Turquía","visita":"Estados Unidos","fecha":"25/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Paraguay","visita":"Australia","fecha":"25/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "E",
+      "equipos": ["Alemania","Curazao","Costa de Marfil","Ecuador"],
+      "banderas": {"Alemania":"de","Curazao":"cw","Costa de Marfil":"ci","Ecuador":"ec"},
+      "partidos": [
+        {"local":"Costa de Marfil","visita":"Ecuador","fecha":"14/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Alemania","visita":"Curazao","fecha":"14/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Alemania","visita":"Costa de Marfil","fecha":"20/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Ecuador","visita":"Curazao","fecha":"20/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Curazao","visita":"Costa de Marfil","fecha":"25/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Ecuador","visita":"Alemania","fecha":"25/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "F",
+      "equipos": ["Países Bajos","Japón","Túnez","Suecia"],
+      "banderas": {"Países Bajos":"nl","Japón":"jp","Túnez":"tn","Suecia":"se"},
+      "partidos": [
+        {"local":"Países Bajos","visita":"Japón","fecha":"14/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Suecia","visita":"Túnez","fecha":"14/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Países Bajos","visita":"Suecia","fecha":"20/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Túnez","visita":"Japón","fecha":"21/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Japón","visita":"Suecia","fecha":"25/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Túnez","visita":"Países Bajos","fecha":"25/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "G",
+      "equipos": ["Bélgica","Egipto","Irán","Nueva Zelanda"],
+      "banderas": {"Bélgica":"be","Egipto":"eg","Irán":"ir","Nueva Zelanda":"nz"},
+      "partidos": [
+        {"local":"Bélgica","visita":"Egipto","fecha":"15/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Irán","visita":"Nueva Zelanda","fecha":"15/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Bélgica","visita":"Irán","fecha":"20/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Suiza","visita":"Irán","fecha":"20/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Nueva Zelanda","visita":"Egipto","fecha":"26/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Irán","visita":"Bélgica","fecha":"26/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "H",
+      "equipos": ["España","Cabo Verde","Arabia Saudita","Uruguay"],
+      "banderas": {"España":"es","Cabo Verde":"cv","Arabia Saudita":"sa","Uruguay":"uy"},
+      "partidos": [
+        {"local":"España","visita":"Cabo Verde","fecha":"15/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Arabia Saudita","visita":"Uruguay","fecha":"15/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"España","visita":"Arabia Saudita","fecha":"21/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Uruguay","visita":"Cabo Verde","fecha":"21/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Cabo Verde","visita":"Arabia Saudita","fecha":"26/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Uruguay","visita":"España","fecha":"26/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "I",
+      "equipos": ["Francia","Senegal","Irak","Noruega"],
+      "banderas": {"Francia":"fr","Senegal":"sn","Irak":"iq","Noruega":"no"},
+      "partidos": [
+        {"local":"Francia","visita":"Senegal","fecha":"16/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Irak","visita":"Noruega","fecha":"16/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Francia","visita":"Irak","fecha":"21/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Noruega","visita":"Senegal","fecha":"21/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Senegal","visita":"Irak","fecha":"26/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Noruega","visita":"Francia","fecha":"26/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "J",
+      "equipos": ["Argentina","Argelia","Austria","Jordania"],
+      "banderas": {"Argentina":"ar","Argelia":"dz","Austria":"at","Jordania":"jo"},
+      "partidos": [
+        {"local":"Argentina","visita":"Argelia","fecha":"16/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Austria","visita":"Jordania","fecha":"17/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Argentina","visita":"Austria","fecha":"22/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Jordania","visita":"Argelia","fecha":"22/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Argelia","visita":"Austria","fecha":"27/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Jordania","visita":"Argentina","fecha":"27/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "K",
+      "equipos": ["Portugal","Colombia","Uzbekistán","Congo RD"],
+      "banderas": {"Portugal":"pt","Colombia":"co","Uzbekistán":"uz","Congo RD":"cd"},
+      "partidos": [
+        {"local":"Portugal","visita":"Congo RD","fecha":"17/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Uzbekistán","visita":"Colombia","fecha":"17/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Portugal","visita":"Uzbekistán","fecha":"22/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Colombia","visita":"Congo RD","fecha":"22/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Colombia","visita":"Portugal","fecha":"27/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Congo RD","visita":"Uzbekistán","fecha":"27/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    },
+    {
+      "nombre": "L",
+      "equipos": ["Inglaterra","Croacia","Ghana","Panamá"],
+      "banderas": {"Inglaterra":"gb-eng","Croacia":"hr","Ghana":"gh","Panamá":"pa"},
+      "partidos": [
+        {"local":"Inglaterra","visita":"Croacia","fecha":"17/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Ghana","visita":"Panamá","fecha":"17/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Inglaterra","visita":"Ghana","fecha":"22/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Panamá","visita":"Croacia","fecha":"22/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Panamá","visita":"Inglaterra","fecha":"27/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"Croacia","visita":"Ghana","fecha":"27/06","goles_local":null,"goles_visita":null,"estado":"pendiente"}
+      ]
+    }
+  ]
+}
