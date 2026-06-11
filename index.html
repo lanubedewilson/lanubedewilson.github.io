@@ -1845,8 +1845,8 @@
             <source src="la nube.mp4" type="video/mp4">
         </video>
 
-        <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
-        <iframe id="player-kick" class="player-frame" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <iframe id="player-yt" class="player-frame" src="" allow="autoplay; fullscreen"></iframe>
+        <iframe id="player-kick" class="player-frame" src="" allow="autoplay; fullscreen"></iframe>
         <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
         <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
 
@@ -2677,6 +2677,11 @@
             const cacheValido = cacheRaw && (Date.now() - cacheTs) < FEED_CACHE_TTL;
 
             const container = document.getElementById('feed-local-content');
+            // AGREGA ESTA LÍNEA DE SEGURIDAD:
+            if (!container) return; 
+
+            if (cacheValido) {
+                try {
 
             if (cacheValido) {
                 try {
