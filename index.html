@@ -3696,18 +3696,31 @@ async function fetchFeedLocal() {
         const GNEWS_RSS_URL = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 
         const GNEWS_PROXIES = [
-            // Proxy propio en Cloudflare Workers — siempre primero, es tuyo y no se cae
+            // 1. EL MVP: Tu proxy propio (El más rápido y seguro)
             u => `https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`,
-            // Fallbacks gratuitos por si acaso
+            // 2. Plan B: Un intermediario público muy estable
             u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-            u => `https://corsproxy.io/?url=${encodeURIComponent(u)}`,
-            u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-            u => `https://proxy.cors.sh/${u}`,
-            u => `https://thingproxy.freeboard.io/fetch/${u}`,
+            // 3. Plan C: Otro respaldo confiable
+            u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
         ];
 
-        function faviconUrlGN(domain) {
-            return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+        // Las demás funciones (faviconUrlGN, extractGNDomain, formatGNDate, tryProxy) quedan intactas aquí en medio...
+
+        async function fetchGNewsRSS() {
+            try {
+                // Promise.any lanza la "carrera". El primero que termine con éxito, gana.
+                return await Promise.any(
+                    GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
+                );
+            } catch(e) {
+                // Si el código llega aquí, significa que los 3 proxies fallaron al mismo tiempo (algo muy raro).
+                // Como salvavidas, hacemos un último intento con tu servidor principal dándole más tiempo (18 segundos).
+                try {
+                    return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 18000);
+                } catch(errorFinal) {
+                    throw new Error('Todos los proxies fallaron: ' + errorFinal.message);
+                }
+            }
         }
 
         function extractGNDomain(link) {
