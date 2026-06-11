@@ -7,7 +7,7 @@
       "equipos": ["México","Sudáfrica","Corea del Sur","Chequia"],
       "banderas": {"México":"mx","Sudáfrica":"za","Corea del Sur":"kr","Chequia":"cz"},
       "partidos": [
-        {"local":"México","visita":"Sudáfrica","fecha":"11/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
+        {"local":"México","visita":"Sudáfrica","fecha":"11/06","goles_local":2,"goles_visita":0,"estado":"pendiente"},
         {"local":"Corea del Sur","visita":"Chequia","fecha":"11/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
         {"local":"Chequia","visita":"Sudáfrica","fecha":"18/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
         {"local":"México","visita":"Corea del Sur","fecha":"18/06","goles_local":null,"goles_visita":null,"estado":"pendiente"},
