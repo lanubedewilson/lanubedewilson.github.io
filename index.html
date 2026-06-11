@@ -3985,7 +3985,6 @@ function openArticle(url, source) {
         let mundialActiveGrp = 'A';
         let mundialRefreshInterval = null;
 
-        // Activa un auto-refresh cada 45s solo si hay partidos en juego
         function startLiveRefreshIfNeeded() {
             const hayEnVivo = mundialData?.grupos?.some(g =>
                 g.partidos.some(p => p.estado === 'en_juego')
@@ -4064,19 +4063,40 @@ function openArticle(url, source) {
         }
 
         async function loadMundialData() {
-    if (mundialLoading) return;
-    mundialLoading = true;
-    showMundialSpinner();
+            if (mundialLoading) return;
+            mundialLoading = true;
+            showMundialSpinner();
 
-    // 1. Intentar ESPN API pública
-    try {
-        const r = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
-            { signal: AbortSignal.timeout(5000) });
-        if (r.ok) {
-            const espn = await r.json();
-            const merged = buildFromEspn(espn);
-            if (merged && merged.grupos && merged.grupos.length > 0) {
-                mundialData    = merged;
+            // ESTRATEGIA: siempre cargar mundial.json como base completa,
+            // luego ESPN parchea solo los partidos que tiene (hoy).
+            // Así el historial siempre está disponible aunque ESPN falle o no tenga datos.
+
+            let baseData = null;
+
+            // 1. Cargar mundial.json (fuente de verdad histórica)
+            try {
+                const r = await fetch('mundial.json?' + Date.now(), { signal: AbortSignal.timeout(5000) });
+                if (r.ok) baseData = await r.json();
+            } catch(e) { console.warn('mundial.json:', e); }
+
+            // 2. Intentar ESPN para parchar con datos del día (en vivo / recién terminados)
+            try {
+                const r2 = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
+                    { signal: AbortSignal.timeout(5000) });
+                if (r2.ok) {
+                    const espn = await r2.json();
+                    if (baseData) {
+                        patchWithEspn(baseData, espn); // ESPN actualiza sobre el JSON base
+                    } else {
+                        // Si no tenemos JSON local, intentar armar desde ESPN solo
+                        const fromEspn = buildFromEspn(espn);
+                        if (fromEspn) baseData = fromEspn;
+                    }
+                }
+            } catch(e) { console.warn('ESPN Mundial API:', e); }
+
+            if (baseData && baseData.grupos && baseData.grupos.length > 0) {
+                mundialData    = baseData;
                 mundialLoaded  = true;
                 mundialLoading = false;
                 buildMundialTabs();
@@ -4084,33 +4104,60 @@ function openArticle(url, source) {
                 startLiveRefreshIfNeeded();
                 return;
             }
-        }
-    } catch(e) { console.warn('ESPN Mundial API:', e); }
 
-    // 2. Fallback: mundial.json
-    try {
-        const r2 = await fetch('mundial.json?' + Date.now(),
-            { signal: AbortSignal.timeout(5000) });
-        if (r2.ok) {
-            mundialData    = await r2.json();
-            mundialLoaded  = true;
+            // 3. Error total
             mundialLoading = false;
-            buildMundialTabs();
-            renderMundialGrupo(mundialActiveGrp);
-            startLiveRefreshIfNeeded();
-            return;
+            document.getElementById('mundial-content').innerHTML =
+                '<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR' +
+                '<br><span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Verificá tu conexión</span>' +
+                '<button onclick="mundialForceRefresh()" style="margin-top:16px;background:none;border:1px solid #00c3ff;color:#00c3ff;padding:8px 20px;border-radius:10px;font-family:\'Bebas Neue\',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>';
         }
-    } catch(e) { console.warn('mundial.json:', e); }
 
-    // 3. Error total
-    mundialLoading = false;
-    document.getElementById('mundial-content').innerHTML =
-        '<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR' +
-        '<br><span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Verificá tu conexión</span>' +
-        '<button onclick="mundialForceRefresh()" style="margin-top:16px;background:none;border:1px solid #00c3ff;color:#00c3ff;padding:8px 20px;border-radius:10px;font-family:\'Bebas Neue\',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>';
-}
+        // Parchea el JSON base con los datos que trae ESPN (solo partidos de hoy/en curso)
+        // No reemplaza el JSON — solo actualiza estado, goles y reloj partido por partido.
+        function patchWithEspn(base, espn) {
+            try {
+                if (!espn || !espn.events) return;
+                espn.events.forEach(ev => {
+                    const comp = ev.competitions && ev.competitions[0];
+                    if (!comp) return;
 
-        // Procesa respuesta de ESPN y la convierte a formato compatible con el JSON local
+                    const home = comp.competitors.find(c => c.homeAway === 'home');
+                    const away = comp.competitors.find(c => c.homeAway === 'away');
+                    if (!home || !away) return;
+
+                    const statusState = ev.status && ev.status.type && ev.status.type.state;
+                    if (!statusState || statusState === 'pre') return; // pendiente: no tocar
+
+                    const estado = statusState === 'post' ? 'FT' : 'en_juego';
+                    const hName  = (home.team.displayName || home.team.name || '').trim();
+                    const aName  = (away.team.displayName || away.team.name || '').trim();
+
+                    // Reloj: shortDetail es lo más limpio ("45'", "HT", "90'+2'")
+                    const s = ev.status;
+                    let reloj = '';
+                    if (estado === 'en_juego' && s) {
+                        reloj = (s.type && s.type.shortDetail) || (s.displayClock ? s.displayClock.split(':')[0] + "'" : '');
+                    }
+
+                    // Buscar el partido en el JSON base por nombre de equipo (fuzzy: incluye)
+                    base.grupos.forEach(grupo => {
+                        grupo.partidos.forEach(p => {
+                            const localMatch  = hName.toLowerCase().includes(p.local.toLowerCase())  || p.local.toLowerCase().includes(hName.toLowerCase());
+                            const visitaMatch = aName.toLowerCase().includes(p.visita.toLowerCase()) || p.visita.toLowerCase().includes(aName.toLowerCase());
+                            if (localMatch && visitaMatch) {
+                                p.estado       = estado;
+                                p.goles_local  = parseInt(home.score) || 0;
+                                p.goles_visita = parseInt(away.score) || 0;
+                                if (reloj) p.reloj = reloj;
+                            }
+                        });
+                    });
+                });
+            } catch(e) { console.warn('patchWithEspn error:', e); }
+        }
+
+        // Fallback: construir estructura desde ESPN si no hay JSON local
         function buildFromEspn(espn) {
             try {
                 if (!espn || !espn.events || espn.events.length === 0) return null;
@@ -4118,7 +4165,6 @@ function openArticle(url, source) {
                 espn.events.forEach(ev => {
                     const comp = ev.competitions && ev.competitions[0];
                     if (!comp) return;
-                    // Buscar letra del grupo en el nombre o notas del evento
                     const match = (ev.name || ev.shortName || '').match(/group\s*([A-L])/i)
                                || (ev.season && ev.season.slug || '').match(/group-([a-l])/i);
                     const grpL = match ? match[1].toUpperCase() : null;
@@ -4135,15 +4181,10 @@ function openArticle(url, source) {
                     if (!g.equipos.includes(hName)) g.equipos.push(hName);
                     if (!g.equipos.includes(aName)) g.equipos.push(aName);
                     const s = ev.status;
-                    let tiempoReloj = '';
-                    if (s && estado === 'en_juego') {
-                        if (s.type && s.type.shortDetail) {
-                            tiempoReloj = s.type.shortDetail; // "45'", "HT", "90'+3'"
-                        } else if (s.displayClock) {
-                            tiempoReloj = s.displayClock.split(':')[0] + "'"; // "45:00" → "45'"
-                        }
+                    let reloj = '';
+                    if (estado === 'en_juego' && s) {
+                        reloj = (s.type && s.type.shortDetail) || (s.displayClock ? s.displayClock.split(':')[0] + "'" : '');
                     }
-                    
                     g.partidos.push({
                         local:        hName,
                         visita:       aName,
@@ -4151,7 +4192,7 @@ function openArticle(url, source) {
                         goles_local:  estado !== 'pendiente' ? parseInt(home.score) || 0 : null,
                         goles_visita: estado !== 'pendiente' ? parseInt(away.score) || 0 : null,
                         estado:       estado,
-                        reloj:        tiempoReloj // <--- Capturamos los minutos del partido
+                        reloj:        reloj
                     });
                 });
                 const arr = Object.values(grupos).sort((a,b) => a.nombre.localeCompare(b.nombre));
@@ -4209,7 +4250,7 @@ function openArticle(url, source) {
                     scoreHTML = `<div class="mw-score">${m.goles_local} – ${m.goles_visita}</div><div class="mw-date">FT</div>`;
                     extraCls  = ' ft';
                 } else if (m.estado === 'en_juego') {
-                    // Si tenemos los minutos desde ESPN (ej: "45'", "HT", "90'+3'"), los mostramos directo. Si no, dice EN VIVO.
+                    // Si tenemos los minutos desde ESPN (ej: "45'", "HT", "90'+2'"), los mostramos directo.
                     const textoTiempo = m.reloj ? `⏱ ${m.reloj}` : 'EN VIVO';
                     
                     scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div><div class="mw-date live">${textoTiempo}</div>`;
