@@ -2665,7 +2665,7 @@
             document.getElementById('btn-clima').classList.remove('local-active');
         }
 
-        async function fetchFeedLocal() {
+async function fetchFeedLocal() {
             if (feedLocalLoading) return;
             feedLocalLoading = true;
 
@@ -2677,11 +2677,9 @@
             const cacheValido = cacheRaw && (Date.now() - cacheTs) < FEED_CACHE_TTL;
 
             const container = document.getElementById('feed-local-content');
-            // AGREGA ESTA LÍNEA DE SEGURIDAD:
-            if (!container) return; 
 
-            if (cacheValido) {
-                try {
+            // --- LÍNEA DE SEGURIDAD AÑADIDA ---
+            if (!container) return;
 
             if (cacheValido) {
                 try {
