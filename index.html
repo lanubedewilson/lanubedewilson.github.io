@@ -3704,7 +3704,37 @@ async function fetchFeedLocal() {
             u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
         ];
 
-        // Las demás funciones (faviconUrlGN, extractGNDomain, formatGNDate, tryProxy) quedan intactas aquí en medio...
+        // --- FUNCIONES AUXILIARES QUE SE HABÍAN BORRADO ---
+        function faviconUrlGN(domain) {
+            return `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+        }
+
+        function extractGNDomain(link) {
+            try { return new URL(link).hostname.replace('www.', ''); } catch { return ''; }
+        }
+
+        function formatGNDate(dateStr) {
+            try {
+                return new Date(dateStr).toLocaleDateString('es-AR', { day: '2-digit', month: 'short', year: 'numeric' });
+            } catch { return dateStr; }
+        }
+
+        async function tryProxy(proxyFn, url, timeout = 8000) {
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), timeout);
+            try {
+                const r = await fetch(proxyFn(url), { signal: controller.signal });
+                clearTimeout(timer);
+                if (!r.ok) throw new Error('http ' + r.status);
+                const t = await r.text();
+                if (!t.includes('<item>')) throw new Error('sin items');
+                return t;
+            } catch(e) {
+                clearTimeout(timer);
+                throw e;
+            }
+        }
+        // --------------------------------------------------
 
         async function fetchGNewsRSS() {
             try {
@@ -3713,8 +3743,7 @@ async function fetchFeedLocal() {
                     GNEWS_PROXIES.map(proxyFn => tryProxy(proxyFn, GNEWS_RSS_URL))
                 );
             } catch(e) {
-                // Si el código llega aquí, significa que los 3 proxies fallaron al mismo tiempo (algo muy raro).
-                // Como salvavidas, hacemos un último intento con tu servidor principal dándole más tiempo (18 segundos).
+                // Si el código llega aquí, significa que los 3 proxies fallaron al mismo tiempo.
                 try {
                     return await tryProxy(GNEWS_PROXIES[0], GNEWS_RSS_URL, 18000);
                 } catch(errorFinal) {
