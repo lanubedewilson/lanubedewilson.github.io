@@ -3983,6 +3983,24 @@ function openArticle(url, source) {
         let mundialLoaded    = false;
         let mundialLoading   = false;
         let mundialActiveGrp = 'A';
+        let mundialRefreshInterval = null;
+
+        // Activa un auto-refresh cada 45s solo si hay partidos en juego
+        function startLiveRefreshIfNeeded() {
+            const hayEnVivo = mundialData?.grupos?.some(g =>
+                g.partidos.some(p => p.estado === 'en_juego')
+            );
+            if (hayEnVivo && !mundialRefreshInterval) {
+                mundialRefreshInterval = setInterval(() => {
+                    mundialLoaded  = false;
+                    mundialLoading = false;
+                    loadMundialData();
+                }, 45000);
+            } else if (!hayEnVivo && mundialRefreshInterval) {
+                clearInterval(mundialRefreshInterval);
+                mundialRefreshInterval = null;
+            }
+        }
 
         // Si el Mundial ya terminó, ocultar el botón y dejar GNews full-width
         (function() {
@@ -4063,6 +4081,7 @@ function openArticle(url, source) {
                 mundialLoading = false;
                 buildMundialTabs();
                 renderMundialGrupo(mundialActiveGrp);
+                startLiveRefreshIfNeeded();
                 return;
             }
         }
@@ -4078,6 +4097,7 @@ function openArticle(url, source) {
             mundialLoading = false;
             buildMundialTabs();
             renderMundialGrupo(mundialActiveGrp);
+            startLiveRefreshIfNeeded();
             return;
         }
     } catch(e) { console.warn('mundial.json:', e); }
@@ -4114,7 +4134,15 @@ function openArticle(url, source) {
                     const g = grupos[grpL];
                     if (!g.equipos.includes(hName)) g.equipos.push(hName);
                     if (!g.equipos.includes(aName)) g.equipos.push(aName);
-                    const tiempoReloj = ev.status && ev.status.displayClock ? ev.status.displayClock : '';
+                    const s = ev.status;
+                    let tiempoReloj = '';
+                    if (s && estado === 'en_juego') {
+                        if (s.type && s.type.shortDetail) {
+                            tiempoReloj = s.type.shortDetail; // "45'", "HT", "90'+3'"
+                        } else if (s.displayClock) {
+                            tiempoReloj = s.displayClock.split(':')[0] + "'"; // "45:00" → "45'"
+                        }
+                    }
                     
                     g.partidos.push({
                         local:        hName,
@@ -4181,8 +4209,8 @@ function openArticle(url, source) {
                     scoreHTML = `<div class="mw-score">${m.goles_local} – ${m.goles_visita}</div><div class="mw-date">FT</div>`;
                     extraCls  = ' ft';
                 } else if (m.estado === 'en_juego') {
-                    // Si tenemos los minutos, le agregamos el ' para indicar minutos (ej: 45'). Si no, por las dudas dice EN VIVO.
-                    const textoTiempo = m.reloj ? `⏱ ${m.reloj}'` : 'EN VIVO';
+                    // Si tenemos los minutos desde ESPN (ej: "45'", "HT", "90'+3'"), los mostramos directo. Si no, dice EN VIVO.
+                    const textoTiempo = m.reloj ? `⏱ ${m.reloj}` : 'EN VIVO';
                     
                     scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div><div class="mw-date live">${textoTiempo}</div>`;
                     extraCls  = ' live';
