@@ -4046,48 +4046,49 @@ function openArticle(url, source) {
         }
 
         async function loadMundialData() {
-            if (mundialLoading) return;
-            mundialLoading = true;
+    if (mundialLoading) return;
+    mundialLoading = true;
+    showMundialSpinner();
 
-            // 1. Intentar ESPN API pública (sin key, permite CORS)
-            try {
-                const r = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
-                    { signal: AbortSignal.timeout(5000) });
-                if (r.ok) {
-                    const espn = await r.json();
-                    const merged = buildFromEspn(espn);
-                    if (merged && merged.grupos && merged.grupos.length > 0) {
-                        mundialData    = merged;
-                        mundialLoaded  = true;
-                        mundialLoading = false;
-                        buildMundialTabs();
-                        renderMundialGrupo(mundialActiveGrp);
-                        return;
-                    }
-                }
-            } catch(e) { console.warn('ESPN Mundial API:', e); }
-
-            // 2. Fallback: mundial.json en el mismo repo
-            try {
-                const r2 = await fetch('mundial.json?' + Date.now(),
-                    { signal: AbortSignal.timeout(5000) });
-                if (r2.ok) {
-                    mundialData    = await r2.json();
-                    mundialLoaded  = true;
-                    mundialLoading = false;
-                    buildMundialTabs();
-                    renderMundialGrupo(mundialActiveGrp);
-                    return;
-                }
-            } catch(e) { console.warn('mundial.json:', e); }
-
-            // 3. Error total
-            mundialLoading = false;
-            document.getElementById('mundial-content').innerHTML =
-                '<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR' +
-                '<br><span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Verificá tu conexión</span>' +
-                '<button onclick="mundialForceRefresh()" style="margin-top:16px;background:none;border:1px solid #00c3ff;color:#00c3ff;padding:8px 20px;border-radius:10px;font-family:\'Bebas Neue\',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>';
+    // 1. Intentar ESPN API pública
+    try {
+        const r = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
+            { signal: AbortSignal.timeout(5000) });
+        if (r.ok) {
+            const espn = await r.json();
+            const merged = buildFromEspn(espn);
+            if (merged && merged.grupos && merged.grupos.length > 0) {
+                mundialData    = merged;
+                mundialLoaded  = true;
+                mundialLoading = false;
+                buildMundialTabs();
+                renderMundialGrupo(mundialActiveGrp);
+                return;
+            }
         }
+    } catch(e) { console.warn('ESPN Mundial API:', e); }
+
+    // 2. Fallback: mundial.json
+    try {
+        const r2 = await fetch('mundial.json?' + Date.now(),
+            { signal: AbortSignal.timeout(5000) });
+        if (r2.ok) {
+            mundialData    = await r2.json();
+            mundialLoaded  = true;
+            mundialLoading = false;
+            buildMundialTabs();
+            renderMundialGrupo(mundialActiveGrp);
+            return;
+        }
+    } catch(e) { console.warn('mundial.json:', e); }
+
+    // 3. Error total
+    mundialLoading = false;
+    document.getElementById('mundial-content').innerHTML =
+        '<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR' +
+        '<br><span style="font-size:0.7rem;color:#333;margin-top:8px;display:block;">Verificá tu conexión</span>' +
+        '<button onclick="mundialForceRefresh()" style="margin-top:16px;background:none;border:1px solid #00c3ff;color:#00c3ff;padding:8px 20px;border-radius:10px;font-family:\'Bebas Neue\',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>';
+}
 
         // Procesa respuesta de ESPN y la convierte a formato compatible con el JSON local
         function buildFromEspn(espn) {
