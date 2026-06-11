@@ -4113,13 +4113,16 @@ function openArticle(url, source) {
                     const g = grupos[grpL];
                     if (!g.equipos.includes(hName)) g.equipos.push(hName);
                     if (!g.equipos.includes(aName)) g.equipos.push(aName);
+                    const tiempoReloj = ev.status && ev.status.displayClock ? ev.status.displayClock : '';
+                    
                     g.partidos.push({
                         local:        hName,
                         visita:       aName,
                         fecha:        ev.date ? ev.date.slice(5,10).split('-').reverse().join('/') : '',
                         goles_local:  estado !== 'pendiente' ? parseInt(home.score) || 0 : null,
                         goles_visita: estado !== 'pendiente' ? parseInt(away.score) || 0 : null,
-                        estado:       estado
+                        estado:       estado,
+                        reloj:        tiempoReloj // <--- Capturamos los minutos del partido
                     });
                 });
                 const arr = Object.values(grupos).sort((a,b) => a.nombre.localeCompare(b.nombre));
@@ -4177,7 +4180,10 @@ function openArticle(url, source) {
                     scoreHTML = `<div class="mw-score">${m.goles_local} – ${m.goles_visita}</div><div class="mw-date">FT</div>`;
                     extraCls  = ' ft';
                 } else if (m.estado === 'en_juego') {
-                    scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div><div class="mw-date live">EN VIVO</div>`;
+                    // Si tenemos los minutos, le agregamos el ' para indicar minutos (ej: 45'). Si no, por las dudas dice EN VIVO.
+                    const textoTiempo = m.reloj ? `⏱ ${m.reloj}'` : 'EN VIVO';
+                    
+                    scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div><div class="mw-date live">${textoTiempo}</div>`;
                     extraCls  = ' live';
                 } else {
                     scoreHTML = `<div class="mw-score pending">VS</div><div class="mw-date">${m.fecha || ''}</div>`;
