@@ -2331,12 +2331,12 @@
                 const r       = c.rates;
                 const blue    = b.blue.value_sell;
                 const oficial = b.oficial.value_sell;
-                const tarjeta = (oficial * 1.60).toFixed(2);
+                const tarjeta = (oficial * 1.30).toFixed(2);
                 
                 showTicker(
                     `DÓLAR BLUE: $${blue} • ` +
-                    `OFICIAL: $${oficial} • ` +
-                    `TARJETA: $${tarjeta} • ` +
+                    `DÓLAR OFICIAL: $${oficial} • ` +
+                    `DÓLAR TARJETA: $${tarjeta} • ` +
                     `EURO BLUE: $${b.blue_euro.value_sell} • ` +
                     `REAL (BR): $${(blue/r.BRL).toFixed(2)} • ` +
                     `P.CHILENO: $${(blue/r.CLP).toFixed(2)} • ` +
