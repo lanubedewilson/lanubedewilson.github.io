@@ -1695,23 +1695,46 @@
 
         /* Tarjetas de partido */
         .mw-match {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--surface-1);
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-bottom: 7px;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-left: 3px solid rgba(0,195,255,0.22);
-            gap: 6px;
-        }
-        .mw-match.ft   { border-left-color: rgba(0,195,255,0.55); opacity: 0.88; }
-        .mw-match.live { border-left-color: #00ff88; animation: mw-live-pulse 2s infinite; }
-        @keyframes mw-live-pulse {
-            0%,100% { box-shadow: none; }
-            50%      { box-shadow: 0 0 0 3px rgba(0,255,136,0.10); }
-        }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface-1);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 7px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-left: 3px solid rgba(0,195,255,0.22);
+    gap: 6px;
+    transition: all 0.3s ease;
+}
+.mw-match.ft   { border-left-color: rgba(0,195,255,0.55); opacity: 0.88; }
+
+/* NUEVO: Estilos para el partido EN VIVO */
+.mw-match.live { 
+    border-left-color: #ff3333; 
+    background: rgba(255, 51, 51, 0.05);
+    animation: mw-live-pulse 2s infinite; 
+}
+@keyframes mw-live-pulse {
+    0%,100% { box-shadow: none; }
+    50%      { box-shadow: 0 0 0 2px rgba(255,51,51,0.2); }
+}
+
+/* NUEVO: Indicador palpitante de tiempo */
+.live-indicator {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background-color: #ff3333;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+    box-shadow: 0 0 6px #ff3333;
+    animation: pulse-fade 1s infinite;
+}
+
+/* Ajustes de puntaje y fecha */
+.mw-score.live    { color: #ff3333; text-shadow: 0 0 8px rgba(255,51,51,0.4); }
+.mw-date.live { color: #ff3333; font-weight: 600; display: flex; align-items: center; justify-content: center; }
         .mw-team {
             display: flex;
             align-items: center;
@@ -4124,8 +4147,8 @@ function openArticle(url, source) {
 
             // 2. Intentar ESPN para parchar con datos del día (en vivo / recién terminados)
             try {
-                const r2 = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard',
-                    { signal: AbortSignal.timeout(5000) });
+                const r2 = await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260610-20260720',
+        { signal: AbortSignal.timeout(5000) });
                 if (r2.ok) {
                     const espn = await r2.json();
                     const evCount = espn?.events?.length ?? 0;
@@ -4423,10 +4446,11 @@ function openArticle(url, source) {
                     scoreHTML = `<div class="mw-score">${m.goles_local} – ${m.goles_visita}</div><div class="mw-date">FT</div>`;
                     extraCls  = ' ft';
                 } else if (m.estado === 'en_juego') {
-                    // Si tenemos los minutos desde ESPN (ej: "45'", "HT", "90'+2'"), los mostramos directo.
-                    const textoTiempo = m.reloj ? `⏱ ${m.reloj}` : 'EN VIVO';
+                    // Agregamos el indicador visual al texto del tiempo
+                    const textoTiempo = m.reloj ? m.reloj : 'EN VIVO';
                     
-                    scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div><div class="mw-date live">${textoTiempo}</div>`;
+                    scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div>
+                                 <div class="mw-date live"><span class="live-indicator"></span>${textoTiempo}</div>`;
                     extraCls  = ' live';
                 } else {
                     scoreHTML = `<div class="mw-score pending">VS</div><div class="mw-date">${m.fecha || ''}</div>`;
