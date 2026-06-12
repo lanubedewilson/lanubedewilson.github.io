@@ -4024,15 +4024,18 @@ function openArticle(url, source) {
             const hayEnVivo = mundialData?.grupos?.some(g =>
                 g.partidos.some(p => p.estado === 'en_juego')
             );
-            if (hayEnVivo && !mundialRefreshInterval) {
+            // Siempre limpiar primero para evitar que se acumulen intervalos
+            if (mundialRefreshInterval) {
+                clearInterval(mundialRefreshInterval);
+                mundialRefreshInterval = null;
+            }
+            if (hayEnVivo) {
                 mundialRefreshInterval = setInterval(() => {
                     mundialLoaded  = false;
                     mundialLoading = false;
                     loadMundialData();
                 }, 45000);
-            } else if (!hayEnVivo && mundialRefreshInterval) {
-                clearInterval(mundialRefreshInterval);
-                mundialRefreshInterval = null;
+                console.log('[Mundial] ⏱ Refresh automático activado (45s) — partido en vivo');
             }
         }
 
@@ -4277,11 +4280,24 @@ function openArticle(url, source) {
                     if (!home || !away) return;
 
                     const statusState = ev.status && ev.status.type && ev.status.type.state;
-                    if (!statusState || statusState === 'pre') return; // pendiente: no tocar
+                    // Solo procesar partidos que ESPN reporta como en curso o terminados
+                    if (!statusState || statusState === 'pre') return;
 
                     const estado = statusState === 'post' ? 'FT' : 'en_juego';
                     const hName  = (home.team.displayName || home.team.name || '').trim();
                     const aName  = (away.team.displayName || away.team.name || '').trim();
+
+                    // Parseo seguro: evita que "0" o "" sobreescriban goles válidos
+                    // parseInt("0") === 0 pero parseInt("") === NaN
+                    const hScore = home.score !== undefined && home.score !== null && home.score !== ''
+                        ? parseInt(home.score)
+                        : null;
+                    const aScore = away.score !== undefined && away.score !== null && away.score !== ''
+                        ? parseInt(away.score)
+                        : null;
+
+                    // Si ESPN no tiene scores válidos, no tocar el partido
+                    if (hScore === null || isNaN(hScore) || aScore === null || isNaN(aScore)) return;
 
                     // Reloj: shortDetail es lo más limpio ("45'", "HT", "90'+2'")
                     const s = ev.status;
@@ -4291,15 +4307,23 @@ function openArticle(url, source) {
                                 (s.displayClock ? s.displayClock.split(':')[0] + "'" : '');
                     }
 
-                    // Buscar el partido en el JSON base usando match normalizado
                     base.grupos.forEach(grupo => {
                         grupo.partidos.forEach(p => {
-                            if (teamsMatch(hName, p.local) && teamsMatch(aName, p.visita)) {
-                                p.estado       = estado;
-                                p.goles_local  = parseInt(home.score) || 0;
-                                p.goles_visita = parseInt(away.score) || 0;
-                                if (reloj) p.reloj = reloj;
-                            }
+                            if (!teamsMatch(hName, p.local) || !teamsMatch(aName, p.visita)) return;
+
+                            // PROTECCIÓN CRÍTICA: nunca degradar un partido ya terminado (FT)
+                            // que existe en el JSON. ESPN puede no devolver ese partido
+                            // al día siguiente y el parch lo dejaría en estado incorrecto.
+                            // Solo se permite pasar de FT→FT (actualización), nunca FT→otra cosa.
+                            if (p.estado === 'FT' && estado !== 'FT') return;
+
+                            p.estado       = estado;
+                            p.goles_local  = hScore;
+                            p.goles_visita = aScore;
+                            if (reloj) p.reloj = reloj;
+                            else delete p.reloj; // limpiar reloj cuando el partido termina
+
+                            console.log(`[Mundial] ✔ ${p.local} ${p.goles_local}-${p.goles_visita} ${p.visita} [${p.estado}]${reloj ? ' '+reloj : ''}`);
                         });
                     });
                 });
