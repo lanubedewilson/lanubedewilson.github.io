@@ -2382,7 +2382,7 @@
                     const a = document.createElement('a');
                     a.href = linkUrl;
                     a.target = '_blank';
-                    a.rel = 'noopener';
+                    a.rel = 'noopener noreferrer';
                     a.style.cssText = 'display:flex;width:100%;height:100%;align-items:center;justify-content:center;';
                     a.appendChild(media);
                     box.appendChild(a);
@@ -2497,11 +2497,11 @@
                         ${hasExtra ? `
                         <div class="note-extra-content" id="${extraId}">
                             <div class="note-content" style="padding-top:6px;">${extra}</div>
-                            ${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}
+                            ${link ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="note-source-link">↗ fuente</a>` : ''}
                         </div>
                         <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">
                             LEER MÁS <span>↓</span>
-                        </button>` : `${link ? `<a href="${link}" target="_blank" rel="noopener" class="note-source-link">↗ fuente</a>` : ''}`}
+                        </button>` : `${link ? `<a href="${link}" target="_blank" rel="noopener noreferrer" class="note-source-link">↗ fuente</a>` : ''}`}
                         <div class="share-bar">
                             <button class="share-btn" onclick="shareNote('${noteId}', '${title}')">📲 Compartir</button>
                             <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar Link</button>
@@ -2918,17 +2918,17 @@ async function fetchFeedLocal() {
                             ${preview ? `<div class="note-content" style="font-size:0.82rem;line-height:1.5;color:#aaa;">${preview}</div>` : ''}
                             <!-- Acciones -->
                             <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
-                                <a href="${shareUrl}" target="_blank" rel="noopener"
+                                <button onclick="openSafeLink('${escapeJs(shareUrl)}')"
                                    style="flex:1;min-width:110px;display:flex;align-items:center;justify-content:center;gap:6px;
                                           background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);
                                           color:var(--accent);font-family:'Bebas Neue',cursive;font-size:0.85rem;
                                           letter-spacing:1px;padding:8px 12px;border-radius:var(--radius-btn);
-                                          text-decoration:none;transition:background 0.2s;"
+                                          cursor:pointer;text-decoration:none;transition:background 0.2s;"
                                    onmouseover="this.style.background='rgba(0,212,255,0.15)'"
                                    onmouseout="this.style.background='rgba(0,212,255,0.07)'">
                                     🔗 IR A LA NOTA
-                                </a>
-                                <button onclick="if(navigator.share){navigator.share({title:'${escapeJs(title)}',url:'${escapeJs(shareUrl)}'})}else{window.open('https://api.whatsapp.com/send?text=${shareText}','_blank')}"
+                                </button>
+                                <button onclick="if(navigator.share){navigator.share({title:'${escapeJs(title)}',url:'${escapeJs(shareUrl)}'})}else{window.open('https://api.whatsapp.com/send?text=${shareText}','_blank','noopener,noreferrer')}"
                                    style="flex:1;min-width:110px;display:flex;align-items:center;justify-content:center;gap:6px;
                                           background:rgba(37,211,102,0.07);border:1px solid rgba(37,211,102,0.25);
                                           color:#25d366;font-family:'Bebas Neue',cursive;font-size:0.85rem;
@@ -3020,6 +3020,41 @@ async function fetchFeedLocal() {
         function copyLink(id) {
             const url = `${window.location.origin}${window.location.pathname}#${id}`;
             navigator.clipboard.writeText(url).then(() => { showToast('¡Link copiado! 🔗'); });
+        }
+
+        /**
+         * openSafeLink — abre una URL externa en nueva ventana/pestaña
+         * sin reemplazar la ventana actual del sitio.
+         *
+         * En iOS Safari, <a target="_blank"> puede llegar a reemplazar
+         * la ventana padre (especialmente cuando hay audio activo o el
+         * sitio está guardado en Home Screen como PWA).
+         * Usar window.open() desde un handler onclick disparado por el
+         * usuario le indica al navegador con mayor claridad que debe
+         * preservar el contexto original.
+         *
+         * El nombre de ventana único ('_lnw_external') evita acumular
+         * pestañas si el usuario pulsa varias veces el mismo botón.
+         * noopener + noreferrer: previene que la nueva pestaña tenga
+         * referencia a window.opener (seguridad) y evita enviar el
+         * Referer header (privacidad).
+         */
+        function openSafeLink(url) {
+            try {
+                const w = window.open(url, '_blank', 'noopener,noreferrer');
+                // Fallback por si el navegador bloquea el popup
+                if (!w || w.closed || typeof w.closed === 'undefined') {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            } catch(e) {
+                window.location.href = url; // último recurso
+            }
         }
 
         const unlockAudio = () => { 
@@ -3337,7 +3372,7 @@ async function fetchFeedLocal() {
             const gardenEntry = document.createElement('div');
             gardenEntry.className = 'radio-garden-entry';
             gardenEntry.innerHTML = '<span class="radio-garden-flag">🌍</span><span class="radio-garden-label">Radio Garden</span><span class="radio-garden-arrow">↗</span>';
-            gardenEntry.onclick = () => { stopAllMedia(); window.open('https://radio.garden', '_blank'); };
+            gardenEntry.onclick = () => { stopAllMedia(); window.open('https://radio.garden', '_blank', 'noopener,noreferrer'); };
             container.appendChild(gardenEntry);
         }
 
@@ -3858,7 +3893,7 @@ async function fetchFeedLocal() {
                         <div class="gn-actions">
                             <button class="gn-btn gn-btn-link" onclick="openArticle('${esc(link)}', '${esc(sourceName)}')">🔗 VER NOTA</button>
                             <button class="gn-btn gn-btn-share"
-                                onclick="if(navigator.share){navigator.share({title:'${esc(title)}',url:'${esc(link)}'})}else{window.open('https://api.whatsapp.com/send?text=${shareText}','_blank')}">
+                                onclick="if(navigator.share){navigator.share({title:'${esc(title)}',url:'${esc(link)}'})}else{window.open('https://api.whatsapp.com/send?text=${shareText}','_blank','noopener,noreferrer')}">
                                 ↗ COMPARTIR
                             </button>
                         </div>
@@ -3922,10 +3957,10 @@ function openArticle(url, source) {
                             style="margin-top:16px;background:none;border:1px solid #34a853;color:#34a853;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;display:block;margin-left:auto;margin-right:auto;">
                             🔄 REINTENTAR
                         </button>
-                        <a href="https://news.google.com/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419" target="_blank" rel="noopener noreferrer"
+                        <button onclick="openSafeLink('https://news.google.com/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419')"
                             style="margin-top:12px;display:inline-block;background:none;border:1px solid #444;color:#444;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;text-decoration:none;">
                             🌐 ABRIR EN GOOGLE NEWS
-                        </a>
+                        </button>
                     </div>`;
             }
         }
@@ -4076,8 +4111,13 @@ function openArticle(url, source) {
             // 1. Cargar mundial.json (fuente de verdad histórica)
             try {
                 const r = await fetch('mundial.json?' + Date.now(), { signal: AbortSignal.timeout(5000) });
-                if (r.ok) baseData = await r.json();
-            } catch(e) { console.warn('mundial.json:', e); }
+                if (r.ok) {
+                    baseData = await r.json();
+                    console.log('[Mundial] mundial.json cargado OK —', baseData?.grupos?.length, 'grupos');
+                } else {
+                    console.warn('[Mundial] mundial.json HTTP', r.status);
+                }
+            } catch(e) { console.warn('[Mundial] mundial.json fallo:', e.message); }
 
             // 2. Intentar ESPN para parchar con datos del día (en vivo / recién terminados)
             try {
@@ -4085,15 +4125,21 @@ function openArticle(url, source) {
                     { signal: AbortSignal.timeout(5000) });
                 if (r2.ok) {
                     const espn = await r2.json();
+                    const evCount = espn?.events?.length ?? 0;
+                    console.log('[Mundial] ESPN OK —', evCount, 'eventos hoy');
                     if (baseData) {
-                        patchWithEspn(baseData, espn); // ESPN actualiza sobre el JSON base
+                        patchWithEspn(baseData, espn);
                     } else {
-                        // Si no tenemos JSON local, intentar armar desde ESPN solo
                         const fromEspn = buildFromEspn(espn);
-                        if (fromEspn) baseData = fromEspn;
+                        if (fromEspn) {
+                            baseData = fromEspn;
+                            console.log('[Mundial] Usando ESPN como fuente principal (sin mundial.json)');
+                        }
                     }
+                } else {
+                    console.warn('[Mundial] ESPN HTTP', r2.status);
                 }
-            } catch(e) { console.warn('ESPN Mundial API:', e); }
+            } catch(e) { console.warn('[Mundial] ESPN fallo:', e.message); }
 
             if (baseData && baseData.grupos && baseData.grupos.length > 0) {
                 mundialData    = baseData;
@@ -4113,7 +4159,111 @@ function openArticle(url, source) {
                 '<button onclick="mundialForceRefresh()" style="margin-top:16px;background:none;border:1px solid #00c3ff;color:#00c3ff;padding:8px 20px;border-radius:10px;font-family:\'Bebas Neue\',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>';
         }
 
-        // Parchea el JSON base con los datos que trae ESPN (solo partidos de hoy/en curso)
+        // Tabla de alias: nombre ESPN (inglés, lowercase) → nombre EXACTO en mundial.json (español)
+        // Los equipos del JSON usan nombres en español; ESPN devuelve en inglés.
+        // Se cubre cada variante conocida del API de ESPN para los 48 seleccionados.
+        const ESPN_ALIASES = {
+            // Grupo A
+            'mexico':                              'México',
+            'south africa':                        'Sudáfrica',
+            'korea republic':                      'Corea del Sur',
+            'south korea':                         'Corea del Sur',
+            'republic of korea':                   'Corea del Sur',
+            'czech republic':                      'Chequia',
+            'czechia':                             'Chequia',
+            // Grupo B
+            'canada':                              'Canadá',
+            'bosnia and herzegovina':              'Bosnia y Herzegovina',
+            'bosnia & herzegovina':                'Bosnia y Herzegovina',
+            'bosnia-herzegovina':                  'Bosnia y Herzegovina',
+            'qatar':                               'Qatar',
+            'switzerland':                         'Suiza',
+            // Grupo C
+            'brazil':                              'Brasil',
+            'morocco':                             'Marruecos',
+            'haiti':                               'Haití',
+            'scotland':                            'Escocia',
+            // Grupo D
+            'united states':                       'Estados Unidos',
+            'usa':                                 'Estados Unidos',
+            'usmnt':                               'Estados Unidos',
+            'us':                                  'Estados Unidos',
+            'paraguay':                            'Paraguay',
+            'australia':                           'Australia',
+            'turkey':                              'Turquía',
+            'türkiye':                             'Turquía',
+            'turkiye':                             'Turquía',
+            // Grupo E
+            'germany':                             'Alemania',
+            'curacao':                             'Curazao',
+            'curaçao':                             'Curazao',
+            "cote d'ivoire":                       'Costa de Marfil',
+            "côte d'ivoire":                       'Costa de Marfil',
+            'ivory coast':                         'Costa de Marfil',
+            'ecuador':                             'Ecuador',
+            // Grupo F
+            'netherlands':                         'Países Bajos',
+            'japan':                               'Japón',
+            'tunisia':                             'Túnez',
+            'sweden':                              'Suecia',
+            // Grupo G
+            'belgium':                             'Bélgica',
+            'egypt':                               'Egipto',
+            'iran':                                'Irán',
+            'new zealand':                         'Nueva Zelanda',
+            // Grupo H
+            'spain':                               'España',
+            'cape verde':                          'Cabo Verde',
+            'cabo verde':                          'Cabo Verde',
+            'saudi arabia':                        'Arabia Saudita',
+            'uruguay':                             'Uruguay',
+            // Grupo I
+            'france':                              'Francia',
+            'senegal':                             'Senegal',
+            'iraq':                                'Irak',
+            'norway':                              'Noruega',
+            // Grupo J
+            'argentina':                           'Argentina',
+            'algeria':                             'Argelia',
+            'austria':                             'Austria',
+            'jordan':                              'Jordania',
+            // Grupo K
+            'portugal':                            'Portugal',
+            'colombia':                            'Colombia',
+            'uzbekistan':                          'Uzbekistán',
+            'dr congo':                            'Congo RD',
+            'congo dr':                            'Congo RD',
+            'democratic republic of congo':        'Congo RD',
+            'democratic republic of the congo':    'Congo RD',
+            // Grupo L
+            'england':                             'Inglaterra',
+            'croatia':                             'Croacia',
+            'ghana':                               'Ghana',
+            'panama':                              'Panamá',
+        };
+
+        // Convierte un nombre ESPN (inglés) al nombre español del mundial.json.
+        // Si no tiene alias, devuelve el nombre tal cual (lowercase) para el fuzzy match.
+        function normalizeTeamName(name) {
+            const n = (name || '').toLowerCase().trim()
+                // normaliza caracteres especiales comunes de ESPN
+                .replace(/ü/g, 'u').replace(/é/g, 'e').replace(/ô/g, 'o');
+            return ESPN_ALIASES[n] || name.trim(); // devuelve original (con mayúsculas) si no hay alias
+        }
+
+        // Compara nombre ESPN con nombre del JSON (español).
+        // Primero intenta match exacto por alias; si no, fuzzy case-insensitive.
+        function teamsMatch(espnName, jsonName) {
+            const resolved = normalizeTeamName(espnName);
+            // Match exacto después de resolver alias
+            if (resolved === jsonName) return true;
+            // Fuzzy: útil para nombres que no están en la tabla pero son similares
+            const a = resolved.toLowerCase();
+            const b = jsonName.toLowerCase();
+            return a === b || a.includes(b) || b.includes(a);
+        }
+
+        // Parchea el JSON base con los datos que trae ESPN (solo partidos de hoy/en curso).
         // No reemplaza el JSON — solo actualiza estado, goles y reloj partido por partido.
         function patchWithEspn(base, espn) {
             try {
@@ -4137,15 +4287,14 @@ function openArticle(url, source) {
                     const s = ev.status;
                     let reloj = '';
                     if (estado === 'en_juego' && s) {
-                        reloj = (s.type && s.type.shortDetail) || (s.displayClock ? s.displayClock.split(':')[0] + "'" : '');
+                        reloj = (s.type && s.type.shortDetail) ||
+                                (s.displayClock ? s.displayClock.split(':')[0] + "'" : '');
                     }
 
-                    // Buscar el partido en el JSON base por nombre de equipo (fuzzy: incluye)
+                    // Buscar el partido en el JSON base usando match normalizado
                     base.grupos.forEach(grupo => {
                         grupo.partidos.forEach(p => {
-                            const localMatch  = hName.toLowerCase().includes(p.local.toLowerCase())  || p.local.toLowerCase().includes(hName.toLowerCase());
-                            const visitaMatch = aName.toLowerCase().includes(p.visita.toLowerCase()) || p.visita.toLowerCase().includes(aName.toLowerCase());
-                            if (localMatch && visitaMatch) {
+                            if (teamsMatch(hName, p.local) && teamsMatch(aName, p.visita)) {
                                 p.estado       = estado;
                                 p.goles_local  = parseInt(home.score) || 0;
                                 p.goles_visita = parseInt(away.score) || 0;
