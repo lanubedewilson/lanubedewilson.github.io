@@ -4528,9 +4528,11 @@ function openArticle(url, source) {
         function closeFeedbackModal() {
             document.getElementById('feedback-overlay').classList.remove('open');
         }
-        // Cerrar al hacer click fuera del modal
-        document.getElementById('feedback-overlay').addEventListener('click', function(e) {
-            if (e.target === this) closeFeedbackModal();
+        // Cerrar al hacer click fuera del modal (espera a que el DOM esté listo)
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('feedback-overlay').addEventListener('click', function(e) {
+                if (e.target === this) closeFeedbackModal();
+            });
         });
 
         function renderMundialGrupo(grpNombre) {
