@@ -3743,12 +3743,30 @@ async function fetchFeedLocal() {
             gnewsFetchPromise = fetchGNewsRSS()
                 .then(xml => {
                     const items = parseGNewsXML(xml);
+                    // ÉXITO: Guardamos una copia en el caché del navegador por si falla en el futuro
+                    try { localStorage.setItem('gn_cache_sanjuan', JSON.stringify(items)); } catch(e){}
+                    
                     renderGNews(items);
                     gnewsLoaded = true;
                     return items;
                 })
                 .catch(e => {
                     gnewsFetchPromise = null;
+                    
+                    // FALLO DE RED: Intentamos rescatar las noticias de la caché
+                    try {
+                        const cached = localStorage.getItem('gn_cache_sanjuan');
+                        if (cached) {
+                            const items = JSON.parse(cached);
+                            renderGNews(items);
+                            gnewsLoaded = true;
+                            // Avisamos sutilmente que estamos usando datos guardados
+                            showToast("Mostrando noticias guardadas (Sin conexión con el servidor)");
+                            return items;
+                        }
+                    } catch(err) {}
+
+                    // Si falla la red Y no hay caché, entonces sí lanzamos el error
                     throw e;
                 })
                 .finally(() => { gnewsLoading = false; });
@@ -3763,13 +3781,11 @@ async function fetchFeedLocal() {
 
         const GNEWS_RSS_URL = 'https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc5allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc5allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 
-        const GNEWS_PROXIES = [
-            // 1. EL MVP: Tu proxy propio (El más rápido y seguro)
-            u => `https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`,
-            // 2. Plan B: Un intermediario público muy estable
-            u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-            // 3. Plan C: Otro respaldo confiable
-            u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+       const GNEWS_PROXIES = [
+            u => `https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`, // 1. Tu propio Worker (El mejor)
+            u => `https://corsproxy.io/?${encodeURIComponent(u)}`, // 2. Proxy muy estable
+            u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`, // 3. Respaldo
+            u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}` // 4. Último recurso
         ];
 
         // --- FUNCIONES AUXILIARES QUE SE HABÍAN BORRADO ---
