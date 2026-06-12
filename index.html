@@ -815,6 +815,7 @@
            SPONSORS — sistema mejorado
         ============================================= */
         .sponsor-footer {
+            margin-top: 25px;
             padding: 5px var(--gap);
             text-align: center;
             border-top: 1px solid var(--border);
@@ -1801,6 +1802,98 @@
             transition: all 0.2s;
         }
         #mundial-refresh-btn:hover { background: rgba(0,195,255,0.10); }
+
+        /* =============================================
+           BARRA FIJA "TE LEEMOS" + MODAL DE FEEDBACK
+        ============================================= */
+        .te-leemos-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 500;
+            background: transparent;
+            text-align: center;
+            padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
+            color: var(--accent);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: opacity 0.2s ease;
+        }
+        .te-leemos-bar:hover { opacity: 0.6; }
+
+        #feedback-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(8, 8, 8, 0.88);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        #feedback-overlay.open { display: flex; }
+
+        .feedback-modal {
+            background: var(--surface-1);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+            animation: fadeUp 0.35s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .feedback-close {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: none; border: none;
+            color: rgba(255,255,255,0.4);
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+            z-index: 10;
+            transition: color 0.2s;
+        }
+        .feedback-close:hover { color: var(--white-bone); }
+
+        .feedback-header {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            color: var(--accent);
+            text-align: center;
+            padding: 20px 20px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        .feedback-header span {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.75rem;
+            color: #888;
+            letter-spacing: 1px;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
+        .feedback-body {
+            padding: 0;
+            background: var(--bg-dark);
+        }
+        .feedback-body iframe {
+            display: block;
+            width: 100%;
+            height: 450px;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -4426,6 +4519,20 @@ function openArticle(url, source) {
             renderMundialGrupo(grp);
         }
 
+        /* =============================================
+           CONTROL DEL MODAL "TE LEEMOS"
+        ============================================= */
+        function openFeedbackModal() {
+            document.getElementById('feedback-overlay').classList.add('open');
+        }
+        function closeFeedbackModal() {
+            document.getElementById('feedback-overlay').classList.remove('open');
+        }
+        // Cerrar al hacer click fuera del modal
+        document.getElementById('feedback-overlay').addEventListener('click', function(e) {
+            if (e.target === this) closeFeedbackModal();
+        });
+
         function renderMundialGrupo(grpNombre) {
             const container = document.getElementById('mundial-content');
             if (!mundialData || !mundialData.grupos) { showMundialSpinner(); return; }
@@ -4483,5 +4590,22 @@ function openArticle(url, source) {
             document.getElementById('mundial-overlay').scrollTo(0, 0);
         }
     </script>
+    <!-- BARRA FIJA "TE LEEMOS" -->
+    <div class="te-leemos-bar" onclick="openFeedbackModal()">TE LEEMOS</div>
+
+    <!-- MODAL DE FEEDBACK -->
+    <div id="feedback-overlay">
+        <div class="feedback-modal">
+            <button class="feedback-close" onclick="closeFeedbackModal()">×</button>
+            <div class="feedback-header">
+                💡 TE LEEMOS
+                <span>Dejanos tu idea para mejorar La Nube</span>
+            </div>
+            <div class="feedback-body">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdv7VYq7vTR-BBOOFAWVuQ4mCnw_aUg9EUgGaXGoNICD0Hb3Q/viewform?embedded=true" width="100%" height="450" frameborder="0" marginheight="0" marginwidth="0">Cargando…</iframe>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>
