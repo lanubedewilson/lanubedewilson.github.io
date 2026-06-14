@@ -83,6 +83,220 @@
         }
         .logo span { color: var(--accent); }
 
+        /* =============================================
+           BOTÓN FLOTANTE — TRIONDA (Mundial 2026)
+           Tamaño ≈ 1/3 de un .nav-btn (que ronda ~38px alto efectivo)
+        ============================================= */
+        #btn-trionda {
+            width: 34px;
+            height: 34px;
+            min-width: 34px;
+            border-radius: 50%;
+            background-image: url("trionda.png");
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--border-h);
+            box-shadow: 0 0 0 1px rgba(0,212,255,0.10), 0 2px 6px rgba(0,0,0,0.5);
+            cursor: pointer;
+            padding: 0;
+            flex-shrink: 0;
+            transition: transform 0.15s ease, box-shadow 0.2s ease;
+            position: relative;
+        }
+        #btn-trionda:active { transform: scale(0.92); }
+        #btn-trionda.tw-live {
+            animation: trionda-pulse 1.6s infinite ease-in-out;
+            box-shadow: 0 0 0 1px rgba(0,255,136,0.35), 0 2px 10px rgba(0,255,136,0.35);
+        }
+        @keyframes trionda-pulse {
+            0%, 100% { box-shadow: 0 0 0 1px rgba(0,255,136,0.25), 0 2px 8px rgba(0,255,136,0.25); }
+            50%      { box-shadow: 0 0 0 1px rgba(0,255,136,0.6), 0 2px 14px rgba(0,255,136,0.6); }
+        }
+
+        /* =============================================
+           MODAL — PARTIDOS DE HOY (compacto)
+        ============================================= */
+        #partidos-hoy-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(2px);
+            display: none;
+            align-items: flex-start;
+            justify-content: flex-end;
+            z-index: 700;
+            padding: 64px 12px 0 0;
+        }
+        #partidos-hoy-backdrop.open { display: flex; }
+
+        #partidos-hoy-modal {
+            width: 100%;
+            max-width: 340px;
+            background: var(--surface-1);
+            border: 1px solid var(--border-h);
+            border-radius: var(--radius-card);
+            box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+            overflow: hidden;
+            animation: fadeIn 0.2s ease;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #ph-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        #ph-header .ph-title {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            color: var(--white-bone);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #ph-header .ph-title .dot { width: 8px; height: 8px; }
+        #ph-close {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.35);
+            font-size: 1.3rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 2px;
+            transition: color 0.15s;
+        }
+        #ph-close:hover { color: var(--white-bone); }
+
+        #ph-content {
+            padding: 10px 12px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .ph-day-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #555;
+            padding: 8px 4px 4px;
+            font-weight: 600;
+        }
+
+        .ph-match {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 9px 6px;
+            border-radius: 12px;
+            transition: background 0.15s;
+        }
+        .ph-match:hover { background: rgba(255,255,255,0.03); }
+        .ph-match.live { background: rgba(0,255,136,0.05); }
+
+        .ph-team {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--white-bone);
+            flex: 1;
+            min-width: 0;
+        }
+        .ph-team.right { justify-content: flex-end; text-align: right; }
+        .ph-team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ph-team .fi { font-size: 0.95rem; flex-shrink: 0; }
+
+        .ph-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 56px;
+            flex-shrink: 0;
+        }
+        .ph-score {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 1.05rem;
+            letter-spacing: 0.05em;
+            color: var(--white-bone);
+        }
+        .ph-score.live { color: #00ff88; }
+        .ph-score.pending { color: #444; font-size: 0.8rem; }
+        .ph-meta {
+            font-size: 0.6rem;
+            letter-spacing: 0.08em;
+            color: #555;
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .ph-meta.live { color: #00ff88; }
+        .ph-meta .live-indicator {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #00ff88;
+            box-shadow: 0 0 6px rgba(0,255,136,0.8);
+            display: inline-block;
+            animation: pulse-fade 1.5s infinite ease-in-out;
+        }
+
+        #ph-footer {
+            padding: 10px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        #ph-footer .ph-link {
+            color: var(--accent);
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.78rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        #ph-footer .ph-link:hover { text-decoration: underline; }
+        #ph-footer .ph-status {
+            font-size: 0.6rem;
+            color: #555;
+            letter-spacing: 0.08em;
+        }
+        #ph-footer .ph-status.live { color: #00ff88; }
+
+        #ph-spinner {
+            padding: 30px 0;
+            text-align: center;
+            color: #333;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+        }
+        #ph-spinner .spin {
+            width: 18px; height: 18px;
+            border: 2px solid #1a1a1a;
+            border-top-color: #00c3ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @media (max-width: 420px) {
+            #partidos-hoy-backdrop { justify-content: center; padding: 60px 10px 0; }
+            #partidos-hoy-modal { max-width: 100%; }
+        }
+
         /* LATIDO — dot de estado */
         .dot {
             width: 8px; height: 8px;
@@ -1902,6 +2116,7 @@
 
     <header>
         <h1 class="logo" onclick="location.reload()">LA NUBE <span>DE WILSON</span></h1>
+        <button id="btn-trionda" onclick="openPartidosHoy()" title="Partidos de hoy — Mundial 2026"></button>
         <span id="live-dot" class="dot" style="display:none"></span>
     </header>
 
@@ -2067,6 +2282,22 @@
             <button onclick="mundialForceRefresh()" id="mundial-refresh-btn">🔄 Actualizar</button>
         </div>
     </div>
+
+    <!-- MODAL COMPACTO — PARTIDOS DE HOY / PRÓXIMOS — z-index 700 -->
+    <div id="partidos-hoy-backdrop" onclick="if(event.target===this) closePartidosHoy()">
+        <div id="partidos-hoy-modal">
+            <div id="ph-header">
+                <span class="ph-title"><span id="ph-dot" class="dot" style="display:none"></span><span id="ph-title-text">PARTIDOS DE HOY</span></span>
+                <button id="ph-close" onclick="closePartidosHoy()">×</button>
+            </div>
+            <div id="ph-content"></div>
+            <div id="ph-footer">
+                <button class="ph-link" onclick="closePartidosHoy(); openMundial();">VER TODO EL MUNDIAL ▶</button>
+                <span id="ph-status" class="ph-status"></span>
+            </div>
+        </div>
+    </div>
+
 
     <!-- OVERLAY GOOGLE NEWS — z-index 600, encima del feed -->
     <div id="gnews-overlay">
@@ -4158,6 +4389,8 @@ function openArticle(url, source) {
             const hayEnVivo = mundialData?.grupos?.some(g =>
                 g.partidos.some(p => p.estado === 'en_juego')
             );
+            const trionda = document.getElementById('btn-trionda');
+            if (trionda) trionda.classList.toggle('tw-live', !!hayEnVivo);
             // Siempre limpiar primero para evitar que se acumulen intervalos
             if (mundialRefreshInterval) {
                 clearInterval(mundialRefreshInterval);
@@ -4178,6 +4411,8 @@ function openArticle(url, source) {
             if (new Date() > MUNDIAL_END_DATE) {
                 const btn = document.getElementById('feed-mundial-btn');
                 if (btn) btn.style.display = 'none';
+                const trionda = document.getElementById('btn-trionda');
+                if (trionda) trionda.style.display = 'none';
             }
         })();
 
@@ -4197,6 +4432,140 @@ function openArticle(url, source) {
             if (mundialLoaded && mundialData) { renderMundialGrupo(mundialActiveGrp); return; }
             showMundialSpinner();
             await loadMundialData();
+        }
+
+        /* =============================================
+           MODAL COMPACTO — PARTIDOS DE HOY / PRÓXIMOS
+        ============================================= */
+        function closePartidosHoy() {
+            document.getElementById('partidos-hoy-backdrop').classList.remove('open');
+        }
+
+        async function openPartidosHoy() {
+            const backdrop = document.getElementById('partidos-hoy-backdrop');
+            if (backdrop.classList.contains('open')) { closePartidosHoy(); return; }
+            backdrop.classList.add('open');
+            if (mundialLoaded && mundialData) {
+                renderPartidosHoy();
+                return;
+            }
+            showPartidosHoySpinner();
+            await loadMundialData();
+            renderPartidosHoy();
+        }
+
+        function showPartidosHoySpinner() {
+            document.getElementById('ph-content').innerHTML =
+                '<div id="ph-spinner"><div class="spin"></div>CARGANDO...</div>';
+        }
+
+        // Devuelve "dd/mm" para una fecha dada (por defecto, hoy)
+        function _phFechaKey(d) {
+            const dd = String(d.getDate()).padStart(2, '0');
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            return `${dd}/${mm}`;
+        }
+
+        function renderPartidosHoy() {
+            const content = document.getElementById('ph-content');
+            const statusEl = document.getElementById('ph-status');
+            const dotEl    = document.getElementById('ph-dot');
+
+            if (!mundialData || !mundialData.grupos) {
+                content.innerHTML =
+                    '<div style="padding:30px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:1px;font-size:0.8rem;">⚠️ NO SE PUDO CARGAR</div>';
+                return;
+            }
+
+            // Recolectar todos los partidos de todos los grupos
+            let todos = [];
+            mundialData.grupos.forEach(g => {
+                g.partidos.forEach(p => todos.push(p));
+            });
+
+            const hoyKey = _phFechaKey(new Date());
+
+            // Partidos de hoy o en juego
+            let lista     = todos.filter(m => m.estado === 'en_juego' || m.fecha === hoyKey);
+            let esHoy     = true;
+
+            // Si no hay nada hoy, buscar la fecha futura más próxima con partidos
+            if (lista.length === 0) {
+                const futuros = todos.filter(m => m.estado === 'pendiente' && m.fecha);
+                if (futuros.length > 0) {
+                    // Ordenar por fecha (dd/mm) asumiendo año actual del Mundial
+                    const conOrden = futuros.map(m => {
+                        const [dd, mm] = m.fecha.split('/').map(Number);
+                        return { m, key: mm * 100 + dd };
+                    }).sort((a, b) => a.key - b.key);
+                    const proximaFecha = conOrden[0].m.fecha;
+                    lista = todos.filter(m => m.fecha === proximaFecha);
+                    esHoy = false;
+                }
+            }
+
+            const hayEnVivo = lista.some(m => m.estado === 'en_juego');
+            dotEl.style.display = hayEnVivo ? 'inline-block' : 'none';
+            if (hayEnVivo) dotEl.classList.add('live'); else dotEl.classList.remove('live');
+
+            document.getElementById('ph-title-text').textContent =
+                lista.length === 0
+                    ? 'SIN PARTIDOS HOY'
+                    : (esHoy ? 'PARTIDOS DE HOY' : `PRÓXIMOS PARTIDOS — ${lista[0].fecha}`);
+
+            if (lista.length === 0) {
+                content.innerHTML =
+                    '<div style="padding:30px 12px;text-align:center;color:#555;font-size:0.8rem;line-height:1.6;">' +
+                    'No hay partidos programados por ahora.<br>Volvé a intentarlo más tarde.</div>';
+                statusEl.textContent = '';
+                statusEl.classList.remove('live');
+                return;
+            }
+
+            let html = '';
+            lista.forEach(m => {
+                // Buscar bandera del grupo correspondiente
+                let bL = '', bV = '';
+                for (const g of mundialData.grupos) {
+                    if (g.banderas) {
+                        if (g.banderas[m.local])  bL = g.banderas[m.local];
+                        if (g.banderas[m.visita]) bV = g.banderas[m.visita];
+                    }
+                    if (bL && bV) break;
+                }
+                const fiL = bL ? `<span class="fi fi-${bL}"></span>` : '';
+                const fiV = bV ? `<span class="fi fi-${bV}"></span>` : '';
+
+                let scoreHTML, metaHTML, matchCls = '';
+                if (m.estado === 'FT') {
+                    scoreHTML = `<div class="ph-score">${m.goles_local} – ${m.goles_visita}</div>`;
+                    metaHTML  = `<div class="ph-meta">FINAL</div>`;
+                } else if (m.estado === 'en_juego') {
+                    const tiempo = m.reloj || 'EN VIVO';
+                    scoreHTML = `<div class="ph-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div>`;
+                    metaHTML  = `<div class="ph-meta live"><span class="live-indicator"></span>${tiempo}</div>`;
+                    matchCls  = ' live';
+                } else {
+                    scoreHTML = `<div class="ph-score pending">VS</div>`;
+                    metaHTML  = `<div class="ph-meta">${m.fecha || ''}</div>`;
+                }
+
+                html += `<div class="ph-match${matchCls}">`;
+                html +=   `<div class="ph-team">${fiL}<span>${m.local}</span></div>`;
+                html +=   `<div class="ph-center">${scoreHTML}${metaHTML}</div>`;
+                html +=   `<div class="ph-team right"><span>${m.visita}</span>${fiV}</div>`;
+                html += `</div>`;
+            });
+
+            content.innerHTML = html;
+
+            if (hayEnVivo) {
+                statusEl.textContent = '🔴 EN VIVO';
+                statusEl.classList.add('live');
+            } else {
+                statusEl.textContent = '';
+                statusEl.classList.remove('live');
+            }
         }
 
         async function mundialForceRefresh() {
@@ -4285,6 +4654,9 @@ function openArticle(url, source) {
                 buildMundialTabs();
                 renderMundialGrupo(mundialActiveGrp);
                 startLiveRefreshIfNeeded();
+                if (document.getElementById('partidos-hoy-backdrop').classList.contains('open')) {
+                    renderPartidosHoy();
+                }
                 return;
             }
 
