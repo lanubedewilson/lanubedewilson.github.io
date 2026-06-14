@@ -275,6 +275,15 @@
         }
         #ph-footer .ph-status.live { color: #00ff88; }
 
+        #ph-tz-note {
+            padding: 6px 16px 10px;
+            font-size: 0.58rem;
+            letter-spacing: 0.06em;
+            color: #444;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
         #ph-spinner {
             padding: 30px 0;
             text-align: center;
@@ -2295,6 +2304,7 @@
                 <button class="ph-link" onclick="closePartidosHoy(); openMundial();">VER TODO EL MUNDIAL ▶</button>
                 <span id="ph-status" class="ph-status"></span>
             </div>
+            <div id="ph-tz-note">HORARIOS EN TU HUSO HORARIO LOCAL</div>
         </div>
     </div>
 
@@ -4466,6 +4476,17 @@ function openArticle(url, source) {
             return `${dd}/${mm}`;
         }
 
+        // Convierte m.hora_utc (ISO, ej: "2026-06-14T22:00:00Z") a la hora LOCAL
+        // del dispositivo del usuario. Si no hay dato, devuelve ''.
+        function _phFormatHora(m) {
+            if (!m.hora_utc) return '';
+            try {
+                const d = new Date(m.hora_utc);
+                if (isNaN(d.getTime())) return '';
+                return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) { return ''; }
+        }
+
         function renderPartidosHoy() {
             const content = document.getElementById('ph-content');
             const statusEl = document.getElementById('ph-status');
@@ -4546,8 +4567,9 @@ function openArticle(url, source) {
                     metaHTML  = `<div class="ph-meta live"><span class="live-indicator"></span>${tiempo}</div>`;
                     matchCls  = ' live';
                 } else {
+                    const horaTxt = _phFormatHora(m);
                     scoreHTML = `<div class="ph-score pending">VS</div>`;
-                    metaHTML  = `<div class="ph-meta">${m.fecha || ''}</div>`;
+                    metaHTML  = `<div class="ph-meta">${m.fecha || ''}${horaTxt ? ' · ' + horaTxt + ' hs' : ''}</div>`;
                 }
 
                 html += `<div class="ph-match${matchCls}">`;
@@ -4785,13 +4807,26 @@ function openArticle(url, source) {
                     const away = comp.competitors.find(c => c.homeAway === 'away');
                     if (!home || !away) return;
 
+                    const hName  = (home.team.displayName || home.team.name || '').trim();
+                    const aName  = (away.team.displayName || away.team.name || '').trim();
+
+                    // Completar hora_utc de partidos PENDIENTES (sirve para mostrar
+                    // el horario en la zona horaria local del usuario), aunque ESPN
+                    // todavía no reporte el partido como en curso/finalizado.
+                    if (ev.date) {
+                        base.grupos.forEach(grupo => {
+                            grupo.partidos.forEach(p => {
+                                if (!teamsMatch(hName, p.local) || !teamsMatch(aName, p.visita)) return;
+                                if (!p.hora_utc) p.hora_utc = ev.date;
+                            });
+                        });
+                    }
+
                     const statusState = ev.status && ev.status.type && ev.status.type.state;
                     // Solo procesar partidos que ESPN reporta como en curso o terminados
                     if (!statusState || statusState === 'pre') return;
 
                     const estado = statusState === 'post' ? 'FT' : 'en_juego';
-                    const hName  = (home.team.displayName || home.team.name || '').trim();
-                    const aName  = (away.team.displayName || away.team.name || '').trim();
 
                     // Parseo seguro: evita que "0" o "" sobreescriban goles válidos
                     // parseInt("0") === 0 pero parseInt("") === NaN
@@ -4868,6 +4903,7 @@ function openArticle(url, source) {
                         local:        hName,
                         visita:       aName,
                         fecha:        ev.date ? ev.date.slice(5,10).split('-').reverse().join('/') : '',
+                        hora_utc:     ev.date || '',
                         goles_local:  estado !== 'pendiente' ? parseInt(home.score) || 0 : null,
                         goles_visita: estado !== 'pendiente' ? parseInt(away.score) || 0 : null,
                         estado:       estado,
@@ -4952,7 +4988,8 @@ function openArticle(url, source) {
                                  <div class="mw-date live"><span class="live-indicator"></span>${textoTiempo}</div>`;
                     extraCls  = ' live';
                 } else {
-                    scoreHTML = `<div class="mw-score pending">VS</div><div class="mw-date">${m.fecha || ''}</div>`;
+                    const horaTxt = _phFormatHora(m);
+                    scoreHTML = `<div class="mw-score pending">VS</div><div class="mw-date">${m.fecha || ''}${horaTxt ? ' · ' + horaTxt + ' hs' : ''}</div>`;
                 }
                 html += `<div class="mw-match${extraCls}">`;
                 html += `<div class="mw-team">${fiL}<span>${m.local}</span></div>`;
