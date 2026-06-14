@@ -4550,8 +4550,7 @@ function openArticle(url, source) {
             }
 
             const hayEnVivo = lista.some(m => m.estado === 'en_juego');
-            dotEl.style.display = hayEnVivo ? 'inline-block' : 'none';
-            if (hayEnVivo) dotEl.classList.add('live'); else dotEl.classList.remove('live');
+            dotEl.style.display = 'none';
 
             document.getElementById('ph-title-text').textContent =
                 lista.length === 0
@@ -4586,7 +4585,7 @@ function openArticle(url, source) {
                     scoreHTML = `<div class="ph-score">${m.goles_local} – ${m.goles_visita}</div>`;
                     metaHTML  = `<div class="ph-meta">FINAL</div>`;
                 } else if (m.estado === 'en_juego') {
-                    const tiempo = m.reloj || 'EN VIVO';
+                    const tiempo = m.reloj || '';
                     scoreHTML = `<div class="ph-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div>`;
                     metaHTML  = `<div class="ph-meta live"><span class="live-indicator"></span>${tiempo}</div>`;
                     matchCls  = ' live';
@@ -4605,13 +4604,8 @@ function openArticle(url, source) {
 
             content.innerHTML = html;
 
-            if (hayEnVivo) {
-                statusEl.textContent = '🔴 EN VIVO';
-                statusEl.classList.add('live');
-            } else {
-                statusEl.textContent = '';
-                statusEl.classList.remove('live');
-            }
+            statusEl.textContent = '';
+            statusEl.classList.remove('live');
         }
 
         async function mundialForceRefresh() {
@@ -5005,9 +4999,7 @@ function openArticle(url, source) {
                     scoreHTML = `<div class="mw-score">${m.goles_local} – ${m.goles_visita}</div><div class="mw-date">FT</div>`;
                     extraCls  = ' ft';
                 } else if (m.estado === 'en_juego') {
-                    // Agregamos el indicador visual al texto del tiempo
-                    const textoTiempo = m.reloj ? m.reloj : 'EN VIVO';
-                    
+                    const textoTiempo = m.reloj ? m.reloj : '';
                     scoreHTML = `<div class="mw-score live">${m.goles_local ?? 0} – ${m.goles_visita ?? 0}</div>
                                  <div class="mw-date live"><span class="live-indicator"></span>${textoTiempo}</div>`;
                     extraCls  = ' live';
