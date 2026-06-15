@@ -112,13 +112,18 @@
             transform: translate(-50%, 10px);
             z-index: 5;
             transition: transform 0.15s ease;
-            animation: trionda-glow 1.5s infinite ease-in-out;
-            animation-delay: 350ms;
+            /* Reloj encubierto: 1 vuelta cada 60 segundos + resplandor permanente */
+            animation: trionda-clock 60s linear infinite, trionda-glow 1.5s ease-in-out infinite;
+            animation-delay: 0ms, 350ms;
         }
-        #btn-trionda:active { transform: translate(-50%, 10px) scale(0.92); }
+        #btn-trionda:active { transform: translate(-50%, 10px) scale(0.92) rotate(0deg); }
         #btn-trionda.tw-live {
-            animation: trionda-pulse 1.5s infinite ease-in-out;
-            animation-delay: 350ms;
+            animation: trionda-clock 60s linear infinite, trionda-pulse 1.5s ease-in-out infinite;
+            animation-delay: 0ms, 350ms;
+        }
+        @keyframes trionda-clock {
+            from { transform: translate(-50%, 10px) rotate(0deg); }
+            to   { transform: translate(-50%, 10px) rotate(360deg); }
         }
         @keyframes trionda-glow {
             0%, 100% { box-shadow: 0 0 0 1px rgba(0,212,255,0.12), 0 0 6px rgba(0,212,255,0.25), 0 2px 6px rgba(0,0,0,0.5); }
@@ -358,6 +363,79 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             margin: var(--gap) auto;
             width: calc(100% - calc(var(--gap) * 2));
+            transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Modo expandido — YouTube Vibras o Stream Kick */
+        .main-stage.stage-expanded {
+            max-height: 72vh;
+        }
+
+        /* Botones compactos cuando hay video expandido */
+        .main-stage.stage-expanded ~ .feed-row .nav-btn {
+            padding: 7px 6px;
+        }
+        .main-stage.stage-expanded ~ .feed-row .nav-btn .nb-emoji {
+            font-size: 1.1rem;
+        }
+        .main-stage.stage-expanded ~ .feed-row .nav-btn .nb-label {
+            font-size: 0.48rem;
+        }
+
+        /* =============================================
+           TICKER DE EMISORA ACTIVA (bajo botones)
+        ============================================= */
+        #now-playing-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 var(--gap) 6px;
+            min-height: 24px;
+            overflow: hidden;
+        }
+        #now-playing-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--accent);
+            flex-shrink: 0;
+            animation: pulse-fade 1.5s infinite ease-in-out;
+            display: none;
+        }
+        #now-playing-ticker {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 18px;
+            flex: 1;
+            overflow: hidden;
+        }
+        #now-playing-idle {
+            font-size: 0.6rem;
+            color: #2a2a2a;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .np-group {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.68rem;
+            letter-spacing: 0.09em;
+        }
+        .np-group.np-entering {
+            animation: tk-enter 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .np-group.np-visible {
+            opacity: 1; transform: translateX(0); filter: blur(0);
+        }
+        .np-group.np-exiting {
+            animation: tk-exit 1.17s ease-in forwards;
         }
 
         .player-frame {
@@ -2150,7 +2228,7 @@
         <div class="vibe-header">SELECCIONA TU VIBRA</div>
         <div class="vibe-container">
             <div class="vibe-item" onclick="changeVibe('36YnV9STBqc', 'La Buena Vida', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>La Buena Vida</span></div>
-            <div class="vibe-item" onclick="changeVibe('yPzyAL_TpGU', 'Chill House', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Chill House</span></div>
+            <div class="vibe-item" onclick="changeVibe('NJyCwdWT80c', 'Chill House', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Chill House</span></div>
             <div class="vibe-item" onclick="changeVibe('iZteHWKkOYI', 'Vintage Soul Funk', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Vintage Soul Funk</span></div>
             <div class="vibe-item" onclick="changeVibe('Zyqr_A8PibE', 'Energy Funk', this)"><div style="width:4px;height:20px;background:#ff007a"></div><span>Energy Funk</span></div>
             <div class="vibe-item" onclick="changeVibe('njqkg8o4C84', 'Rock 90s', this)"><div style="width:4px;height:20px;background:#ff8a00"></div><span>Rock 90s</span></div>
@@ -2159,10 +2237,11 @@
             <div class="vibe-item" onclick="changeVibe('r7eFY9YYTdE', 'Urbano', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Urbano</span></div>
             <div class="vibe-item" onclick="changeVibe('8zRR2_6aRNE', 'Fogón', this)"><div style="width:4px;height:20px;background:#8B4513"></div><span>Fogón</span></div>
             <div class="vibe-item" onclick="changeVibe('rFYVKNsJT4k', 'Groove Pop', this)"><div style="width:4px;height:20px;background:#FF1493"></div><span>Groove Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('n4FUIcblaGU', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
+            <div class="vibe-item" onclick="changeVibe('mBFJWqNUbPA', 'Bossa Nova', this)"><div style="width:4px;height:20px;background:#32CD32"></div><span>Bossa Nova</span></div>
             <div class="vibe-item" onclick="changeVibe('GNRexooflB0', 'Reggae', this)"><div style="width:4px;height:20px;background:#228B22"></div><span>Reggae</span></div>
             <div class="vibe-item" onclick="changeVibe('2Sn6nqruOB8', 'Rock & Pop', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Rock & Pop</span></div>
-            <div class="vibe-item" onclick="changeVibe('XDuiT2-esas', 'Radio Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="changeVibe('N6o9Dnul2Tw', 'Slow Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
+            <div class="vibe-item" onclick="changeVibe('Ic75vNyRzeM', 'Delta Blues', this)"><div style="width:4px;height:20px;background:#496ed1"></div><span>Radio Blues</span></div>
             <div class="vibe-item" onclick="changeVibe('jkJbFdr66fQ', 'Chill Study Music', this)"><div style="width:4px;height:20px;background:#00BFFF"></div><span>Chill Study Music</span></div>
             <div class="vibe-item" onclick="changeVibe('fTb6yJ7AlT8', 'Relaxing Jazz', this)"><div style="width:4px;height:20px;background:#ffcc00"></div><span>Relaxing Jazz</span></div>
             <div class="vibe-item" onclick="changeVibe('9UMxZofMNbA', 'Chillout Lounge', this)"><div style="width:4px;height:20px;background:#FFD700"></div><span>Chillout Lounge</span></div>
@@ -2172,11 +2251,11 @@
             <div class="vibe-item" onclick="changeVibe('acjs8sDZDro', 'Focus Work ', this)"><div style="width:4px;height:20px;background:#9d49d1"></div><span>Focus Work</span></div>
             <div class="vibe-item" onclick="changeVibe('yT5Jx87JIGk', 'Cyberpunk ', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Cyberpunk</span></div>
             <div class="vibe-item" onclick="changeVibe('4CuReay6Tf0', 'Musica Cristiana', this)"><div style="width:4px;height:20px;background:#00f2ff"></div><span>Musica Cristiana</span></div>
-            <div class="vibe-item" onclick="changeVibe('2026frL86bE', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
+            <div class="vibe-item" onclick="changeVibe('5QFLrk6J1Bs', 'Meditacion', this)"><div style="width:4px;height:20px;background:#d487ff"></div><span>Meditacion</span></div>
             <div class="vibe-item" onclick="changeVibe('-479TZi-EAs', 'Argentina 24/7', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Argentina 24/7</span></div>
             <div class="vibe-item" onclick="changeVibe('UwPDsaEUQv0', 'Canal 8 San Juan', this)"><div style="width:4px;height:20px;background:#708090"></div><span>Canal 8 San Juan</span></div>
             <div class="vibe-item" onclick="changeVibe('cb12KmMMDJA', 'TN Noticias', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>TN Noticias</span></div>            
-            <div class="vibe-item" onclick="changeVibe('ArKbAx1K-2U', 'A24', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>A24</span></div>
+            <div class="vibe-item" onclick="changeVibe('eQLBmCEBp50', 'Televisión Pública', this)"><div style="width:4px;height:20px;background:#C0C0C0"></div><span>Televisión Pública</span></div>
             <div class="vibe-item" onclick="changeVibe('bwvv4V5cbbM', 'LN +Musica', this)"><div style="width:4px;height:20px;background:#708090"></div><span>LN +Musica</span></div>
             <div class="vibe-item" onclick="changeVibe('M3EYAY2MftI', 'Abbey Road Cross', this)"><div style="width:4px;height:20px;background:#00d4ff"></div><span>Abbey Road Cross</span></div>
             <div class="vibe-item" onclick="changeVibe('Lcdi9O2XB4E', 'Tokyo night drive', this)"><div style="width:4px;height:20px;background:#0045ad"></div><span>Tokyo night drive</span></div>
@@ -2259,6 +2338,14 @@
             <span class="nb-emoji"><span id="dot-radio" class="dot-radio"></span></span>
             <span class="nb-label">Radio</span>
         </button>
+    </div>
+
+    <!-- TICKER DE EMISORA ACTIVA -->
+    <div id="now-playing-bar">
+        <span id="now-playing-dot"></span>
+        <div id="now-playing-ticker">
+            <span id="now-playing-idle">· · ·</span>
+        </div>
     </div>
 
     <div class="sponsor-footer">
@@ -2380,6 +2467,10 @@
             if (unmuteBtn) unmuteBtn.style.display = 'none';
             const shareBtn = document.getElementById('kick-share-btn');
             if (shareBtn) shareBtn.style.display = 'none';
+
+            // Apagar ticker de emisora y contraer stage
+            clearNowPlaying();
+            setStageExpanded(false);
         }
 
         function switchSignal(type) {
@@ -2402,6 +2493,8 @@
                     if (unmuteBtn) unmuteBtn.style.display = 'block';
                     const shareBtn = document.getElementById('kick-share-btn');
                     if (shareBtn) shareBtn.style.display = 'block';
+                    setStageExpanded(true);
+                    setNowPlaying('🔴 EN VIVO · LA NUBE DE WILSON · STREAM KICK');
                 } else {
                     loop.classList.add('active');
                     document.getElementById('no-signal-msg').classList.add('visible');
@@ -2409,8 +2502,11 @@
             } else if (type === 'yt') {
                 py.classList.add('active');
                 customBtn.style.display = 'flex';
+                setStageExpanded(true);
+                // El label del NowPlaying lo inyecta changeVibe justo antes de llamar a switchSignal
             } else {
                 loop.classList.add('active');
+                setStageExpanded(false);
             }
         }
 
@@ -2430,6 +2526,7 @@
             isYtPlaying = true;
             document.getElementById('yt-icon').innerText = '⏸';
             showTicker(`SINTONIZASTE: ${vibeName.toUpperCase()} • LA NUBE DE WILSON • `);
+            setNowPlaying(`📺 ${vibeName.toUpperCase()} • LA NUBE DE WILSON`);
             switchSignal('yt');
             setTimeout(() => {
                 const sidebar = document.getElementById('vibe-sidebar');
@@ -2475,6 +2572,7 @@
                         document.getElementById('btn-radio-modal').classList.add('radio-active');
                         const label = document.getElementById('radio-now-playing-label');
                         if (label) label.innerText = `▶ ${vibeName.toUpperCase()} · ${station.name}`;
+                        setNowPlaying(`📻 ${vibeName.toUpperCase()} · ${station.name.toUpperCase()}`);
                         setTimeout(() => {
                             const sidebar = document.getElementById('vibe-sidebar');
                             if (sidebar && sidebar.classList.contains('open')) toggleVibeMenu();
@@ -2619,6 +2717,87 @@
             if (ticker) ticker.innerHTML = '';
             _feedTkShowNext();
             _feedTkTimer = setInterval(_feedTkShowNext, TK_STAY);
+        }
+
+        /* -----------------------------------------------
+           NOW PLAYING BAR — ticker de emisora activa
+           (debajo de los botones, estilo cian)
+        ----------------------------------------------- */
+        let _npItems   = [];
+        let _npIdx     = 0;
+        let _npCurrent = null;
+        let _npTimer   = null;
+        const NP_STAY  = 5500;
+
+        function _npBuildEl(text) {
+            const el = document.createElement('div');
+            el.className = 'np-group';
+            el.textContent = text;
+            return el;
+        }
+
+        function _npShowNext() {
+            const stage = document.getElementById('now-playing-ticker');
+            if (!stage || !_npItems.length) return;
+            const text = _npItems[_npIdx % _npItems.length];
+            _npIdx = (_npIdx + 1) % _npItems.length;
+            const newEl = _npBuildEl(text);
+            if (_npCurrent) {
+                const old = _npCurrent;
+                old.classList.remove('np-visible');
+                old.classList.add('np-exiting');
+                setTimeout(() => old.remove(), 1220);
+            }
+            newEl.classList.add('np-entering');
+            stage.appendChild(newEl);
+            _npCurrent = newEl;
+            setTimeout(() => {
+                newEl.classList.remove('np-entering');
+                newEl.classList.add('np-visible');
+            }, 1800);
+        }
+
+        function setNowPlaying(label) {
+            const dot   = document.getElementById('now-playing-dot');
+            const idle  = document.getElementById('now-playing-idle');
+            const stage = document.getElementById('now-playing-ticker');
+            if (!stage) return;
+            if (!label) {
+                // Apagar: volver al estado idle
+                clearInterval(_npTimer);
+                _npTimer   = null;
+                _npCurrent = null;
+                _npItems   = [];
+                stage.innerHTML = '';
+                const idleEl = document.createElement('span');
+                idleEl.id = 'now-playing-idle';
+                idleEl.textContent = '· · ·';
+                stage.appendChild(idleEl);
+                if (dot) dot.style.display = 'none';
+                return;
+            }
+            // Encender
+            if (idle) idle.remove();
+            if (dot) dot.style.display = 'inline-block';
+            // Partimos el label en segmentos separados por "•" para rotarlos
+            _npItems   = label.split('•').map(s => s.trim()).filter(Boolean);
+            _npIdx     = 0;
+            _npCurrent = null;
+            clearInterval(_npTimer);
+            stage.innerHTML = '';
+            _npShowNext();
+            _npTimer = setInterval(_npShowNext, NP_STAY);
+        }
+
+        function clearNowPlaying() { setNowPlaying(null); }
+
+        /* -----------------------------------------------
+           STAGE EXPAND — agranda el player cuando hay
+           video activo (YouTube Vibras o Kick Stream)
+        ----------------------------------------------- */
+        function setStageExpanded(on) {
+            const stage = document.querySelector('.main-stage');
+            if (stage) stage.classList.toggle('stage-expanded', on);
         }
 
         /* -----------------------------------------------
@@ -3777,12 +3956,14 @@ async function fetchFeedLocal() {
                 el.classList.remove('connecting');
                 el.classList.add('active-radio');
                 document.getElementById('radio-now-playing-label').innerText = '▶ ' + station.name.toUpperCase();
+                setNowPlaying(`📻 ${station.name.toUpperCase()} • ${station.location.toUpperCase()}`);
                 radioAudio.removeEventListener('playing', onPlaying);
                 radioAudio.removeEventListener('error', onError);
             };
             const onError = () => {
                 el.classList.remove('connecting');
                 showToast('❌ Sin señal: ' + station.name);
+                clearNowPlaying();
                 radioAudio.removeEventListener('playing', onPlaying);
                 radioAudio.removeEventListener('error', onError);
             };
