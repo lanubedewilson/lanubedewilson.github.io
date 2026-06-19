@@ -1130,6 +1130,70 @@
         }
 
         /* =============================================
+           MINI CONTROLES DE RADIO — sobre el video
+           (anterior / play-stop / siguiente)
+        ============================================= */
+        #radio-mini-controls {
+            position: absolute;
+            top: 14px; left: 14px;
+            z-index: 90;
+            display: none;
+            align-items: center;
+            gap: 7px;
+            opacity: 0;
+            transform: translateY(-4px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+        #radio-mini-controls.visible {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        #radio-mini-controls.connecting { opacity: 0.45; }
+
+        .radio-mini-btn {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: rgba(20,18,14,0.72);
+            border: 1px solid rgba(200,120,0,0.30);
+            color: #d6d6d6;
+            font-size: 0.68rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            transition: border-color 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+        .radio-mini-btn:hover {
+            border-color: rgba(200,120,0,0.6);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow:
+                0 0 10px -1px rgba(200,120,0,0.45),
+                0 2px 8px rgba(0,0,0,0.5);
+        }
+        .radio-mini-btn:active { transform: translateY(1px); }
+
+        #radio-mini-controls.visible .radio-mini-btn {
+            animation: radioMiniGlow 3.2s infinite ease-in-out;
+        }
+        @keyframes radioMiniGlow {
+            0%, 100% { box-shadow: 0 2px 6px rgba(0,0,0,0.4); border-color: rgba(200,120,0,0.30); }
+            50%      { box-shadow: 0 0 8px -1px rgba(200,120,0,0.30), 0 2px 6px rgba(0,0,0,0.4); border-color: rgba(200,120,0,0.45); }
+        }
+
+        @media (max-width: 768px) {
+            #radio-mini-controls { top: 10px; left: 10px; gap: 6px; }
+            .radio-mini-btn { width: 28px; height: 28px; }
+        }
+
+        /* =============================================
            SPONSORS — sistema mejorado
         ============================================= */
         .sponsor-footer {
@@ -2256,6 +2320,14 @@
         <button id="kick-unmute-btn" onclick="kickUnmute()" style="display:none;position:absolute;bottom:20px;right:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.5);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 18px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);">🔊 ACTIVAR AUDIO</button>
         <button id="kick-share-btn" onclick="shareStream()" style="display:none;position:absolute;bottom:20px;left:20px;z-index:50;background:rgba(0,0,0,0.75);border:1px solid rgba(0,212,255,0.3);color:#00D4FF;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:2px;padding:10px 16px;border-radius:12px;cursor:pointer;backdrop-filter:blur(6px);" title="Compartir stream">📲 COMPARTIR</button>
 
+        <div id="radio-mini-controls" title="Control de radio">
+            <button class="radio-mini-btn" onclick="radioMiniStep(-1)" title="Emisora anterior">⏮</button>
+            <button class="radio-mini-btn" id="radio-mini-play" onclick="toggleRadioMiniPlay()" title="Pausar / reanudar">
+                <span id="radio-mini-play-icon">⏹</span>
+            </button>
+            <button class="radio-mini-btn" onclick="radioMiniStep(1)" title="Siguiente emisora">⏭</button>
+        </div>
+
         <audio id="bg-audio" loop>
             <source src="https://ice1.somafm.com/indiepop-128-mp3" type="audio/mpeg">
         </audio>
@@ -2419,6 +2491,7 @@
             if (activeRadioEl) activeRadioEl.classList.remove('active-radio');
             activeRadioIndex = -1;
             activeRadioEl = null;
+            hideRadioMiniControls();
 
             const py = document.getElementById('player-yt');
             py.src = ''; 
@@ -3961,23 +4034,32 @@ async function fetchFeedLocal() {
             document.querySelectorAll('.radio-item.connecting').forEach(i => i.classList.remove('connecting'));
 
             activeRadioIndex = idx;
-            activeRadioEl = el;
-            el.classList.add('connecting');
-            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            activeRadioEl = el || null;
+            const miniControls = document.getElementById('radio-mini-controls');
+            if (el) {
+                el.classList.add('connecting');
+                el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else if (miniControls) {
+                miniControls.classList.add('connecting');
+            }
 
             const station = RADIO_STATIONS[idx];
             radioAudio.src = station.url;
 
             const onPlaying = () => {
-                el.classList.remove('connecting');
-                el.classList.add('active-radio');
+                if (el) {
+                    el.classList.remove('connecting');
+                    el.classList.add('active-radio');
+                }
                 document.getElementById('radio-now-playing-label').innerText = '▶ ' + station.name.toUpperCase();
                 setNowPlaying(`📻 ${station.name.toUpperCase()} • ${station.location.toUpperCase()}`);
+                showRadioMiniControls();
                 radioAudio.removeEventListener('playing', onPlaying);
                 radioAudio.removeEventListener('error', onError);
             };
             const onError = () => {
-                el.classList.remove('connecting');
+                if (el) el.classList.remove('connecting');
+                if (miniControls) miniControls.classList.remove('connecting');
                 showToast('❌ Sin señal: ' + station.name);
                 clearNowPlaying();
                 radioAudio.removeEventListener('playing', onPlaying);
@@ -4011,6 +4093,40 @@ async function fetchFeedLocal() {
                     }
                 }
             });
+        }
+
+        function showRadioMiniControls() {
+            const c = document.getElementById('radio-mini-controls');
+            if (!c) return;
+            c.classList.add('visible');
+            c.classList.remove('connecting');
+            const icon = document.getElementById('radio-mini-play-icon');
+            if (icon) icon.textContent = '⏹';
+        }
+
+        function hideRadioMiniControls() {
+            const c = document.getElementById('radio-mini-controls');
+            if (c) c.classList.remove('visible', 'connecting');
+        }
+
+        function toggleRadioMiniPlay() {
+            const audio = document.getElementById('radio-audio');
+            const icon  = document.getElementById('radio-mini-play-icon');
+            if (!audio || !audio.src) return;
+            if (audio.paused) {
+                audio.play().catch(() => {});
+                if (icon) icon.textContent = '⏹';
+            } else {
+                audio.pause();
+                if (icon) icon.textContent = '▶';
+            }
+        }
+
+        function radioMiniStep(direction) {
+            if (activeRadioIndex < 0 || !RADIO_STATIONS.length) return;
+            const newIdx = (activeRadioIndex + direction + RADIO_STATIONS.length) % RADIO_STATIONS.length;
+            const el = document.getElementById('radio-item-' + newIdx) || null;
+            playRadioStation(newIdx, el);
         }
 
         /* =============================================
