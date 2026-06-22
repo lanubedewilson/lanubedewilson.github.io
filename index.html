@@ -2472,6 +2472,8 @@
         let allNews  = [];
         let sponsors = [];
         let dynamicVibes = [];
+        let introPlaylist      = [];   // Lista de IDs de YouTube leída desde la hoja INICIO
+        let introPlaylistIndex = 0;    // Índice del video actualmente en reproducción
         let lastFetchTime = 0;
         const FETCH_COOLDOWN = 5 * 60 * 1000;
         const bgAudio = document.getElementById('bg-audio');
@@ -2586,6 +2588,7 @@
 
         function changeVibe(videoId, vibeName, clickedElement) {
             stopAllMedia();
+            introPlaylist = []; // El usuario eligió una vibra: desactivar la intro automática
             showToast(`📺 Sintonizando: ${vibeName}...`);
             document.querySelectorAll('.vibe-item').forEach(item => item.classList.remove('active-vibe'));
             if (clickedElement) clickedElement.classList.add('active-vibe');
@@ -2601,6 +2604,52 @@
                 if (sidebar.classList.contains('open')) toggleVibeMenu();
             }, 500);
         }
+
+        // =============================================
+        //  PLAYLIST DE INTRO (hoja INICIO del Sheet)
+        // =============================================
+
+        // Reproduce el ítem en la posición `idx` de introPlaylist.
+        // Funciona igual que changeVibe pero sin tocar el selector de vibras.
+        function playIntroItem(idx) {
+            if (!introPlaylist || introPlaylist.length === 0) return;
+            const id = introPlaylist[idx];
+            if (!id) return;
+
+            stopAllMedia();
+
+            const player = document.getElementById('player-yt');
+            // enablejsapi=1 permite detectar el fin del video vía postMessage
+            player.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&enablejsapi=1&controls=0&rel=0&modestbranding=1`;
+            isYtPlaying = true;
+            document.getElementById('yt-icon').innerText = '⏸';
+            setNowPlaying('📺 INTRO · LA NUBE DE WILSON');
+            switchSignal('yt');
+        }
+
+        // Avanza al siguiente video de la playlist (en loop)
+        function introNextVideo() {
+            if (!introPlaylist || introPlaylist.length === 0) return;
+            introPlaylistIndex = (introPlaylistIndex + 1) % introPlaylist.length;
+            playIntroItem(introPlaylistIndex);
+        }
+
+        // Escucha el evento de fin de video que manda el iframe de YouTube
+        window.addEventListener('message', function(event) {
+            if (!event.origin.includes('youtube.com')) return;
+            try {
+                const data = JSON.parse(event.data);
+                // playerState 0 = ended
+                if (data.event === 'onStateChange' && data.info === 0) {
+                    // Solo avanzar si el player activo es el de intro
+                    // (el usuario puede haber cambiado a una vibra)
+                    const player = document.getElementById('player-yt');
+                    if (player.classList.contains('active') && introPlaylist.length > 0) {
+                        introNextVideo();
+                    }
+                }
+            } catch(e) { /* mensaje no JSON, ignorar */ }
+        });
 
         async function playVibeTag(tag, vibeName, clickedElement) {
             stopAllMedia();
@@ -3041,6 +3090,8 @@
             const sponsorsUrl = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1982401975&single=true&output=csv&t=${now}`;
             // GID de la pestaña "vibras" del mismo Google Sheet (Archivo > Compartir > Publicar en la web)
             const vibesUrl    = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=505010971&single=true&output=csv&t=${now}`;
+            // GID de la pestaña "INICIO" — playlist de intro (YouTube)
+            const inicioUrl   = `https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub?gid=1221607127&single=true&output=csv&t=${now}`;
             try {
                 const res = await fetch(newsUrl);
                 const text = await res.text();
@@ -3078,6 +3129,31 @@
                     renderDynamicVibes();
                 } catch (eVibes) {
                     console.error('Error cargando canales (vibras):', eVibes);
+                }
+
+                // --- Playlist de INICIO desde Google Sheets ---
+                try {
+                    const resInicio = await fetch(inicioUrl);
+                    const textInicio = await resInicio.text();
+                    const inicioRows = textInicio.split('\n').slice(1); // Ignorar cabecera
+                    const nuevaPlaylist = inicioRows
+                        .map(row => {
+                            const col = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                            return extractYoutubeId((col[0] || '').replace(/"/g, '').trim());
+                        })
+                        .filter(id => id && id.length === 11);
+                    if (nuevaPlaylist.length > 0) {
+                        introPlaylist = nuevaPlaylist;
+                        // Solo arrancar la intro si todavía no hay ningún medio activo
+                        const nothingPlaying = !document.getElementById('player-yt').src &&
+                                               !document.getElementById('player-kick').src;
+                        if (nothingPlaying) {
+                            introPlaylistIndex = 0;
+                            playIntroItem(0);
+                        }
+                    }
+                } catch (eInicio) {
+                    console.error('Error cargando playlist de inicio:', eInicio);
                 }
                 const liveDot = document.getElementById('live-dot');
                 const wasLive = liveDot.classList.contains('live');
@@ -5148,7 +5224,7 @@ function openArticle(url, source) {
                         base.grupos.forEach(grupo => {
                             grupo.partidos.forEach(p => {
                                 if (!teamsMatch(hName, p.local) || !teamsMatch(aName, p.visita)) return;
-                                if (!p.hora_utc) p.hora_utc = ev.date;
+                                if (!p.hora_utc) { p.hora_utc = ev.date; p.fecha = _phFechaKey(new Date(ev.date)); }
                             });
                         });
                     }
@@ -5233,7 +5309,7 @@ function openArticle(url, source) {
                     g.partidos.push({
                         local:        hName,
                         visita:       aName,
-                        fecha:        ev.date ? ev.date.slice(5,10).split('-').reverse().join('/') : '',
+                        fecha:        ev.date ? _phFechaKey(new Date(ev.date)) : '',
                         hora_utc:     ev.date || '',
                         goles_local:  estado !== 'pendiente' ? parseInt(home.score) || 0 : null,
                         goles_visita: estado !== 'pendiente' ? parseInt(away.score) || 0 : null,
