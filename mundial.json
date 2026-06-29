@@ -1,5 +1,5 @@
 {
-  "_info": "Mundial FIFA 2026 — Eliminatorias. Editar 'goles_local' y 'goles_visita'. 'estado': 'pendiente' | 'en_juego' | 'FT'",
+  "_info": "Mundial FIFA 2026 — Eliminatorias.",
   "_final_torneo": "2026-07-19",
   "banderas": {
     "Alemania":"de", "Paraguay":"py", "Francia":"fr", "Suecia":"se",
@@ -9,15 +9,45 @@
     {
       "fase": "16vos",
       "partidos": [
-        {"id": "16-1", "local": "Alemania", "visita": "Paraguay", "fecha": "28/06", "hora_utc": "2026-06-28T16:00:00Z", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-2", "local": "Francia", "visita": "Suecia", "fecha": "28/06", "hora_utc": "2026-06-28T19:00:00Z", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-9", "local": "Brasil", "visita": "Japón", "fecha": "29/06", "hora_utc": "2026-06-29T16:00:00Z", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "16-1", "local": "Alemania", "visita": "Paraguay", "fecha": "28/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-2", "local": "Francia", "visita": "Suecia", "fecha": "28/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-3", "local": "Brasil", "visita": "Japón", "fecha": "29/06", "goles_local": 0, "goles_visita": 1, "estado": "en_juego", "reloj": "45+2'"},
+        
+        // ... DEBÉS COMPLETAR LOS 13 PARTIDOS RESTANTES DE 16VOS AQUÍ ...
+        
+        {"id": "16-16", "local": "TBD", "visita": "TBD", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     },
     {
       "fase": "8vos",
       "partidos": [
-        {"id": "8-1", "local": "TBD", "visita": "TBD", "fecha": "04/07", "hora_utc": "2026-07-04T16:00:00Z", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "8-1", "local": "TBD", "visita": "TBD", "fecha": "04/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        
+        // ... DEBÉS COMPLETAR LOS 7 PARTIDOS RESTANTES DE 8VOS AQUÍ ...
+        
+        {"id": "8-8", "local": "TBD", "visita": "TBD", "fecha": "07/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+      ]
+    },
+    {
+      "fase": "4tos",
+      "partidos": [
+        {"id": "4-1", "local": "TBD", "visita": "TBD", "fecha": "10/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "4-2", "local": "TBD", "visita": "TBD", "fecha": "10/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "4-3", "local": "TBD", "visita": "TBD", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "4-4", "local": "TBD", "visita": "TBD", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+      ]
+    },
+    {
+      "fase": "SEMIS",
+      "partidos": [
+        {"id": "S-1", "local": "TBD", "visita": "TBD", "fecha": "14/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "S-2", "local": "TBD", "visita": "TBD", "fecha": "15/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+      ]
+    },
+    {
+      "fase": "FINAL",
+      "partidos": [
+        {"id": "F-1", "local": "TBD", "visita": "TBD", "fecha": "19/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     }
   ]
