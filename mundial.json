@@ -1,5 +1,5 @@
 {
-  "_info": "Mundial FIFA 2026 — Eliminatorias corregidas según fixture oficial.",
+  "_info": "Mundial FIFA 2026 — Eliminatorias. Canada movido a 8vos.",
   "_final_torneo": "2026-07-19",
   "banderas": {
     "Sudáfrica": "za", "Canadá": "ca", "Países Bajos": "nl", "Marruecos": "ma",
@@ -36,7 +36,7 @@
     {
       "fase": "8vos",
       "partidos": [
-        {"id": "8-1", "local": "A definir", "visita": "A definir", "fecha": "04/07", "estado": "pendiente"},
+        {"id": "8-1", "local": "Canadá", "visita": "A definir", "fecha": "04/07", "estado": "pendiente"},
         {"id": "8-2", "local": "A definir", "visita": "A definir", "fecha": "04/07", "estado": "pendiente"},
         {"id": "8-3", "local": "A definir", "visita": "A definir", "fecha": "06/07", "estado": "pendiente"},
         {"id": "8-4", "local": "A definir", "visita": "A definir", "fecha": "06/07", "estado": "pendiente"},
