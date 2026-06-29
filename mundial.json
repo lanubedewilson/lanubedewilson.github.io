@@ -1,95 +1,71 @@
 {
-  "_info": "Mundial FIFA 2026 — Eliminatorias completas. Estatus: 16vos definidos.",
+  "_info": "Mundial FIFA 2026 — Eliminatorias corregidas según fixture oficial.",
   "_final_torneo": "2026-07-19",
   "banderas": {
-    "Alemania": "de",
-    "Paraguay": "py",
-    "Francia": "fr",
-    "Suecia": "se",
-    "Brasil": "br",
-    "Japón": "jp",
-    "Países Bajos": "nl",
-    "Costa de Marfil": "ci",
-    "España": "es",
-    "Uruguay": "uy",
-    "Inglaterra": "gb-eng",
-    "Croacia": "hr",
-    "Estados Unidos": "us",
-    "Bosnia y Herzegovina": "ba",
-    "Argentina": "ar",
-    "Argelia": "dz",
-    "Portugal": "pt",
-    "Colombia": "co",
-    "México": "mx",
-    "Sudáfrica": "za",
-    "Bélgica": "be",
-    "Egipto": "eg",
-    "Irán": "ir",
-    "Nueva Zelanda": "nz",
-    "Haití": "ht",
-    "Escocia": "gb-sct",
-    "Cabo Verde": "cv",
-    "Arabia Saudita": "sa",
-    "Senegal": "sn",
-    "Irak": "iq",
-    "Austria": "at",
-    "Jordania": "jo"
+    "Sudáfrica": "za", "Canadá": "ca", "Países Bajos": "nl", "Marruecos": "ma",
+    "Alemania": "de", "Paraguay": "py", "Francia": "fr", "Suecia": "se",
+    "Bélgica": "be", "Senegal": "sn", "Estados Unidos": "us", "Bosnia y Herzegovina": "ba",
+    "España": "es", "Austria": "at", "Portugal": "pt", "Croacia": "hr",
+    "Brasil": "br", "Japón": "jp", "Costa de Marfil": "ci", "Noruega": "no",
+    "México": "mx", "Ecuador": "ec", "Inglaterra": "gb-eng", "RD Congo": "cd",
+    "Suiza": "ch", "Argelia": "dz", "Colombia": "co", "Ghana": "gh",
+    "Australia": "au", "Egipto": "eg", "Argentina": "ar", "Cabo Verde": "cv"
   },
   "eliminatorias": [
     {
       "fase": "16vos",
       "partidos": [
-        {"id": "16-1", "local": "Alemania", "visita": "Paraguay", "fecha": "28/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-2", "local": "Francia", "visita": "Suecia", "fecha": "28/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-3", "local": "Brasil", "visita": "Japón", "fecha": "29/06", "goles_local": 1, "goles_visita": 1, "estado": "en_juego", "reloj": "65'"},
-        {"id": "16-4", "local": "Países Bajos", "visita": "Costa de Marfil", "fecha": "29/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-5", "local": "España", "visita": "Uruguay", "fecha": "30/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-6", "local": "Inglaterra", "visita": "Croacia", "fecha": "30/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-7", "local": "Estados Unidos", "visita": "Bosnia y Herzegovina", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-8", "local": "Argentina", "visita": "Argelia", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-9", "local": "Portugal", "visita": "Colombia", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-10", "local": "México", "visita": "Sudáfrica", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-11", "local": "Bélgica", "visita": "Egipto", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-12", "local": "Irán", "visita": "Nueva Zelanda", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-13", "local": "Haití", "visita": "Escocia", "fecha": "04/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-14", "local": "Cabo Verde", "visita": "Arabia Saudita", "fecha": "04/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-15", "local": "Senegal", "visita": "Irak", "fecha": "05/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "16-16", "local": "Austria", "visita": "Jordania", "fecha": "05/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "16-1", "local": "Sudáfrica", "visita": "Canadá", "fecha": "28/06", "goles_local": 0, "goles_visita": 1, "estado": "FT"},
+        {"id": "16-2", "local": "Países Bajos", "visita": "Marruecos", "fecha": "29/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-3", "local": "Alemania", "visita": "Paraguay", "fecha": "29/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-4", "local": "Francia", "visita": "Suecia", "fecha": "29/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-5", "local": "Bélgica", "visita": "Senegal", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-6", "local": "Estados Unidos", "visita": "Bosnia y Herzegovina", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-7", "local": "España", "visita": "Austria", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-8", "local": "Portugal", "visita": "Croacia", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-9", "local": "Brasil", "visita": "Japón", "fecha": "29/06", "goles_local": 1, "goles_visita": 1, "estado": "en_juego", "reloj": "65'"},
+        {"id": "16-10", "local": "Costa de Marfil", "visita": "Noruega", "fecha": "30/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-11", "local": "México", "visita": "Ecuador", "fecha": "30/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-12", "local": "Inglaterra", "visita": "RD Congo", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-13", "local": "Suiza", "visita": "Argelia", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-14", "local": "Colombia", "visita": "Ghana", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-15", "local": "Australia", "visita": "Egipto", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-16", "local": "Argentina", "visita": "Cabo Verde", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     },
     {
       "fase": "8vos",
       "partidos": [
-        {"id": "8-1", "local": "A definir", "visita": "A definir", "fecha": "06/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-2", "local": "A definir", "visita": "A definir", "fecha": "06/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-3", "local": "A definir", "visita": "A definir", "fecha": "07/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-4", "local": "A definir", "visita": "A definir", "fecha": "07/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-5", "local": "A definir", "visita": "A definir", "fecha": "08/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-6", "local": "A definir", "visita": "A definir", "fecha": "08/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-7", "local": "A definir", "visita": "A definir", "fecha": "09/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "8-8", "local": "A definir", "visita": "A definir", "fecha": "09/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "8-1", "local": "A definir", "visita": "A definir", "fecha": "04/07", "estado": "pendiente"},
+        {"id": "8-2", "local": "A definir", "visita": "A definir", "fecha": "04/07", "estado": "pendiente"},
+        {"id": "8-3", "local": "A definir", "visita": "A definir", "fecha": "06/07", "estado": "pendiente"},
+        {"id": "8-4", "local": "A definir", "visita": "A definir", "fecha": "06/07", "estado": "pendiente"},
+        {"id": "8-5", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"},
+        {"id": "8-6", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"},
+        {"id": "8-7", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"},
+        {"id": "8-8", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"}
       ]
     },
     {
       "fase": "4tos",
       "partidos": [
-        {"id": "4-1", "local": "A definir", "visita": "A definir", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "4-2", "local": "A definir", "visita": "A definir", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "4-3", "local": "A definir", "visita": "A definir", "fecha": "12/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "4-4", "local": "A definir", "visita": "A definir", "fecha": "12/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "4-1", "local": "A definir", "visita": "A definir", "fecha": "09/07", "estado": "pendiente"},
+        {"id": "4-2", "local": "A definir", "visita": "A definir", "fecha": "10/07", "estado": "pendiente"},
+        {"id": "4-3", "local": "A definir", "visita": "A definir", "fecha": "10/07", "estado": "pendiente"},
+        {"id": "4-4", "local": "A definir", "visita": "A definir", "fecha": "11/07", "estado": "pendiente"}
       ]
     },
     {
       "fase": "Semis",
       "partidos": [
-        {"id": "S-1", "local": "A definir", "visita": "A definir", "fecha": "14/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "S-2", "local": "A definir", "visita": "A definir", "fecha": "15/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "S-1", "local": "A definir", "visita": "A definir", "fecha": "14/07", "estado": "pendiente"},
+        {"id": "S-2", "local": "A definir", "visita": "A definir", "fecha": "15/07", "estado": "pendiente"}
       ]
     },
     {
       "fase": "Final",
       "partidos": [
-        {"id": "F-1", "local": "A definir", "visita": "A definir", "fecha": "19/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "F-1", "local": "A definir", "visita": "A definir", "fecha": "19/07", "estado": "pendiente"}
       ]
     }
   ]
