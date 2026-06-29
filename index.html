@@ -323,6 +323,70 @@
             margin: 0 auto 12px;
         }
 
+        /* ESTILOS PARA BRACKET ELIMINATORIO */
+        .mw-bracket-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px 5%;
+            gap: 30px;
+            align-items: flex-start;
+            justify-content: flex-start;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .mw-bracket-container::-webkit-scrollbar { display: none; }
+
+        .mw-bracket-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            min-width: 185px;
+            gap: 15px;
+        }
+        .mw-bracket-col-label {
+            text-align: center;
+            color: #555;
+            font-size: 0.7rem;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .mw-bracket-match {
+            background: var(--surface-1);
+            border: 1px solid rgba(0,195,255,0.22);
+            border-radius: 8px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .mw-bracket-match.live {
+            border-color: #ff3333;
+            animation: mw-live-pulse 2s infinite;
+        }
+        @keyframes mw-live-pulse {
+            0%, 100% { box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 0 0 rgba(255,51,51,0.4); }
+            50%       { box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 0 6px rgba(255,51,51,0); }
+        }
+
+        .mw-b-team {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'Bebas Neue', cursive;
+            font-size: 0.9rem;
+            color: var(--white-bone);
+            padding: 2px 4px;
+        }
+        .mw-b-team.winner { color: #00c3ff; }
+        .mw-b-team-info { display: flex; align-items: center; gap: 6px; }
+        .mw-b-score { font-weight: bold; min-width: 14px; text-align: right; }
+        .mw-b-score.live { color: #ff3333; }
+
         @media (max-width: 420px) {
             #partidos-hoy-backdrop { justify-content: center; padding: 60px 10px 0; }
             #partidos-hoy-modal { max-width: 100%; }
@@ -4809,9 +4873,9 @@ function openArticle(url, source) {
         let mundialRefreshInterval = null;
 
         function startLiveRefreshIfNeeded() {
-            const hayEnVivo = mundialData?.grupos?.some(g =>
-                g.partidos.some(p => p.estado === 'en_juego')
-            );
+            const hayEnVivo = mundialData?.eliminatorias
+                ? mundialData.eliminatorias.some(f => f.partidos.some(p => p.estado === 'en_juego'))
+                : mundialData?.grupos?.some(g => g.partidos.some(p => p.estado === 'en_juego'));
             const trionda = document.getElementById('btn-trionda');
             if (trionda) trionda.classList.toggle('tw-live', !!hayEnVivo);
             // Siempre limpiar primero para evitar que se acumulen intervalos
@@ -4852,7 +4916,10 @@ function openArticle(url, source) {
             overlay.scrollTo(0, 0);
             const btn = document.getElementById('feed-mundial-btn');
             if (btn) btn.classList.add('mundial-active');
-            if (mundialLoaded && mundialData) { renderMundialGrupo(mundialActiveGrp); return; }
+            if (mundialLoaded && mundialData) {
+                if (mundialData.eliminatorias) { renderMundialBracket(); } else { renderMundialGrupo(mundialActiveGrp); }
+                return;
+            }
             showMundialSpinner();
             await loadMundialData();
         }
@@ -4905,29 +4972,28 @@ function openArticle(url, source) {
             const statusEl = document.getElementById('ph-status');
             const dotEl    = document.getElementById('ph-dot');
 
-            if (!mundialData || !mundialData.grupos) {
+            if (!mundialData || (!mundialData.grupos && !mundialData.eliminatorias)) {
                 content.innerHTML =
                     '<div style="padding:30px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:1px;font-size:0.8rem;">⚠️ NO SE PUDO CARGAR</div>';
                 return;
             }
 
-            // Recolectar todos los partidos de todos los grupos
+            // Recolectar todos los partidos (compatible con grupos y eliminatorias)
             let todos = [];
-            mundialData.grupos.forEach(g => {
-                g.partidos.forEach(p => todos.push(p));
-            });
+            if (mundialData.eliminatorias) {
+                mundialData.eliminatorias.forEach(f => { f.partidos.forEach(p => todos.push(p)); });
+            } else {
+                mundialData.grupos.forEach(g => { g.partidos.forEach(p => todos.push(p)); });
+            }
 
             const hoyKey = _phFechaKey(new Date());
 
-            // Partidos de hoy o en juego
-            let lista     = todos.filter(m => m.estado === 'en_juego' || m.fecha === hoyKey);
-            let esHoy     = true;
+            let lista = todos.filter(m => m.estado === 'en_juego' || m.fecha === hoyKey);
+            let esHoy = true;
 
-            // Si no hay nada hoy, buscar la fecha futura más próxima con partidos
             if (lista.length === 0) {
                 const futuros = todos.filter(m => m.estado === 'pendiente' && m.fecha);
                 if (futuros.length > 0) {
-                    // Ordenar por fecha (dd/mm) asumiendo año actual del Mundial
                     const conOrden = futuros.map(m => {
                         const [dd, mm] = m.fecha.split('/').map(Number);
                         return { m, key: mm * 100 + dd };
@@ -4938,8 +5004,7 @@ function openArticle(url, source) {
                 }
             }
 
-            const hayEnVivo = lista.some(m => m.estado === 'en_juego');
-            dotEl.style.display = 'none';
+            dotEl.style.display = lista.some(m => m.estado === 'en_juego') ? 'inline-block' : 'none';
 
             document.getElementById('ph-title-text').textContent =
                 lista.length === 0
@@ -4957,14 +5022,19 @@ function openArticle(url, source) {
 
             let html = '';
             lista.forEach(m => {
-                // Buscar bandera del grupo correspondiente
+                // Buscar bandera: primero en banderas globales (eliminatorias), luego en grupos
                 let bL = '', bV = '';
-                for (const g of mundialData.grupos) {
-                    if (g.banderas) {
-                        if (g.banderas[m.local])  bL = g.banderas[m.local];
-                        if (g.banderas[m.visita]) bV = g.banderas[m.visita];
+                if (mundialData.banderas) {
+                    bL = mundialData.banderas[m.local]  || '';
+                    bV = mundialData.banderas[m.visita] || '';
+                } else if (mundialData.grupos) {
+                    for (const g of mundialData.grupos) {
+                        if (g.banderas) {
+                            if (g.banderas[m.local])  bL = g.banderas[m.local];
+                            if (g.banderas[m.visita]) bV = g.banderas[m.visita];
+                        }
+                        if (bL && bV) break;
                     }
-                    if (bL && bV) break;
                 }
                 const fiL = bL ? `<span class="fi fi-${bL}"></span>` : '';
                 const fiV = bV ? `<span class="fi fi-${bV}"></span>` : '';
@@ -4992,7 +5062,6 @@ function openArticle(url, source) {
             });
 
             content.innerHTML = html;
-
             statusEl.textContent = '';
             statusEl.classList.remove('live');
         }
@@ -5048,7 +5117,7 @@ function openArticle(url, source) {
                 const r = await fetch('mundial.json?' + Date.now(), { signal: AbortSignal.timeout(5000) });
                 if (r.ok) {
                     baseData = await r.json();
-                    console.log('[Mundial] mundial.json cargado OK —', baseData?.grupos?.length, 'grupos');
+                    console.log('[Mundial] mundial.json cargado OK —', baseData?.eliminatorias ? 'eliminatorias' : (baseData?.grupos?.length + ' grupos'));
                 } else {
                     console.warn('[Mundial] mundial.json HTTP', r.status);
                 }
@@ -5076,12 +5145,17 @@ function openArticle(url, source) {
                 }
             } catch(e) { console.warn('[Mundial] ESPN fallo:', e.message); }
 
-            if (baseData && baseData.grupos && baseData.grupos.length > 0) {
+            if (baseData && (baseData.eliminatorias || (baseData.grupos && baseData.grupos.length > 0))) {
                 mundialData    = baseData;
                 mundialLoaded  = true;
                 mundialLoading = false;
-                buildMundialTabs();
-                renderMundialGrupo(mundialActiveGrp);
+                if (mundialData.eliminatorias) {
+                    document.getElementById('mundial-tabs').innerHTML = '';
+                    renderMundialBracket();
+                } else {
+                    buildMundialTabs();
+                    renderMundialGrupo(mundialActiveGrp);
+                }
                 startLiveRefreshIfNeeded();
                 if (document.getElementById('partidos-hoy-backdrop').classList.contains('open')) {
                     renderPartidosHoy();
@@ -5217,12 +5291,13 @@ function openArticle(url, source) {
                     const hName  = (home.team.displayName || home.team.name || '').trim();
                     const aName  = (away.team.displayName || away.team.name || '').trim();
 
-                    // Completar hora_utc de partidos PENDIENTES (sirve para mostrar
-                    // el horario en la zona horaria local del usuario), aunque ESPN
-                    // todavía no reporte el partido como en curso/finalizado.
+                    // Completar hora_utc de partidos PENDIENTES
                     if (ev.date) {
-                        base.grupos.forEach(grupo => {
-                            grupo.partidos.forEach(p => {
+                        const colecciones = base.eliminatorias
+                            ? base.eliminatorias.map(f => f.partidos)
+                            : base.grupos.map(g => g.partidos);
+                        colecciones.forEach(partidos => {
+                            partidos.forEach(p => {
                                 if (!teamsMatch(hName, p.local) || !teamsMatch(aName, p.visita)) return;
                                 if (!p.hora_utc) { p.hora_utc = ev.date; p.fecha = _phFechaKey(new Date(ev.date)); }
                             });
@@ -5255,21 +5330,21 @@ function openArticle(url, source) {
                                 (s.displayClock ? s.displayClock.split(':')[0] + "'" : '');
                     }
 
-                    base.grupos.forEach(grupo => {
-                        grupo.partidos.forEach(p => {
+                    const coleccionesPatch = base.eliminatorias
+                        ? base.eliminatorias.map(f => f.partidos)
+                        : base.grupos.map(g => g.partidos);
+                    coleccionesPatch.forEach(partidos => {
+                        partidos.forEach(p => {
                             if (!teamsMatch(hName, p.local) || !teamsMatch(aName, p.visita)) return;
 
                             // PROTECCIÓN CRÍTICA: nunca degradar un partido ya terminado (FT)
-                            // que existe en el JSON. ESPN puede no devolver ese partido
-                            // al día siguiente y el parch lo dejaría en estado incorrecto.
-                            // Solo se permite pasar de FT→FT (actualización), nunca FT→otra cosa.
                             if (p.estado === 'FT' && estado !== 'FT') return;
 
                             p.estado       = estado;
                             p.goles_local  = hScore;
                             p.goles_visita = aScore;
                             if (reloj) p.reloj = reloj;
-                            else delete p.reloj; // limpiar reloj cuando el partido termina
+                            else delete p.reloj;
 
                             console.log(`[Mundial] ✔ ${p.local} ${p.goles_local}-${p.goles_visita} ${p.visita} [${p.estado}]${reloj ? ' '+reloj : ''}`);
                         });
@@ -5350,6 +5425,71 @@ function openArticle(url, source) {
                 if (e.target === this) closeFeedbackModal();
             });
         });
+
+        function renderMundialBracket() {
+            const container = document.getElementById('mundial-content');
+            const tabs = document.getElementById('mundial-tabs');
+            tabs.innerHTML = '';
+
+            if (!mundialData || !mundialData.eliminatorias) {
+                showMundialSpinner();
+                return;
+            }
+
+            let html = '<div class="mw-bracket-container">';
+
+            mundialData.eliminatorias.forEach(fase => {
+                html += `<div class="mw-bracket-col">`;
+                html += `<div class="mw-bracket-col-label">${fase.fase}</div>`;
+
+                fase.partidos.forEach(m => {
+                    const bL = mundialData.banderas && mundialData.banderas[m.local]  ? mundialData.banderas[m.local]  : '';
+                    const bV = mundialData.banderas && mundialData.banderas[m.visita] ? mundialData.banderas[m.visita] : '';
+
+                    const isLocalWinner  = m.estado === 'FT' && m.goles_local  > m.goles_visita;
+                    const isVisitaWinner = m.estado === 'FT' && m.goles_visita > m.goles_local;
+
+                    const scoreL = m.goles_local  !== null && m.goles_local  !== undefined ? m.goles_local  : '-';
+                    const scoreV = m.goles_visita !== null && m.goles_visita !== undefined ? m.goles_visita : '-';
+
+                    const matchStatusClass = m.estado === 'en_juego' ? ' live' : '';
+                    const scoreClass       = m.estado === 'en_juego' ? ' live' : '';
+
+                    const flagL = bL ? `<span class="fi fi-${bL}"></span>` : '';
+                    const flagV = bV ? `<span class="fi fi-${bV}"></span>` : '';
+
+                    // Subtítulo del partido (fecha y hora o estado)
+                    let subtitulo = '';
+                    if (m.estado === 'FT') {
+                        subtitulo = '<div style="text-align:center;font-size:0.58rem;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:1px;margin-top:2px;">FINAL</div>';
+                    } else if (m.estado === 'en_juego') {
+                        subtitulo = `<div style="text-align:center;font-size:0.58rem;color:#ff3333;font-family:'Bebas Neue',cursive;letter-spacing:1px;margin-top:2px;"><span class="live-indicator" style="width:5px;height:5px;margin-right:3px;"></span>${m.reloj || 'EN VIVO'}</div>`;
+                    } else {
+                        const horaTxt = _phFormatHora(m);
+                        subtitulo = `<div style="text-align:center;font-size:0.58rem;color:#444;font-family:'Bebas Neue',cursive;letter-spacing:1px;margin-top:2px;">${m.fecha || 'TBD'}${horaTxt ? ' · ' + horaTxt : ''}</div>`;
+                    }
+
+                    html += `
+                    <div class="mw-bracket-match${matchStatusClass}">
+                        <div class="mw-b-team${isLocalWinner ? ' winner' : ''}">
+                            <div class="mw-b-team-info">${flagL}<span>${m.local}</span></div>
+                            <div class="mw-b-score${scoreClass}">${scoreL}</div>
+                        </div>
+                        <div class="mw-b-team${isVisitaWinner ? ' winner' : ''}">
+                            <div class="mw-b-team-info">${flagV}<span>${m.visita}</span></div>
+                            <div class="mw-b-score${scoreClass}">${scoreV}</div>
+                        </div>
+                        ${subtitulo}
+                    </div>`;
+                });
+
+                html += `</div>`;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+            document.getElementById('mundial-overlay').scrollTo(0, 0);
+        }
 
         function renderMundialGrupo(grpNombre) {
             const container = document.getElementById('mundial-content');
