@@ -1,9 +1,13 @@
 {
-  "_info": "Mundial FIFA 2026 — Eliminatorias.",
+  "_info": "Mundial FIFA 2026 — Eliminatorias completas. Editar 'goles_local' y 'goles_visita'. 'estado': 'pendiente' | 'en_juego' | 'FT'",
   "_final_torneo": "2026-07-19",
   "banderas": {
-    "Alemania":"de", "Paraguay":"py", "Francia":"fr", "Suecia":"se",
-    "Brasil":"br", "Japón":"jp"
+    "Alemania": "de",
+    "Paraguay": "py",
+    "Francia": "fr",
+    "Suecia": "se",
+    "Brasil": "br",
+    "Japón": "jp"
   },
   "eliminatorias": [
     {
@@ -12,40 +16,52 @@
         {"id": "16-1", "local": "Alemania", "visita": "Paraguay", "fecha": "28/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
         {"id": "16-2", "local": "Francia", "visita": "Suecia", "fecha": "28/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
         {"id": "16-3", "local": "Brasil", "visita": "Japón", "fecha": "29/06", "goles_local": 0, "goles_visita": 1, "estado": "en_juego", "reloj": "45+2'"},
-        
-        // ... DEBÉS COMPLETAR LOS 13 PARTIDOS RESTANTES DE 16VOS AQUÍ ...
-        
-        {"id": "16-16", "local": "TBD", "visita": "TBD", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "16-4", "local": "TBD", "visita": "TBD", "fecha": "29/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-5", "local": "TBD", "visita": "TBD", "fecha": "30/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-6", "local": "TBD", "visita": "TBD", "fecha": "30/06", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-7", "local": "TBD", "visita": "TBD", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-8", "local": "TBD", "visita": "TBD", "fecha": "01/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-9", "local": "TBD", "visita": "TBD", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-10", "local": "TBD", "visita": "TBD", "fecha": "02/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-11", "local": "TBD", "visita": "TBD", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-12", "local": "TBD", "visita": "TBD", "fecha": "03/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-13", "local": "TBD", "visita": "TBD", "fecha": "04/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-14", "local": "TBD", "visita": "TBD", "fecha": "04/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-15", "local": "TBD", "visita": "TBD", "fecha": "05/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "16-16", "local": "TBD", "visita": "TBD", "fecha": "05/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     },
     {
       "fase": "8vos",
       "partidos": [
-        {"id": "8-1", "local": "TBD", "visita": "TBD", "fecha": "04/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        
-        // ... DEBÉS COMPLETAR LOS 7 PARTIDOS RESTANTES DE 8VOS AQUÍ ...
-        
-        {"id": "8-8", "local": "TBD", "visita": "TBD", "fecha": "07/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "8-1", "local": "TBD", "visita": "TBD", "fecha": "06/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-2", "local": "TBD", "visita": "TBD", "fecha": "06/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-3", "local": "TBD", "visita": "TBD", "fecha": "07/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-4", "local": "TBD", "visita": "TBD", "fecha": "07/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-5", "local": "TBD", "visita": "TBD", "fecha": "08/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-6", "local": "TBD", "visita": "TBD", "fecha": "08/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-7", "local": "TBD", "visita": "TBD", "fecha": "09/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "8-8", "local": "TBD", "visita": "TBD", "fecha": "09/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     },
     {
       "fase": "4tos",
       "partidos": [
-        {"id": "4-1", "local": "TBD", "visita": "TBD", "fecha": "10/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "4-2", "local": "TBD", "visita": "TBD", "fecha": "10/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "4-3", "local": "TBD", "visita": "TBD", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
-        {"id": "4-4", "local": "TBD", "visita": "TBD", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
+        {"id": "4-1", "local": "TBD", "visita": "TBD", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "4-2", "local": "TBD", "visita": "TBD", "fecha": "11/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "4-3", "local": "TBD", "visita": "TBD", "fecha": "12/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
+        {"id": "4-4", "local": "TBD", "visita": "TBD", "fecha": "12/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     },
     {
-      "fase": "SEMIS",
+      "fase": "Semis",
       "partidos": [
         {"id": "S-1", "local": "TBD", "visita": "TBD", "fecha": "14/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"},
         {"id": "S-2", "local": "TBD", "visita": "TBD", "fecha": "15/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
     },
     {
-      "fase": "FINAL",
+      "fase": "Final",
       "partidos": [
         {"id": "F-1", "local": "TBD", "visita": "TBD", "fecha": "19/07", "goles_local": null, "goles_visita": null, "estado": "pendiente"}
       ]
