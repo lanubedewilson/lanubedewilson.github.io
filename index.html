@@ -357,17 +357,84 @@
             background: var(--surface-1);
             border: 1px solid rgba(0,195,255,0.22);
             border-radius: 8px;
-            padding: 6px;
+            padding: 4px 6px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            justify-content: center;
+            gap: 2px;
             position: relative;
             box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            width: 165px;
+            height: 50px;
+            box-sizing: border-box;
         }
+        .mw-bracket-match.placeholder { border-style: dashed; opacity: 0.4; }
         .mw-bracket-match.live {
             border-color: #ff3333;
             animation: mw-live-pulse 2s infinite;
         }
+
+        /* =============================================
+           BRACKET DE LLAVES — DOS BANDAS ENFRENTADAS
+        ============================================= */
+        .mw-b-sub {
+            text-align: center;
+            font-size: 0.55rem;
+            color: #555;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 1px;
+        }
+        .mw-b-sub.live {
+            color: #ff3333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #mw-bracket-scale-wrap {
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0 24px;
+        }
+        #mw-bracket-v2 {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            width: fit-content;
+            margin: 0 auto;
+            transform-origin: top center;
+        }
+        .mw-bracket-side {
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+        }
+        .mw-bracket-side.mirror { transform: scaleX(-1); }
+        .mw-bracket-side.mirror .mw-bracket-match,
+        .mw-bracket-side.mirror .mw-round-label { transform: scaleX(-1); }
+
+        .mw-round-wrap { display: flex; flex-direction: column; width: 165px; flex-shrink: 0; }
+        .mw-round-label {
+            text-align: center;
+            color: #555;
+            font-size: 0.7rem;
+            font-family: 'Bebas Neue', cursive;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .mw-round { display: flex; flex-direction: column; justify-content: space-around; position: relative; }
+
+        .mw-match-cell { position: relative; }
+        .conn-h { position: absolute; top: 50%; width: 25px; height: 2px; background: rgba(0,195,255,0.3); }
+        .conn-h.conn-out { right: -25px; }
+        .conn-h.conn-in  { left: -25px; }
+        .conn-v { position: absolute; left: -25px; width: 2px; background: rgba(0,195,255,0.3); }
+
+        .mw-final-col { display: flex; flex-direction: column; width: 190px; align-items: center; flex-shrink: 0; }
+        .mw-final-area { display: flex; align-items: center; justify-content: center; }
+        .mw-final-cell .mw-bracket-match { width: 185px; height: 56px; border-color: rgba(255,204,0,0.5); }
+        .mw-final-cell .mw-b-team.winner { color: #ffcc00; }
         @keyframes mw-live-pulse {
             0%, 100% { box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 0 0 rgba(255,51,51,0.4); }
             50%       { box-shadow: 0 4px 10px rgba(0,0,0,0.5), 0 0 0 6px rgba(255,51,51,0); }
@@ -2089,6 +2156,10 @@
             margin: 14px auto 0;
             padding: 0 5%;
             flex: 1;
+        }
+        #mundial-content:has(#mw-bracket-scale-wrap) {
+            max-width: 1600px;
+            padding: 0 2%;
         }
 
         .mw-group-title {
@@ -4918,6 +4989,7 @@ function openArticle(url, source) {
             if (btn) btn.classList.add('mundial-active');
             if (mundialLoaded && mundialData) {
                 if (mundialData.eliminatorias) { renderMundialBracket(); } else { renderMundialGrupo(mundialActiveGrp); }
+                setTimeout(fitMundialBracket, 60);
                 return;
             }
             showMundialSpinner();
@@ -5426,6 +5498,88 @@ function openArticle(url, source) {
             });
         });
 
+        // Altura de referencia (px) compartida por todas las rondas de cada banda,
+        // para que los conectores de llaves se alineen matemáticamente (space-around).
+        const MW_BRACKET_H = 760;
+        const MW_ROUNDS_ORDER = ['16vos', '8vos', '4tos', 'Semis'];
+        const MW_ROUND_COUNTS = [8, 4, 2, 1]; // partidos por banda en cada ronda
+
+        function _mwGetFase(nombre) {
+            const f = mundialData.eliminatorias.find(x => x.fase === nombre);
+            return f ? f.partidos : [];
+        }
+
+        function _mwMatchBox(m) {
+            if (!m) return '<div class="mw-bracket-match placeholder"></div>';
+            const bL = (mundialData.banderas && mundialData.banderas[m.local])  || '';
+            const bV = (mundialData.banderas && mundialData.banderas[m.visita]) || '';
+
+            const isLocalWinner  = m.estado === 'FT' && m.goles_local  > m.goles_visita;
+            const isVisitaWinner = m.estado === 'FT' && m.goles_visita > m.goles_local;
+
+            const scoreL = m.goles_local  !== null && m.goles_local  !== undefined ? m.goles_local  : '-';
+            const scoreV = m.goles_visita !== null && m.goles_visita !== undefined ? m.goles_visita : '-';
+
+            const matchStatusClass = m.estado === 'en_juego' ? ' live' : '';
+            const scoreClass       = m.estado === 'en_juego' ? ' live' : '';
+
+            const flagL = bL ? `<span class="fi fi-${bL}"></span>` : '';
+            const flagV = bV ? `<span class="fi fi-${bV}"></span>` : '';
+
+            let sub = '';
+            if (m.estado === 'FT') {
+                sub = '<div class="mw-b-sub">FINAL</div>';
+            } else if (m.estado === 'en_juego') {
+                sub = `<div class="mw-b-sub live"><span class="live-indicator" style="width:5px;height:5px;margin-right:3px;"></span>${m.reloj || 'EN VIVO'}</div>`;
+            } else {
+                const horaTxt = _phFormatHora(m);
+                sub = `<div class="mw-b-sub">${m.fecha || 'TBD'}${horaTxt ? ' · ' + horaTxt : ''}</div>`;
+            }
+
+            return `<div class="mw-bracket-match${matchStatusClass}">
+                <div class="mw-b-team${isLocalWinner ? ' winner' : ''}">
+                    <div class="mw-b-team-info">${flagL}<span>${m.local}</span></div>
+                    <div class="mw-b-score${scoreClass}">${scoreL}</div>
+                </div>
+                <div class="mw-b-team${isVisitaWinner ? ' winner' : ''}">
+                    <div class="mw-b-team-info">${flagV}<span>${m.visita}</span></div>
+                    <div class="mw-b-score${scoreClass}">${scoreV}</div>
+                </div>
+                ${sub}
+            </div>`;
+        }
+
+        // side: 'L' (izquierda, fluye hacia el centro) o 'R' (derecha, espejada con CSS)
+        function _mwBuildSide(side) {
+            let html = `<div class="mw-bracket-side${side === 'R' ? ' mirror' : ''}">`;
+            MW_ROUNDS_ORDER.forEach((rn, ri) => {
+                const all = _mwGetFase(rn);
+                const half = Math.ceil(all.length / 2);
+                const list = side === 'L' ? all.slice(0, half) : all.slice(half);
+
+                html += `<div class="mw-round-wrap">
+                    <div class="mw-round-label">${rn === 'Semis' ? 'SEMIFINAL' : rn.toUpperCase()}</div>
+                    <div class="mw-round" style="height:${MW_BRACKET_H}px;">`;
+
+                list.forEach(m => {
+                    const isOut = ri < MW_ROUNDS_ORDER.length - 1;
+                    const isIn  = ri > 0;
+                    let conn = '';
+                    if (isOut) conn += `<div class="conn-h conn-out"></div>`;
+                    if (isIn) {
+                        const prevCount = MW_ROUND_COUNTS[ri - 1];
+                        const vh = MW_BRACKET_H / prevCount;
+                        conn += `<div class="conn-v" style="top:calc(50% - ${vh / 2}px);height:${vh}px;"></div><div class="conn-h conn-in"></div>`;
+                    }
+                    html += `<div class="mw-match-cell">${conn}${_mwMatchBox(m)}</div>`;
+                });
+
+                html += `</div></div>`;
+            });
+            html += `</div>`;
+            return html;
+        }
+
         function renderMundialBracket() {
             const container = document.getElementById('mundial-content');
             const tabs = document.getElementById('mundial-tabs');
@@ -5436,60 +5590,50 @@ function openArticle(url, source) {
                 return;
             }
 
-            let html = '<div class="mw-bracket-container">';
+            const final = _mwGetFase('Final')[0];
 
-            mundialData.eliminatorias.forEach(fase => {
-                html += `<div class="mw-bracket-col">`;
-                html += `<div class="mw-bracket-col-label">${fase.fase}</div>`;
+            let html = `<div id="mw-bracket-scale-wrap"><div id="mw-bracket-v2">`;
+            html += _mwBuildSide('L');
+            html += `<div class="mw-final-col">
+                <div class="mw-round-label">FINAL${final && final.fecha ? ' · ' + final.fecha : ''}</div>
+                <div class="mw-final-area" style="height:${MW_BRACKET_H}px;">
+                    <div class="mw-match-cell mw-final-cell">
+                        <div class="conn-h conn-in"></div>
+                        <div class="conn-h conn-out"></div>
+                        ${_mwMatchBox(final)}
+                    </div>
+                </div>
+            </div>`;
+            html += _mwBuildSide('R');
+            html += `</div></div>`;
 
-                fase.partidos.forEach(m => {
-                    const bL = mundialData.banderas && mundialData.banderas[m.local]  ? mundialData.banderas[m.local]  : '';
-                    const bV = mundialData.banderas && mundialData.banderas[m.visita] ? mundialData.banderas[m.visita] : '';
-
-                    const isLocalWinner  = m.estado === 'FT' && m.goles_local  > m.goles_visita;
-                    const isVisitaWinner = m.estado === 'FT' && m.goles_visita > m.goles_local;
-
-                    const scoreL = m.goles_local  !== null && m.goles_local  !== undefined ? m.goles_local  : '-';
-                    const scoreV = m.goles_visita !== null && m.goles_visita !== undefined ? m.goles_visita : '-';
-
-                    const matchStatusClass = m.estado === 'en_juego' ? ' live' : '';
-                    const scoreClass       = m.estado === 'en_juego' ? ' live' : '';
-
-                    const flagL = bL ? `<span class="fi fi-${bL}"></span>` : '';
-                    const flagV = bV ? `<span class="fi fi-${bV}"></span>` : '';
-
-                    // Subtítulo del partido (fecha y hora o estado)
-                    let subtitulo = '';
-                    if (m.estado === 'FT') {
-                        subtitulo = '<div style="text-align:center;font-size:0.58rem;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:1px;margin-top:2px;">FINAL</div>';
-                    } else if (m.estado === 'en_juego') {
-                        subtitulo = `<div style="text-align:center;font-size:0.58rem;color:#ff3333;font-family:'Bebas Neue',cursive;letter-spacing:1px;margin-top:2px;"><span class="live-indicator" style="width:5px;height:5px;margin-right:3px;"></span>${m.reloj || 'EN VIVO'}</div>`;
-                    } else {
-                        const horaTxt = _phFormatHora(m);
-                        subtitulo = `<div style="text-align:center;font-size:0.58rem;color:#444;font-family:'Bebas Neue',cursive;letter-spacing:1px;margin-top:2px;">${m.fecha || 'TBD'}${horaTxt ? ' · ' + horaTxt : ''}</div>`;
-                    }
-
-                    html += `
-                    <div class="mw-bracket-match${matchStatusClass}">
-                        <div class="mw-b-team${isLocalWinner ? ' winner' : ''}">
-                            <div class="mw-b-team-info">${flagL}<span>${m.local}</span></div>
-                            <div class="mw-b-score${scoreClass}">${scoreL}</div>
-                        </div>
-                        <div class="mw-b-team${isVisitaWinner ? ' winner' : ''}">
-                            <div class="mw-b-team-info">${flagV}<span>${m.visita}</span></div>
-                            <div class="mw-b-score${scoreClass}">${scoreV}</div>
-                        </div>
-                        ${subtitulo}
-                    </div>`;
-                });
-
-                html += `</div>`;
-            });
-
-            html += '</div>';
             container.innerHTML = html;
             document.getElementById('mundial-overlay').scrollTo(0, 0);
+            requestAnimationFrame(fitMundialBracket);
         }
+
+        // Escala todo el cuadro (desktop y mobile) para que entre siempre
+        // completo en el ancho disponible, sin scroll horizontal.
+        function fitMundialBracket() {
+            const wrap  = document.getElementById('mw-bracket-scale-wrap');
+            const inner = document.getElementById('mw-bracket-v2');
+            if (!wrap || !inner) return;
+
+            inner.style.transform = 'scale(1)';
+            const naturalW = inner.scrollWidth;
+            const naturalH = inner.scrollHeight;
+            const availW = wrap.clientWidth;
+
+            let scale = availW > 0 ? Math.min(1, (availW - 8) / naturalW) : 1;
+            if (!isFinite(scale) || scale <= 0) scale = 1;
+
+            inner.style.transform = `scale(${scale})`;
+            wrap.style.height = Math.ceil(naturalH * scale) + 'px';
+        }
+
+        window.addEventListener('resize', () => {
+            if (document.getElementById('mw-bracket-v2')) fitMundialBracket();
+        });
 
         function renderMundialGrupo(grpNombre) {
             const container = document.getElementById('mundial-content');
