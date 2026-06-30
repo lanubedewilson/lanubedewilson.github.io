@@ -4989,7 +4989,7 @@ function openArticle(url, source) {
             if (btn) btn.classList.add('mundial-active');
             if (mundialLoaded && mundialData) {
                 if (mundialData.eliminatorias) { renderMundialBracket(); } else { renderMundialGrupo(mundialActiveGrp); }
-                setTimeout(fitMundialBracket, 60);
+                setTimeout(() => fitMundialBracket(true), 60);
                 return;
             }
             showMundialSpinner();
@@ -5609,26 +5609,40 @@ function openArticle(url, source) {
 
             container.innerHTML = html;
             document.getElementById('mundial-overlay').scrollTo(0, 0);
-            requestAnimationFrame(fitMundialBracket);
+            fitMundialBracket(true);
         }
+
+        // Tamaño "natural" del cuadro a escala 1, calculado de forma analítica
+        // (todas las medidas son fijas en CSS), para no depender de medir el
+        // DOM justo en el instante en que el overlay recién se está abriendo.
+        const MW_NATURAL_W = 165 * 4 + 50 * 3   /* banda izq: 4 rondas */
+                            + 50                  /* gap banda izq -> final */
+                            + 190                 /* columna final */
+                            + 50                  /* gap final -> banda der */
+                            + (165 * 4 + 50 * 3); /* banda der: 4 rondas */
+        const MW_NATURAL_H = 24 + 10 + MW_BRACKET_H + 24; // label + margen + ronda + aire
 
         // Escala todo el cuadro (desktop y mobile) para que entre siempre
         // completo en el ancho disponible, sin scroll horizontal.
-        function fitMundialBracket() {
+        // retry=true reintenta si el contenedor todavía no tiene ancho real
+        // (puede pasar en el primer frame al abrir el overlay).
+        function fitMundialBracket(retry) {
             const wrap  = document.getElementById('mw-bracket-scale-wrap');
             const inner = document.getElementById('mw-bracket-v2');
             if (!wrap || !inner) return;
 
-            inner.style.transform = 'scale(1)';
-            const naturalW = inner.scrollWidth;
-            const naturalH = inner.scrollHeight;
             const availW = wrap.clientWidth;
 
-            let scale = availW > 0 ? Math.min(1, (availW - 8) / naturalW) : 1;
+            if (availW < 40) {
+                if (retry) setTimeout(() => fitMundialBracket(true), 80);
+                return;
+            }
+
+            let scale = Math.min(1, (availW - 8) / MW_NATURAL_W);
             if (!isFinite(scale) || scale <= 0) scale = 1;
 
             inner.style.transform = `scale(${scale})`;
-            wrap.style.height = Math.ceil(naturalH * scale) + 'px';
+            wrap.style.height = Math.ceil(MW_NATURAL_H * scale) + 'px';
         }
 
         window.addEventListener('resize', () => {
