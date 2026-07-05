@@ -1,15 +1,39 @@
 {
-  "_info": "Mundial FIFA 2026 — Eliminatorias. Canada movido a 8vos.",
+  "_info": "Mundial FIFA 2026 — Eliminatorias corregidas según fixture oficial.",
   "_final_torneo": "2026-07-19",
   "banderas": {
-    "Sudáfrica": "za", "Canadá": "ca", "Países Bajos": "nl", "Marruecos": "ma",
-    "Alemania": "de", "Paraguay": "py", "Francia": "fr", "Suecia": "se",
-    "Bélgica": "be", "Senegal": "sn", "Estados Unidos": "us", "Bosnia y Herzegovina": "ba",
-    "España": "es", "Austria": "at", "Portugal": "pt", "Croacia": "hr",
-    "Brasil": "br", "Japón": "jp", "Costa de Marfil": "ci", "Noruega": "no",
-    "México": "mx", "Ecuador": "ec", "Inglaterra": "gb-eng", "RD Congo": "cd",
-    "Suiza": "ch", "Argelia": "dz", "Colombia": "co", "Ghana": "gh",
-    "Australia": "au", "Egipto": "eg", "Argentina": "ar", "Cabo Verde": "cv"
+    "Sudáfrica": "za",
+    "Canadá": "ca",
+    "Países Bajos": "nl",
+    "Marruecos": "ma",
+    "Alemania": "de",
+    "Paraguay": "py",
+    "Francia": "fr",
+    "Suecia": "se",
+    "Bélgica": "be",
+    "Senegal": "sn",
+    "Estados Unidos": "us",
+    "Bosnia y Herzegovina": "ba",
+    "España": "es",
+    "Austria": "at",
+    "Portugal": "pt",
+    "Croacia": "hr",
+    "Brasil": "br",
+    "Japón": "jp",
+    "Costa de Marfil": "ci",
+    "Noruega": "no",
+    "México": "mx",
+    "Ecuador": "ec",
+    "Inglaterra": "gb-eng",
+    "RD Congo": "cd",
+    "Suiza": "ch",
+    "Argelia": "dz",
+    "Colombia": "co",
+    "Ghana": "gh",
+    "Australia": "au",
+    "Egipto": "eg",
+    "Argentina": "ar",
+    "Cabo Verde": "cv"
   },
   "eliminatorias": [
     {
@@ -43,7 +67,7 @@
         {"id": "8-5", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"},
         {"id": "8-6", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"},
         {"id": "8-7", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"},
-        {"id": "8-8", "local": "A definir", "visita": "A definir", "fecha": "07/07", "estado": "pendiente"}
+        {"id": "8-8", "local": "A definir", "visita": "A definir", "fecha": "07/07", "pendiente": "pendiente"}
       ]
     },
     {
