@@ -101,6 +101,14 @@ body {
   .sponsor-col-left  { padding-left:  12px; }
   .sponsor-col-right { padding-right: 12px; }
 }
+/* Ocultar sponsors cuando hay video activo en fullscreen */
+body.player-active .sponsor-col {
+  display: none !important;
+}
+/* Feed-col ocupa casi toda la pantalla cuando hay video */
+body.player-active #feed-col {
+  max-width: 96vw;
+}
 
 /* Un bloque de sponsor lateral */
 .sponsor-block-side {
@@ -1201,10 +1209,43 @@ body {
 .no-signal-vibras-btn:hover { background: rgba(0,212,255,0.14); }
 
 /* =============================================
-   TE LEEMOS BAR
+   PIE DE PÁGINA — frases rotativas (ex "TE LEEMOS")
 ============================================= */
-.te-leemos-bar { position:fixed; bottom:0; left:0; right:0; z-index:500; background:transparent; text-align:center; padding:8px 0 calc(8px + env(safe-area-inset-bottom,0px)); color:var(--accent); font-family:'DM Sans',sans-serif; font-weight:500; font-size:0.72rem; letter-spacing:0.08em; cursor:pointer; text-transform:uppercase; transition:opacity 0.2s ease; }
-.te-leemos-bar:hover { opacity:0.6; }
+#site-footer {
+  width: 100%;
+  padding: 10px 0 calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  background: rgba(0,0,0,0.18);
+  flex-shrink: 0;
+}
+.footer-phrase-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.15);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 3px 10px;
+  border-radius: 20px;
+  transition: color 0.25s, background 0.25s;
+  white-space: nowrap;
+}
+.footer-phrase-btn:hover {
+  color: rgba(255,255,255,0.55);
+  background: rgba(255,255,255,0.04);
+}
+.footer-phrase-btn.active-phrase {
+  color: var(--accent);
+  background: rgba(0,212,255,0.06);
+}
 
 /* =============================================
    TOAST
@@ -1320,6 +1361,8 @@ body {
       </div>
     </div>
 
+    <!-- PIE DE PÁGINA -->
+    <div id="site-footer"></div>
   </div><!-- /feed-col -->
 
   <!-- SPONSOR COLUMNA DERECHA -->
@@ -1437,7 +1480,7 @@ body {
   </div>
 </div>
 
-<div class="te-leemos-bar" onclick="openFeedbackModal()">TE LEEMOS</div>
+
 
 <script>
 /* =============================================
@@ -1620,6 +1663,7 @@ function backToFeed() {
   pz.classList.remove('active');
   document.getElementById('btn-back-to-feed').classList.remove('visible');
   document.getElementById('btn-yt-control').style.display = 'none';
+  document.body.classList.remove('player-active'); // mostrar sponsors de nuevo
 
   // Apagar medios
   const py = document.getElementById('player-yt');
@@ -1649,7 +1693,8 @@ function activateKickStream() {
   stopAllMedia();
   const pz = document.getElementById('player-zone');
   pz.classList.add('active');
-  pz.classList.add('vibra-fullscreen'); // fullscreen igual que vibras
+  pz.classList.add('vibra-fullscreen');
+  document.body.classList.add('player-active'); // ocultar sponsors
 
   const pk = document.getElementById('player-kick');
   pk.src = 'https://player.kick.com/lanubedewilson?muted=true';
@@ -1702,9 +1747,9 @@ function changeVibe(videoId, vibeName, clickedEl) {
   const pz = document.getElementById('player-zone');
   pz.classList.add('active');
   pz.classList.add('vibra-fullscreen');
+  document.body.classList.add('player-active'); // ocultar sponsors
 
   const py = document.getElementById('player-yt');
-  // controls=1 es necesario para que YouTube permita autoplay sin interacción previa
   py.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=0&enablejsapi=1&controls=1&rel=0&modestbranding=1`;
   py.classList.add('active');
   isYtPlaying = true;
@@ -1727,6 +1772,7 @@ function playIntroItem(idx) {
   const pz = document.getElementById('player-zone');
   pz.classList.add('active');
   pz.classList.add('vibra-fullscreen');
+  document.body.classList.add('player-active'); // ocultar sponsors
   const py = document.getElementById('player-yt');
   py.src = `https://www.youtube.com/embed/${id}?autoplay=1&mute=0&enablejsapi=1&controls=1&rel=0&modestbranding=1`;
   py.classList.add('active');
@@ -1804,10 +1850,15 @@ function _tkShowNext() {
 }
 function showTicker(text) {
   _tkItems = text.split('•').map(s=>s.trim()).filter(Boolean);
-  _tkIdx = 0; clearInterval(_tkTimer); _tkCurrent = null;
+  _tkIdx = 0;
+  clearInterval(_tkTimer);
+  _tkCurrent = null;
+  // Limpiar cualquier grupo previo que haya quedado en vuelo
+  const stage = document.getElementById('feed-main-ticker');
+  if (stage) stage.innerHTML = '';
   document.getElementById('feed-ticker-loading').style.display = 'none';
-  document.getElementById('feed-main-ticker').style.display    = 'flex';
-  document.getElementById('feed-ticker-dot').style.display     = 'inline-block';
+  if (stage) stage.style.display = 'flex';
+  document.getElementById('feed-ticker-dot').style.display = 'inline-block';
   _tkShowNext();
   _tkTimer = setInterval(_tkShowNext, TK_STAY);
 }
@@ -2677,6 +2728,14 @@ window.onload=()=>{
 function _scheduleGNewsPrefetch(){setTimeout(()=>prefetchGNews(),500);}
 window.addEventListener('click',_scheduleGNewsPrefetch,{once:true});
 window.addEventListener('touchstart',_scheduleGNewsPrefetch,{once:true});
+
+/* PIE DE PÁGINA */
+function renderFooter() {
+  const footer = document.getElementById('site-footer');
+  if (!footer) return;
+  footer.innerHTML = `<button class="footer-phrase-btn active-phrase" onclick="openFeedbackModal()" title="Dejanos tu comentario">TE LEEMOS</button>`;
+}
+renderFooter();
 </script>
 </body>
 </html>
