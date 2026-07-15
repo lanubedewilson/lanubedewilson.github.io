@@ -1,7 +1,17 @@
 {
+  "eliminatorias": [
+    {
       "fase": "Semis",
       "partidos": [
         {"id": "S-1", "local": "Francia", "visita": "España", "fecha": "14/07", "estado": "pendiente"},
-        {"id": "S-2", "local": "Inglaterra", "visita": "Argentina", "fecha": "15/07", "estado": "pendiente"}
+        {"id": "S-2", "local": "Inglaterra", "visita": "Argentina", "fecha": "15/07", "hora_utc": "2026-07-15T19:00:00Z", "estado": "pendiente"}
       ]
     }
+  ],
+  "banderas": {
+    "Francia": "fr",
+    "España": "es",
+    "Inglaterra": "gb-eng",
+    "Argentina": "ar"
+  }
+}
