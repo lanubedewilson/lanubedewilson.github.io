@@ -1,10 +1,29 @@
 {
   "eliminatorias": [
     {
-      "fase": "Semis",
+      "fase": "Tercer Puesto",
       "partidos": [
-        {"id": "S-1", "local": "Francia", "visita": "España", "fecha": "14/07", "estado": "pendiente"},
-        {"id": "S-2", "local": "Inglaterra", "visita": "Argentina", "fecha": "15/07", "hora_utc": "2026-07-15T19:00:00Z", "estado": "pendiente"}
+        {
+          "id": "3P-1",
+          "local": "Francia",
+          "visita": "Inglaterra",
+          "fecha": "18/07",
+          "hora_utc": "2026-07-18T21:00:00Z",
+          "estado": "pendiente"
+        }
+      ]
+    },
+    {
+      "fase": "Final",
+      "partidos": [
+        {
+          "id": "F-1",
+          "local": "España",
+          "visita": "Argentina",
+          "fecha": "19/07",
+          "hora_utc": "2026-07-19T19:00:00Z",
+          "estado": "pendiente"
+        }
       ]
     }
   ],
