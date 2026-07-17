@@ -1548,18 +1548,18 @@ const openLocations  = new Set();
 /* =============================================
    SPONSORS — lógica unificada (lateral + inline)
    Los sponsors se distribuyen así:
-   · Desktop (≥1100px): 2 por columna lateral, rotando
+   · Desktop (≥1100px): hasta 4 slots (2 por columna lateral).
+     Cada slot recorre la LISTA COMPLETA de sponsors, arrancando
+     en un offset distinto (0,1,2,3). Antes se partía el array
+     en 4 subgrupos fijos, y cuando la cantidad de sponsors no
+     era múltiplo de 4 los últimos grupos (columna derecha)
+     quedaban con 1 solo sponsor → parecía "trabado" aunque la
+     barra de progreso se reiniciara igual. Con offsets sobre
+     la lista completa, los 4 slots rotan siempre.
    · Mobile / sin columnas: 1 inline cada 4 noticias
 ============================================= */
 let _spIdx      = 0;          // índice compartido entre instancias
 let _spTimers   = [];          // timers de cada slot activo
-
-// Divide el array de sponsors en N partes lo más iguales posible
-function _spChunks(arr, n) {
-  const out = Array.from({length:n}, () => []);
-  arr.forEach((s,i) => out[i % n].push(s));
-  return out;
-}
 
 // Renderiza un slot de sponsor (imagen o video) en un contenedor dado
 // `loop` = true → avanza automáticamente al siguiente
@@ -1621,26 +1621,33 @@ function startSponsors() {
   if (!sponsors.length) return;
 
   const isDesktop = window.innerWidth >= 1100;
+  if (!isDesktop) return;
 
-  if (isDesktop) {
-    // 2 columnas laterales × 2 slots cada una = 4 slots
-    const chunks = _spChunks(sponsors, 4);
-    ['sponsor-left','sponsor-right'].forEach((colId, ci) => {
-      const col = document.getElementById(colId);
-      if (!col) return;
-      col.innerHTML = '';
-      [ci*2, ci*2+1].forEach(si => {
-        if (!chunks[si] || !chunks[si].length) return;
-        const block = document.createElement('div');
-        block.className = 'sponsor-block-side';
-        block.innerHTML = '<div class="sp-progress"></div>';
-        col.appendChild(block);
-        _spShow(block, chunks[si], 0, true);
-      });
-    });
-  }
+  // Nunca más slots que sponsors únicos disponibles (evita duplicar el mismo
+  // sponsor en dos slots a la vez cuando hay pocos cargados)
+  const totalSlots = Math.min(4, sponsors.length);
+  const slotsLeft   = Math.ceil(totalSlots / 2);
+  const slotsRight  = totalSlots - slotsLeft;
+  const slotsByCol  = { 'sponsor-left': slotsLeft, 'sponsor-right': slotsRight };
+
+  let globalSlot = 0;
+  ['sponsor-left','sponsor-right'].forEach((colId) => {
+    const col = document.getElementById(colId);
+    if (!col) return;
+    col.innerHTML = '';
+    const nSlots = slotsByCol[colId];
+    for (let s = 0; s < nSlots; s++) {
+      const block = document.createElement('div');
+      block.className = 'sponsor-block-side';
+      block.innerHTML = '<div class="sp-progress"></div>';
+      col.appendChild(block);
+      _spShow(block, sponsors, globalSlot, true); // cada slot recorre TODA la lista, offset propio
+      globalSlot++;
+    }
+  });
   // Los inline se insertan en renderFeed()
 }
+
 
 /* Cada N noticias inserta un sponsor inline */
 function _buildSponsorInline(idx) {
