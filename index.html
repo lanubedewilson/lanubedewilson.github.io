@@ -12,8 +12,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La Nube de Wilson</title>
 <link rel="icon" type="image/jpeg" href="LNW.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Fuentes: críticas para el diseño, se mantienen en carga directa -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css">
+<!-- Banderas (flag-icons): no crítico para el primer pintado, se carga async y se aplica cuando llega -->
+<link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/css/flag-icons.min.css"></noscript>
 <style>
 /* =============================================
    TOKENS DE DISEÑO
@@ -620,6 +625,32 @@ body.player-active #feed-col {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   margin: 0 auto 16px;
+}
+
+/* =============================================
+   SKELETON SCREEN (primer pintado, sin datos aún)
+============================================= */
+.skel-card {
+  padding: 18px 18px 14px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid rgba(255,255,255,0.06);
+}
+.skel-line, .skel-img {
+  border-radius: 8px;
+  background: linear-gradient(100deg, #131313 30%, #1c1c1c 50%, #131313 70%);
+  background-size: 250% 100%;
+  animation: skel-shimmer 1.4s ease-in-out infinite;
+}
+.skel-meta { display:flex; justify-content:space-between; margin-bottom:12px; }
+.skel-badge { width: 70px; height: 10px; }
+.skel-date  { width: 90px; height: 10px; }
+.skel-img   { width: 100%; height: 160px; margin-bottom: 14px; border-radius: 10px; }
+.skel-title { width: 85%; height: 20px; margin-bottom: 10px; }
+.skel-text  { width: 100%; height: 10px; margin-bottom: 8px; }
+.skel-text.short { width: 60%; }
+@keyframes skel-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -50% 0; }
 }
 
 /* =============================================
@@ -1273,10 +1304,8 @@ body.player-active #feed-col {
 
 <div id="toast"></div>
 
-<!-- VIDEO DE FONDO -->
-<video id="bg-video" autoplay loop muted playsinline preload="none">
-  <source src="la nube.mp4" type="video/mp4">
-</video>
+<!-- VIDEO DE FONDO: sin autoplay ni src inicial — se activa por JS cuando el navegador está inactivo (ver activateBgVideo) -->
+<video id="bg-video" loop muted playsinline preload="none" data-src="la nube.mp4"></video>
 
 <!-- AUDIO DE RADIO -->
 <audio id="radio-audio"></audio>
@@ -1355,9 +1384,27 @@ body.player-active #feed-col {
 
     <!-- FEED BODY (noticias) -->
     <div id="feed-body">
-      <div id="feed-loading">
-        <div class="spin-lg"></div>
-        CARGANDO EL FEED...
+      <div id="feed-loading" aria-live="polite" aria-label="Cargando noticias">
+        <div class="skel-card">
+          <div class="skel-meta"><div class="skel-line skel-badge"></div><div class="skel-line skel-date"></div></div>
+          <div class="skel-line skel-img"></div>
+          <div class="skel-line skel-title"></div>
+          <div class="skel-line skel-text"></div>
+          <div class="skel-line skel-text"></div>
+          <div class="skel-line skel-text short"></div>
+        </div>
+        <div class="skel-card">
+          <div class="skel-meta"><div class="skel-line skel-badge"></div><div class="skel-line skel-date"></div></div>
+          <div class="skel-line skel-title"></div>
+          <div class="skel-line skel-text"></div>
+          <div class="skel-line skel-text short"></div>
+        </div>
+        <div class="skel-card">
+          <div class="skel-meta"><div class="skel-line skel-badge"></div><div class="skel-line skel-date"></div></div>
+          <div class="skel-line skel-img"></div>
+          <div class="skel-line skel-title"></div>
+          <div class="skel-line skel-text"></div>
+        </div>
       </div>
     </div>
 
@@ -1475,7 +1522,7 @@ body.player-active #feed-col {
       <span>Dejanos tu comentario</span>
     </div>
     <div class="feedback-body">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdv7VYq7vTR-BBOOFAWVuQ4mCnw_aUg9EUgGaXGoNICD0Hb3Q/viewform?embedded=true" width="100%" height="450" frameborder="0">Cargando…</iframe>
+      <iframe id="feedback-iframe" data-src="https://docs.google.com/forms/d/e/1FAIpQLSdv7VYq7vTR-BBOOFAWVuQ4mCnw_aUg9EUgGaXGoNICD0Hb3Q/viewform?embedded=true" width="100%" height="450" frameborder="0">Cargando…</iframe>
     </div>
   </div>
 </div>
@@ -1958,6 +2005,35 @@ async function updateTicker(){
 }
 
 /* =============================================
+   CACHÉ LOCAL (Stale-While-Revalidate)
+   Guarda una copia de noticias/sponsors en localStorage
+   para pintar el feed al instante en visitas siguientes,
+   mientras se revalida contra Google Sheets en segundo plano.
+============================================= */
+const NEWS_CACHE_KEY = 'lnw_news_cache_v1';
+
+function loadCachedNews(){
+  try {
+    const raw = localStorage.getItem(NEWS_CACHE_KEY);
+    if (!raw) return false;
+    const cached = JSON.parse(raw);
+    if (!cached || !Array.isArray(cached.allNews) || !cached.allNews.length) return false;
+    allNews  = cached.allNews;
+    sponsors = cached.sponsors || [];
+    if (sponsors.length) startSponsors();
+    renderFeed();
+    checkDeepLinking();
+    return true;
+  } catch(e){ return false; }
+}
+
+function saveCachedNews(){
+  try {
+    localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({ allNews, sponsors, ts: Date.now() }));
+  } catch(e){ /* cuota excedida u otro error: no es crítico, seguimos sin caché */ }
+}
+
+/* =============================================
    FETCH PRINCIPAL (Google Sheets)
 ============================================= */
 async function fetchData(){
@@ -1982,6 +2058,7 @@ async function fetchData(){
       return (col[0]||'').replace(/"/g,'').trim()!=='';
     });
     startSponsors();
+    saveCachedNews();
 
     try {
       const rv=await fetch(vibesUrl); const tv=await rv.text();
@@ -2689,7 +2766,12 @@ function copyLink(id){const url=`${location.origin}${location.pathname}#${id}`;n
 function escapeJs(s){return s.replace(/'/g,"\\'").replace(/"/g,'\\"');}
 function checkDeepLinking(){const hash=window.location.hash;if(hash&&hash.startsWith('#nota-')){const el=document.getElementById(hash.substring(1));if(el) el.scrollIntoView({behavior:'smooth'});}}
 
-function openFeedbackModal(){document.getElementById('feedback-overlay').classList.add('open');}
+function openFeedbackModal(){
+  const overlay=document.getElementById('feedback-overlay');
+  overlay.classList.add('open');
+  const ifr=document.getElementById('feedback-iframe');
+  if(ifr && !ifr.src && ifr.dataset.src) ifr.src=ifr.dataset.src;
+}
 function closeFeedbackModal(){document.getElementById('feedback-overlay').classList.remove('open');}
 document.addEventListener('DOMContentLoaded',function(){
   const fo=document.getElementById('feedback-overlay');
@@ -2697,10 +2779,42 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 
 /* =============================================
-   INIT
+   VIDEO DE FONDO — se activa cuando el navegador
+   está inactivo, para no competir con el primer pintado
 ============================================= */
+function activateBgVideo(){
+  const v=document.getElementById('bg-video');
+  if(!v || v.src || !v.dataset.src) return;
+  v.src=v.dataset.src;
+  v.setAttribute('autoplay','');
+  v.play().catch(()=>{}); // algunos navegadores exigen el gesto/orden correcto; falla silenciosa
+}
+
+/* =============================================
+   SERVICE WORKER — habilita caché offline-first
+============================================= */
+function registerServiceWorker(){
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(e=>console.error('SW error:',e));
+  }
+}
+
+/* =============================================
+   INIT
+   Fase 1: la data se pide apenas el HTML está listo
+   para leerse (DOMContentLoaded), no cuando termina
+   de bajar todo (load) — así no espera imágenes/video.
+   Además, si hay caché local, el feed se pinta al
+   instante y fetchData() revalida en segundo plano.
+============================================= */
+document.addEventListener('DOMContentLoaded',()=>{
+  loadCachedNews();   // pintado instantáneo si hay caché (stale)
+  fetchData();        // revalida contra Google Sheets (while-revalidate)
+});
+
 window.onload=()=>{
-  fetchData();
+  registerServiceWorker();
+
   setTimeout(()=>{
     updateTicker();
     loadFeedClima();
@@ -2719,8 +2833,10 @@ window.onload=()=>{
     requestIdleCallback(()=>{
       if(!radioBrowserLoaded&&!radioBrowserLoading) fetchRadiosFromAPI();
     },{timeout:4000});
+    requestIdleCallback(activateBgVideo,{timeout:5000});
   } else {
     setTimeout(()=>{ if(!radioBrowserLoaded&&!radioBrowserLoading) fetchRadiosFromAPI(); },2500);
+    setTimeout(activateBgVideo,3000);
   }
 };
 
