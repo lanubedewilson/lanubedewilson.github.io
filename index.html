@@ -2382,20 +2382,60 @@ async function getRadioBrowserBaseUrl(){
 async function fetchRadiosFromAPI(){
   if(radioBrowserLoaded||radioBrowserLoading) return;
   radioBrowserLoading=true;
+  const container=document.getElementById('radio-list');
+  if(container){
+    const ghostNames=['Light FM (FM 97.3)','LV5 Radio Sarmiento','CNN Radio San Juan','Lider (FM 104.3)','Radio Universidad','Mega (FM 98.3)','La 100 (FM 99.9)','Mitre (FM 105.9)','Urbana Play (FM 104.3)','Nacional Rock (FM 93.7)','NPR News','iHeart Radio','WNYC New York','KROQ Los Angeles','WBEZ Chicago'];
+    const ghostHTML=ghostNames.map((name,i)=>`<div class="radio-ghost-item" style="animation-delay:${(i*0.11).toFixed(2)}s"><div class="radio-ghost-dot"></div><span class="radio-ghost-name">${name}</span></div>`).join('');
+    container.innerHTML=`<style>.radio-ghost-header{padding:10px 14px 6px;font-family:'Bebas Neue',cursive;font-size:0.7rem;letter-spacing:0.2em;color:rgba(180,100,0,0.35);display:flex;align-items:center;gap:8px}.radio-ghost-header::after{content:'';flex:1;height:1px;background:rgba(180,100,0,0.1)}.radio-ghost-item{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(255,255,255,0.025);animation:ghostPulse 2s ease-in-out infinite;pointer-events:none;user-select:none}.radio-ghost-dot{width:6px;height:6px;border-radius:50%;background:rgba(180,100,0,0.18);flex-shrink:0}.radio-ghost-name{font-family:'DM Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.09);letter-spacing:0.02em;font-weight:400}@keyframes ghostPulse{0%,100%{opacity:0.25}50%{opacity:0.75}}.radio-ghost-label{text-align:center;padding:14px 16px 10px;font-family:'Bebas Neue',cursive;letter-spacing:0.18em;color:rgba(180,100,0,0.45)}.radio-ghost-signal{display:inline-block;animation:ghostPulse 1.2s ease-in-out infinite}</style><div class="radio-ghost-label"><span class="radio-ghost-signal">📡</span> SINTONIZANDO ANTENAS...</div><div class="radio-ghost-header">Emisoras</div>${ghostHTML}`;
+  }
   try {
     const base=await getRadioBrowserBaseUrl();
     const q=(cc,lim=8)=>{const ctrl=new AbortController();const t=setTimeout(()=>ctrl.abort(),4000);return fetch(`${base}/json/stations/search?countrycode=${cc}&limit=${lim}&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]).finally(()=>clearTimeout(t));};
-    const [resAR,resCL,resUS,resGB,resDE,resFR,resIT,resES,resBR,resMX]=await Promise.all([q('AR',40),q('CL',8),q('US',8),q('GB',8),q('DE',8),q('FR',8),q('IT',8),q('ES',8),q('BR',8),q('MX',8)]);
+    const [resAR,resMZA,resCBA,resCL,resBO,resBR,resCO,resEC,resPE,resUY,resVE,resUS,resCA,resMX,resCR,resSV,resGT,resHN,resJM,resNI,resPR,resDO,resTT,resDE,resAT,resBE,resBG,resCZ,resDK,resES,resFI,resFR,resGB,resGR,resHR,resHU,resIE,resIT,resNL,resNO,resPL,resPT,resRO,resRS,resSE,resCH,resUA,resGH,resKE,resNG,resMA,resZA,resPH,resHK,resIN,resID,resIL,resJP,resMY,resKR,resSG,resTH,resTW,resTR]=await Promise.all([
+      (()=>{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),5000);return fetch(`${base}/json/stations/search?countrycode=AR&limit=40&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]);})(),
+      (()=>{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),4000);return fetch(`${base}/json/stations/search?countrycode=AR&state=Mendoza&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]);})(),
+      (()=>{const ctrl=new AbortController();setTimeout(()=>ctrl.abort(),4000);return fetch(`${base}/json/stations/search?countrycode=AR&state=C%C3%B3rdoba&limit=10&order=votes&reverse=true&hidebroken=true`,{signal:ctrl.signal}).then(r=>r.json()).catch(()=>[]);})(),
+      q('CL',8),q('BO',6),q('BR',8),q('CO',6),q('EC',6),q('PE',6),q('UY',6),q('VE',6),
+      q('US',8),q('CA',6),q('MX',6),q('CR',5),q('SV',5),q('GT',5),q('HN',5),q('JM',5),q('NI',5),q('PR',5),q('DO',5),q('TT',5),
+      q('DE',8),q('AT',6),q('BE',6),q('BG',6),q('CZ',6),q('DK',6),q('ES',8),q('FI',6),q('FR',8),q('GB',8),
+      q('GR',6),q('HR',5),q('HU',6),q('IE',6),q('IT',8),q('NL',6),q('NO',6),q('PL',6),q('PT',6),
+      q('RO',6),q('RS',5),q('SE',6),q('CH',6),q('UA',6),
+      q('GH',5),q('KE',5),q('NG',5),q('MA',5),q('ZA',6),
+      q('PH',5),q('HK',5),q('IN',8),q('ID',6),q('IL',5),q('JP',8),q('MY',5),q('KR',6),q('SG',5),q('TH',5),q('TW',5),q('TR',6)
+    ]);
     const map=(arr,loc)=>arr.map(s=>({name:(s.name||'').trim()||'Radio',url:(s.url_resolved||s.url||'').trim(),location:loc})).filter(s=>s.url);
     const argProvincias=new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé','san luis','neuquén','neuquen','chubut']);
     const apiSJ=resAR.filter(s=>(s.state||'').toLowerCase().includes('san juan')).map(s=>({name:(s.name||'').trim()||'Radio',url:(s.url_resolved||s.url||'').trim(),location:'San Juan'})).filter(s=>s.url);
     const apiBA=resAR.filter(s=>!argProvincias.has((s.state||'').toLowerCase())).slice(0,20).map(s=>({name:(s.name||'').trim()||'Radio',url:(s.url_resolved||s.url||'').trim(),location:'Buenos Aires'})).filter(s=>s.url);
-    const apiStations=[...apiSJ,...apiBA,...map(resCL,'Chile'),...map(resUS,'Estados Unidos'),...map(resGB,'Gran Bretaña'),...map(resDE,'Alemania'),...map(resFR,'Francia'),...map(resIT,'Italia'),...map(resES,'España'),...map(resBR,'Brasil'),...map(resMX,'México')];
+    const apiStations=[
+      ...apiSJ,...apiBA,...map(resMZA,'Mendoza'),...map(resCBA,'Córdoba'),
+      ...map(resCL,'Chile'),...map(resBO,'Bolivia'),...map(resBR,'Brasil'),
+      ...map(resCO,'Colombia'),...map(resEC,'Ecuador'),...map(resPE,'Perú'),
+      ...map(resUY,'Uruguay'),...map(resVE,'Venezuela'),...map(resUS,'Estados Unidos'),
+      ...map(resCA,'Canadá'),...map(resMX,'México'),...map(resCR,'Costa Rica'),
+      ...map(resSV,'El Salvador'),...map(resGT,'Guatemala'),...map(resHN,'Honduras'),
+      ...map(resJM,'Jamaica'),...map(resNI,'Nicaragua'),...map(resPR,'Puerto Rico'),
+      ...map(resDO,'Rep. Dominicana'),...map(resTT,'Trinidad y Tobago'),...map(resDE,'Alemania'),
+      ...map(resAT,'Austria'),...map(resBE,'Bélgica'),...map(resBG,'Bulgaria'),
+      ...map(resCZ,'Rep. Checa'),...map(resDK,'Dinamarca'),...map(resES,'España'),
+      ...map(resFI,'Finlandia'),...map(resFR,'Francia'),...map(resGB,'Gran Bretaña'),
+      ...map(resGR,'Grecia'),...map(resHR,'Croacia'),...map(resHU,'Hungría'),
+      ...map(resIE,'Irlanda'),...map(resIT,'Italia'),...map(resNL,'Países Bajos'),
+      ...map(resNO,'Noruega'),...map(resPL,'Polonia'),...map(resPT,'Portugal'),
+      ...map(resRO,'Rumanía'),...map(resRS,'Serbia'),...map(resSE,'Suecia'),
+      ...map(resCH,'Suiza'),...map(resUA,'Ucrania'),...map(resGH,'Ghana'),
+      ...map(resKE,'Kenia'),...map(resNG,'Nigeria'),...map(resMA,'Marruecos'),
+      ...map(resZA,'Sudáfrica'),...map(resPH,'Filipinas'),...map(resHK,'Hong Kong'),
+      ...map(resIN,'India'),...map(resID,'Indonesia'),...map(resIL,'Israel'),
+      ...map(resJP,'Japón'),...map(resMY,'Malasia'),...map(resKR,'Corea del Sur'),
+      ...map(resSG,'Singapur'),...map(resTH,'Tailandia'),...map(resTW,'Taiwán'),
+      ...map(resTR,'Turquía')
+    ];
     const existingNames=new Set(RADIO_STATIONS.map(s=>s.name.trim().toLowerCase()));
     RADIO_STATIONS.push(...apiStations.filter(s=>!existingNames.has(s.name.toLowerCase())));
     radioBrowserLoaded=true; radioBrowserLoading=false;
     renderRadioAccordion();
-  } catch(e){ radioBrowserLoaded=true; radioBrowserLoading=false; renderRadioAccordion(); }
+  } catch(e){ console.error('Radio Browser API error:',e); radioBrowserLoaded=true; radioBrowserLoading=false; renderRadioAccordion(); }
 }
 
 function toggleRadioSidebar(){
