@@ -2324,7 +2324,8 @@ function toggleRadioSidebar(){
 ============================================= */
 let gnewsLoaded=false, gnewsLoading=false, gnewsFetchPromise=null;
 
-const GNEWS_RSS_URL='https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc1allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc1allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
+const GNEWS_RSS_URL='https://news.google.com/rss/headlines/section/geo/San%20Juan?hl=es-419&gl=AR&ceid=AR:es-419';
+const GNEWS_RSS_URL_FALLBACK='https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc1allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc1allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 const GNEWS_PROXIES=[
   u=>`https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`,
   u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
@@ -2358,7 +2359,12 @@ async function tryRSS2JSON(url,timeout=7000){
   }catch(e){ clearTimeout(t); throw e; }
 }
 async function fetchGNewsItems(){
-  const attempts=[ tryRSS2JSON(GNEWS_RSS_URL), ...GNEWS_PROXIES.map(p=>tryXMLProxy(p,GNEWS_RSS_URL)) ];
+  const attempts=[
+    tryRSS2JSON(GNEWS_RSS_URL),
+    ...GNEWS_PROXIES.map(p=>tryXMLProxy(p,GNEWS_RSS_URL)),
+    tryRSS2JSON(GNEWS_RSS_URL_FALLBACK),
+    ...GNEWS_PROXIES.map(p=>tryXMLProxy(p,GNEWS_RSS_URL_FALLBACK))
+  ];
   const results=await Promise.allSettled(attempts);
   const winner=results.find(r=>r.status==='fulfilled'&&r.value&&r.value.length);
   if(winner) return winner.value;
@@ -2449,16 +2455,25 @@ const TENDENCIAS_URL=`https://www.reddit.com/r/${TENDENCIAS_SUBS}/hot.json?limit
 let tendenciasLoaded=false, tendenciasLoading=false, tendenciasFetchPromise=null, tendenciasData=null;
 let tendenciasActiveTab='todos';
 
+const TENDENCIAS_PROXIES=[
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+];
+async function tryTendenciasProxy(proxyFn,url,timeout=9000){
+  const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),timeout);
+  try{ const r=await fetch(proxyFn(url),{signal:ctrl.signal}); clearTimeout(t); if(!r.ok) throw new Error('http '+r.status); const j=await r.json(); if(!j||!j.data||!j.data.children) throw new Error('formato inesperado'); return j; }
+  catch(e){ clearTimeout(t); throw e; }
+}
 async function fetchTendenciasJSON(){
   try{
-    const r=await fetch(TENDENCIAS_URL,{signal:AbortSignal.timeout(9000)});
-    if(r.ok) return await r.json();
+    const r=await fetch(TENDENCIAS_URL,{signal:AbortSignal.timeout(7000)});
+    if(r.ok){ const j=await r.json(); if(j?.data?.children) return j; }
   }catch(e){}
-  // Fallback vía proxy si Reddit bloquea el fetch directo (CORS)
-  const proxied='https://api.allorigins.win/raw?url='+encodeURIComponent(TENDENCIAS_URL);
-  const r2=await fetch(proxied,{signal:AbortSignal.timeout(12000)});
-  if(!r2.ok) throw new Error('No se pudo cargar Reddit');
-  return await r2.json();
+  const results=await Promise.allSettled(TENDENCIAS_PROXIES.map(p=>tryTendenciasProxy(p,TENDENCIAS_URL)));
+  const winner=results.find(r=>r.status==='fulfilled');
+  if(winner) return winner.value;
+  throw new Error('Todos los proxies fallaron');
 }
 
 function parseTendenciasJSON(json){
