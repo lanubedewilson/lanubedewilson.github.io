@@ -2157,7 +2157,7 @@ function getLocations(){
   return out;
 }
 function getLocationFlag(loc){
-  const codes={'San Juan':'ar','Buenos Aires':'ar','Córdoba':'ar','Mendoza':'ar','Santa Fe':'ar','San Luis':'ar','Neuquén':'ar','Chubut':'ar','Chile':'cl','Bolivia':'bo','Brasil':'br','Colombia':'co','Ecuador':'ec','Perú':'pe','Uruguay':'uy','Venezuela':'ve','Estados Unidos':'us','Canadá':'ca','México':'mx','Alemania':'de','Austria':'at','Bélgica':'be','Bulgaria':'bg','Rep. Checa':'cz','Chipre':'cy','Croacia':'hr','Dinamarca':'dk','España':'es','Finlandia':'fi','Francia':'fr','Gran Bretaña':'gb','Grecia':'gr','Hungría':'hu','Irlanda':'ie','Italia':'it','Mónaco':'mc','Noruega':'no','Nueva Zelanda':'nz','Países Bajos':'nl','Polonia':'pl','Portugal':'pt','Rumanía':'ro','Serbia':'rs','Suecia':'se','Suiza':'ch','Ucrania':'ua','Ghana':'gh','Kenia':'ke','Marruecos':'ma','Nigeria':'ng','Sudáfrica':'za','Corea del Sur':'kr','Filipinas':'ph','Hong Kong':'hk','India':'in','Indonesia':'id','Israel':'il','Japón':'jp','Malasia':'my','Singapur':'sg','Tailandia':'th','Taiwán':'tw','Turquía':'tr'};
+  const codes={'San Juan':'ar','Buenos Aires':'ar','Córdoba':'ar','Mendoza':'ar','Santa Fe':'ar','San Luis':'ar','Neuquén':'ar','Chubut':'ar','Chile':'cl','Bolivia':'bo','Brasil':'br','Colombia':'co','Ecuador':'ec','Perú':'pe','Uruguay':'uy','Venezuela':'ve','Estados Unidos':'us','Canadá':'ca','México':'mx','Costa Rica':'cr','El Salvador':'sv','Guatemala':'gt','Honduras':'hn','Jamaica':'jm','Nicaragua':'ni','Puerto Rico':'pr','Rep. Dominicana':'do','Trinidad y Tobago':'tt','Alemania':'de','Austria':'at','Bélgica':'be','Bulgaria':'bg','Rep. Checa':'cz','Chipre':'cy','Croacia':'hr','Dinamarca':'dk','España':'es','Finlandia':'fi','Francia':'fr','Gran Bretaña':'gb','Grecia':'gr','Hungría':'hu','Irlanda':'ie','Italia':'it','Mónaco':'mc','Noruega':'no','Nueva Zelanda':'nz','Países Bajos':'nl','Polonia':'pl','Portugal':'pt','Rumanía':'ro','Serbia':'rs','Suecia':'se','Suiza':'ch','Ucrania':'ua','Ghana':'gh','Kenia':'ke','Marruecos':'ma','Nigeria':'ng','Sudáfrica':'za','Corea del Sur':'kr','Filipinas':'ph','Hong Kong':'hk','India':'in','Indonesia':'id','Israel':'il','Japón':'jp','Malasia':'my','Singapur':'sg','Tailandia':'th','Taiwán':'tw','Turquía':'tr'};
   const code=codes[loc];
   return code?`<span class="fi fi-${code}"></span>`:'📻';
 }
@@ -2336,17 +2336,35 @@ function faviconUrlGN(domain){ return `https://www.google.com/s2/favicons?domain
 function extractGNDomain(link){ try{return new URL(link).hostname.replace('www.','');}catch{return '';} }
 function formatGNDate(ds){ try{return new Date(ds).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric'});}catch{return ds;} }
 
-async function tryProxy(proxyFn,url,timeout=8000){
+async function tryXMLProxy(proxyFn,url,timeout=7000){
   const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),timeout);
-  try{ const r=await fetch(proxyFn(url),{signal:ctrl.signal}); clearTimeout(t); if(!r.ok) throw new Error('http '+r.status); const tx=await r.text(); if(!tx.includes('<item>')) throw new Error('sin items'); return tx; }
+  try{ const r=await fetch(proxyFn(url),{signal:ctrl.signal}); clearTimeout(t); if(!r.ok) throw new Error('http '+r.status); const tx=await r.text(); if(!tx.includes('<item>')) throw new Error('sin items'); return parseGNewsXML(tx); }
   catch(e){ clearTimeout(t); throw e; }
 }
-async function fetchGNewsRSS(){
-  const results=await Promise.allSettled(GNEWS_PROXIES.map(p=>tryProxy(p,GNEWS_RSS_URL)));
-  const winner=results.find(r=>r.status==='fulfilled');
+async function tryRSS2JSON(url,timeout=7000){
+  const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),timeout);
+  try{
+    const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,{signal:ctrl.signal});
+    clearTimeout(t);
+    if(!r.ok) throw new Error('http '+r.status);
+    const j=await r.json();
+    if(j.status!=='ok'||!j.items||!j.items.length) throw new Error('sin items');
+    return j.items.map(it=>{
+      const rawTitle=it.title||'';
+      const sourceName=(it.author||'').trim();
+      const title=sourceName?rawTitle.replace(new RegExp('\\s*-\\s*'+sourceName.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'$'),'').trim():rawTitle.trim();
+      return {title,link:it.link||'',pubDate:it.pubDate||'',sourceName,sourceUrl:'',domain:extractGNDomain(it.link||'')};
+    }).filter(i=>i.title);
+  }catch(e){ clearTimeout(t); throw e; }
+}
+async function fetchGNewsItems(){
+  const attempts=[ tryRSS2JSON(GNEWS_RSS_URL), ...GNEWS_PROXIES.map(p=>tryXMLProxy(p,GNEWS_RSS_URL)) ];
+  const results=await Promise.allSettled(attempts);
+  const winner=results.find(r=>r.status==='fulfilled'&&r.value&&r.value.length);
   if(winner) return winner.value;
-  try{ return await tryProxy(GNEWS_PROXIES[0],GNEWS_RSS_URL,18000); }
-  catch(e){ throw new Error('Todos los proxies fallaron: '+e.message); }
+  try{ return await tryRSS2JSON(GNEWS_RSS_URL,15000); }catch(e){}
+  try{ return await tryXMLProxy(GNEWS_PROXIES[0],GNEWS_RSS_URL,18000); }catch(e){}
+  throw new Error('Todos los proxies fallaron');
 }
 function parseGNewsXML(xml){
   const doc=new DOMParser().parseFromString(xml,'application/xml');
@@ -2379,7 +2397,26 @@ function renderGNews(items){
 function startGNewsFetch(){
   if(gnewsFetchPromise) return gnewsFetchPromise;
   gnewsLoading=true;
-  gnewsFetchPromise=fetchGNewsRSS().then(xml=>{const items=parseGNewsXML(xml);try{localStorage.setItem('gn_cache_sanjuan',JSON.stringify(items));}catch(e){}renderGNews(items);gnewsLoaded=true;return items;}).catch(e=>{gnewsFetchPromise=null;try{const c=localStorage.getItem('gn_cache_sanjuan');if(c){const items=JSON.parse(c);renderGNews(items);gnewsLoaded=true;showToast('Mostrando noticias guardadas');return items;}}catch(err){}throw e;}).finally(()=>{gnewsLoading=false;});
+  gnewsFetchPromise=fetchGNewsItems().then(items=>{
+    try{ localStorage.setItem('gn_cache_sanjuan',JSON.stringify(items)); localStorage.setItem('gn_cache_sanjuan_ts',String(Date.now())); }catch(e){}
+    renderGNews(items); gnewsLoaded=true; return items;
+  }).catch(e=>{
+    gnewsFetchPromise=null;
+    try{
+      const c=localStorage.getItem('gn_cache_sanjuan');
+      if(c){
+        const items=JSON.parse(c);
+        const ts=parseInt(localStorage.getItem('gn_cache_sanjuan_ts')||'0');
+        const fecha=ts?new Date(ts).toLocaleDateString('es-AR',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):'fecha desconocida';
+        renderGNews(items);
+        const container=document.getElementById('gnews-content');
+        container.insertAdjacentHTML('afterbegin',`<div style="background:rgba(255,180,0,0.08);border:1px solid rgba(255,180,0,0.3);color:#ffb400;font-size:0.7rem;letter-spacing:0.04em;padding:10px 14px;border-radius:10px;margin-bottom:14px;text-align:center;">⚠️ Sin conexión a las fuentes — mostrando noticias guardadas del ${fecha}</div>`);
+        gnewsLoaded=true; showToast('Mostrando noticias guardadas');
+        return items;
+      }
+    }catch(err){}
+    throw e;
+  }).finally(()=>{ gnewsLoading=false; });
   return gnewsFetchPromise;
 }
 function prefetchGNews(){ if(!gnewsLoaded&&!gnewsFetchPromise) startGNewsFetch().catch(()=>{}); }
