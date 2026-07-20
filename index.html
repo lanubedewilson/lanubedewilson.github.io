@@ -2456,10 +2456,7 @@ let tendenciasLoaded=false, tendenciasLoading=false, tendenciasFetchPromise=null
 let tendenciasActiveTab='todos';
 
 const TENDENCIAS_PROXIES=[
-  u=>`https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`, // Tu worker propio primero
-  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
-  u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+  u=>`https://tendencias.smurua4.workers.dev/?url=${encodeURIComponent(u)}`
 ];
 async function tryTendenciasProxy(proxyFn,url,timeout=9000){
   const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),timeout);
