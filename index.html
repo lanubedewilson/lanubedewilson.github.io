@@ -2324,7 +2324,7 @@ function toggleRadioSidebar(){
 ============================================= */
 let gnewsLoaded=false, gnewsLoading=false, gnewsFetchPromise=null;
 
-const GNEWS_RSS_URL='https://news.google.com/rss/headlines/section/geo/San%20Juan?hl=es-419&gl=AR&ceid=AR:es-419';
+const GNEWS_RSS_URL='https://news.google.com/rss/headlines/section/geo/San%20Juan%2C%20Argentina?hl=es-419&gl=AR&ceid=AR:es-419';
 const GNEWS_RSS_URL_FALLBACK='https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc1allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc1allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 const GNEWS_PROXIES=[
   u=>`https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`,
@@ -2456,6 +2456,7 @@ let tendenciasLoaded=false, tendenciasLoading=false, tendenciasFetchPromise=null
 let tendenciasActiveTab='todos';
 
 const TENDENCIAS_PROXIES=[
+  u=>`https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`, // Tu worker propio primero
   u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
