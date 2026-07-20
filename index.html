@@ -206,38 +206,6 @@ body.player-active #feed-col {
   box-shadow: 0 0 10px rgba(0,255,136,0.8);
 }
 
-/* Trionda en el header (reemplaza la X) */
-#btn-trionda-header {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  background-image: url("trionda.png");
-  background-size: cover;
-  background-position: center;
-  border: 1px solid var(--border-h);
-  cursor: pointer;
-  flex-shrink: 0;
-  animation: trionda-clock 60s linear infinite, trionda-glow 1.5s ease-in-out infinite;
-  animation-delay: 0ms, 350ms;
-  transition: transform 0.15s;
-}
-#btn-trionda-header.tw-live {
-  animation: trionda-clock 60s linear infinite, trionda-pulse 1.5s ease-in-out infinite;
-}
-#btn-trionda-header:active { transform: scale(0.92); }
-
-@keyframes trionda-clock {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes trionda-glow {
-  0%,100% { box-shadow: 0 0 0 1px rgba(0,212,255,0.12), 0 0 6px rgba(0,212,255,0.25); }
-  50%     { box-shadow: 0 0 0 1px rgba(0,212,255,0.30), 0 0 14px rgba(0,212,255,0.55); }
-}
-@keyframes trionda-pulse {
-  0%,100% { box-shadow: 0 0 0 1px rgba(0,255,136,0.25), 0 0 8px rgba(0,255,136,0.25); }
-  50%     { box-shadow: 0 0 0 1px rgba(0,255,136,0.6),  0 0 18px rgba(0,255,136,0.6); }
-}
-
 /* =============================================
    TICKER DE MERCADOS
 ============================================= */
@@ -328,7 +296,7 @@ body.player-active #feed-col {
 }
 
 /* =============================================
-   BARRA DE BOTONES DE ACCIÓN (Stream, Radio, Mundial, GNews)
+   BARRA DE BOTONES DE ACCIÓN (Stream, Radio, Tendencias, GNews)
    Vertical: 2x2 | Horizontal: 1x4
 ============================================= */
 #action-bar {
@@ -391,13 +359,13 @@ body.player-active #feed-col {
   color: #cc7700;
 }
 
-/* Mundial */
-#ab-mundial { border-color: rgba(0,195,255,0.12); }
-#ab-mundial .ab-dot { background:#00c3ff; box-shadow:0 0 6px rgba(0,195,255,0.7); animation-delay:150ms; }
-#ab-mundial:hover, #ab-mundial.mundial-active {
-  background: rgba(0,195,255,0.08);
-  border-color: rgba(0,195,255,0.4);
-  color: #00c3ff;
+/* Tendencias */
+#ab-tendencias { border-color: rgba(255,69,0,0.12); }
+#ab-tendencias .ab-dot { background:#ff4500; box-shadow:0 0 6px rgba(255,69,0,0.7); animation-delay:150ms; }
+#ab-tendencias:hover, #ab-tendencias.tendencias-active {
+  background: rgba(255,69,0,0.08);
+  border-color: rgba(255,69,0,0.4);
+  color: #ff4500;
 }
 
 /* GNews */
@@ -933,9 +901,9 @@ body.player-active #feed-col {
 .radio-garden-arrow { font-size:0.85rem; color:rgba(0,212,255,0.5); }
 
 /* =============================================
-   MODALES OVERLAY (Mundial, GNews, Partidos de hoy)
+   MODALES OVERLAY (Tendencias, GNews)
 ============================================= */
-#mundial-overlay, #gnews-overlay {
+#tendencias-overlay, #gnews-overlay {
   position: fixed;
   top: 0; right: -100%;
   width: 100%; height: 100%;
@@ -949,7 +917,7 @@ body.player-active #feed-col {
   display: flex;
   flex-direction: column;
 }
-#mundial-overlay.open, #gnews-overlay.open { right: 0; }
+#tendencias-overlay.open, #gnews-overlay.open { right: 0; }
 
 .overlay-close-btn {
   position: sticky;
@@ -972,82 +940,42 @@ body.player-active #feed-col {
 }
 .overlay-close-btn:hover { background: rgba(255,255,255,0.08); }
 
-#mundial-header {
+#tendencias-header {
   font-family: 'Bebas Neue', cursive;
   font-size: 1.4rem;
   letter-spacing: 3px;
-  color: #00c3ff;
+  color: #ff4500;
   text-align: center;
   padding: 0 5% 0;
   flex-shrink: 0;
 }
-#mundial-header span { font-size:0.7rem; color:#555; display:block; letter-spacing:2px; margin-top:2px; font-family:sans-serif; text-transform:uppercase; }
+#tendencias-header span { font-size:0.7rem; color:#555; display:block; letter-spacing:2px; margin-top:2px; font-family:sans-serif; text-transform:uppercase; }
 
-#mundial-tabs { display:flex; flex-wrap:wrap; gap:6px; padding:14px 5% 0; justify-content:center; flex-shrink:0; }
-.mw-tab { font-family:'Bebas Neue',cursive; font-size:0.88rem; letter-spacing:2px; padding:5px 12px; border-radius:20px; border:1px solid rgba(0,195,255,0.18); background:rgba(0,195,255,0.04); color:#444; cursor:pointer; transition:all 0.15s; }
-.mw-tab:hover { color:#00c3ff; border-color:rgba(0,195,255,0.45); }
-.mw-tab.active { color:#00c3ff; border-color:rgba(0,195,255,0.6); background:rgba(0,195,255,0.12); }
+#tendencias-tabs { display:flex; flex-wrap:wrap; gap:6px; padding:14px 5% 0; justify-content:center; flex-shrink:0; }
+.tw-tab { font-family:'Bebas Neue',cursive; font-size:0.88rem; letter-spacing:2px; padding:5px 12px; border-radius:20px; border:1px solid rgba(255,69,0,0.18); background:rgba(255,69,0,0.04); color:#444; cursor:pointer; transition:all 0.15s; }
+.tw-tab:hover { color:#ff4500; border-color:rgba(255,69,0,0.45); }
+.tw-tab.active { color:#ff4500; border-color:rgba(255,69,0,0.6); background:rgba(255,69,0,0.12); }
 
-#mundial-content { max-width:700px; width:100%; margin:14px auto 0; padding:0 5%; flex:1; }
-#mundial-content:has(#mw-bracket-scale-wrap) { max-width:1600px; padding:0 2%; }
+#tendencias-content { max-width:700px; width:100%; margin:14px auto 0; padding:0 5%; flex:1; }
 
-#mundial-footer { display:flex; align-items:center; justify-content:space-between; padding:14px 5%; margin-top:8px; font-size:0.58rem; color:#2a2a2a; letter-spacing:0.08em; border-top:1px solid rgba(255,255,255,0.04); max-width:700px; width:100%; align-self:center; }
-#mundial-refresh-btn { background:none; border:1px solid rgba(0,195,255,0.20); color:#00c3ff; font-family:'Bebas Neue',cursive; font-size:0.75rem; letter-spacing:1px; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
-#mundial-refresh-btn:hover { background:rgba(0,195,255,0.10); }
+#tendencias-footer { display:flex; align-items:center; justify-content:space-between; padding:14px 5%; margin-top:8px; font-size:0.58rem; color:#2a2a2a; letter-spacing:0.08em; border-top:1px solid rgba(255,255,255,0.04); max-width:700px; width:100%; align-self:center; }
+#tendencias-refresh-btn { background:none; border:1px solid rgba(255,69,0,0.20); color:#ff4500; font-family:'Bebas Neue',cursive; font-size:0.75rem; letter-spacing:1px; padding:5px 12px; border-radius:8px; cursor:pointer; transition:all 0.2s; }
+#tendencias-refresh-btn:hover { background:rgba(255,69,0,0.10); }
 
-/* Grupos & bracket (igual que antes) */
-.mw-group-title { font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:3px; color:#00c3ff; margin:0 0 10px; padding-bottom:6px; border-bottom:1px solid rgba(0,195,255,0.15); }
-.mw-pos-table { background:var(--surface-1); border-radius:12px; overflow:hidden; margin-bottom:14px; border:1px solid rgba(255,255,255,0.05); }
-.mw-pos-head { display:grid; grid-template-columns:1fr 28px 28px 28px 28px; padding:6px 10px; font-size:0.56rem; color:#333; letter-spacing:0.1em; border-bottom:1px solid rgba(255,255,255,0.05); text-align:center; }
-.mw-pos-head span:first-child { text-align:left; }
-.mw-pos-row { display:grid; grid-template-columns:1fr 28px 28px 28px 28px; padding:8px 10px; border-bottom:1px solid rgba(255,255,255,0.03); align-items:center; text-align:center; }
-.mw-pos-row:last-child { border-bottom:none; }
-.mw-pos-name { display:flex; align-items:center; gap:6px; font-family:'Bebas Neue',cursive; font-size:0.88rem; letter-spacing:1px; text-align:left; }
-.mw-pos-stat { font-size:0.8rem; color:#555; }
-.mw-pos-pts { font-family:'Bebas Neue',cursive; font-size:1rem; color:#00c3ff; }
-.mw-match { display:flex; align-items:center; justify-content:space-between; background:var(--surface-1); border-radius:12px; padding:10px 12px; margin-bottom:7px; border:1px solid rgba(255,255,255,0.05); border-left:3px solid rgba(0,195,255,0.22); gap:6px; transition:all 0.3s ease; }
-.mw-match.ft { border-left-color:rgba(0,195,255,0.55); opacity:0.88; }
-.mw-match.live { border-left-color:#ff3333; background:rgba(255,51,51,0.05); animation:mw-live-pulse 2s infinite; }
-@keyframes mw-live-pulse { 0%,100%{box-shadow:none} 50%{box-shadow:0 0 0 2px rgba(255,51,51,0.2)} }
-.mw-team { display:flex; align-items:center; gap:5px; font-family:'Bebas Neue',cursive; font-size:0.92rem; letter-spacing:1px; color:var(--white-bone); flex:1; min-width:0; }
-.mw-team.right { justify-content:flex-end; text-align:right; }
-.mw-team span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.mw-center { display:flex; flex-direction:column; align-items:center; gap:2px; flex-shrink:0; min-width:54px; }
-.mw-score { font-family:'Bebas Neue',cursive; font-size:1.2rem; letter-spacing:2px; color:#00c3ff; }
-.mw-score.pending { color:#2a2a2a; font-size:0.75rem; letter-spacing:1px; }
-.mw-score.live { color:#ff3333; text-shadow:0 0 8px rgba(255,51,51,0.4); }
-.mw-date { font-size:0.56rem; color:#333; letter-spacing:0.08em; text-transform:uppercase; }
-.mw-date.live { color:#ff3333; display:flex; align-items:center; justify-content:center; }
-.live-indicator { display:inline-block; width:6px; height:6px; background-color:#ff3333; border-radius:50%; margin-right:4px; vertical-align:middle; box-shadow:0 0 6px #ff3333; animation:pulse-fade 1s infinite; }
-
-/* Bracket */
-#mw-bracket-scale-wrap { width:100%; overflow:hidden; padding:10px 0 24px; display:flex; justify-content:center; align-items:flex-start; }
-#mw-bracket-v2 { display:flex; align-items:center; gap:50px; flex-shrink:0; transform-origin:top center; }
-.mw-bracket-side { display:flex; gap:50px; align-items:flex-start; }
-.mw-bracket-side.mirror { transform:scaleX(-1); }
-.mw-bracket-side.mirror .mw-bracket-match,
-.mw-bracket-side.mirror .mw-round-label { transform:scaleX(-1); }
-.mw-round-wrap { display:flex; flex-direction:column; width:165px; flex-shrink:0; }
-.mw-round-label { text-align:center; color:#555; font-size:0.7rem; font-family:'Bebas Neue',cursive; letter-spacing:2px; margin-bottom:10px; text-transform:uppercase; }
-.mw-round { display:flex; flex-direction:column; justify-content:space-around; position:relative; }
-.mw-match-cell { position:relative; }
-.conn-h { position:absolute; top:50%; width:25px; height:2px; background:rgba(0,195,255,0.3); }
-.conn-h.conn-out { right:-25px; }
-.conn-h.conn-in  { left:-25px; }
-.conn-v { position:absolute; left:-25px; width:2px; background:rgba(0,195,255,0.3); }
-.mw-final-col { display:flex; flex-direction:column; width:190px; align-items:center; flex-shrink:0; }
-.mw-final-area { display:flex; align-items:center; justify-content:center; }
-.mw-final-cell .mw-bracket-match { width:185px; height:56px; border-color:rgba(255,204,0,0.5); }
-.mw-bracket-match { background:var(--surface-1); border:1px solid rgba(0,195,255,0.22); border-radius:8px; padding:4px 6px; display:flex; flex-direction:column; justify-content:center; gap:2px; position:relative; box-shadow:0 4px 10px rgba(0,0,0,0.5); width:165px; height:50px; box-sizing:border-box; }
-.mw-bracket-match.placeholder { border-style:dashed; opacity:0.4; }
-.mw-bracket-match.live { border-color:#ff3333; animation:mw-live-pulse 2s infinite; }
-.mw-b-sub { text-align:center; font-size:0.55rem; color:#555; font-family:'Bebas Neue',cursive; letter-spacing:1px; }
-.mw-b-sub.live { color:#ff3333; display:flex; align-items:center; justify-content:center; }
-.mw-b-team { display:flex; align-items:center; justify-content:space-between; font-family:'Bebas Neue',cursive; font-size:0.9rem; color:var(--white-bone); padding:2px 4px; }
-.mw-b-team.winner { color:#00c3ff; }
-.mw-b-team-info { display:flex; align-items:center; gap:6px; }
-.mw-b-score { font-weight:bold; min-width:14px; text-align:right; }
-.mw-b-score.live { color:#ff3333; }
+/* Tarjetas de posts de Reddit */
+.tw-card { background:var(--surface-1); border-radius:var(--radius-card); margin-bottom:12px; border-left:3px solid #ff4500; box-shadow:0 4px 16px rgba(0,0,0,0.35); overflow:hidden; display:flex; flex-direction:column; }
+.tw-card-inner { padding:14px 16px 12px; }
+.tw-source-row { display:flex; align-items:center; gap:7px; margin-bottom:8px; }
+.tw-sub-name { font-size:0.65rem; color:#ff4500; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; }
+.tw-meta { font-size:0.6rem; color:#444; margin-left:auto; display:flex; align-items:center; gap:8px; }
+.tw-title { font-family:'Bebas Neue',cursive; font-size:1.3rem; color:var(--white-bone); line-height:1.15; margin-bottom:10px; }
+.tw-thumb { width:100%; max-height:280px; object-fit:cover; display:block; }
+.tw-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+.tw-btn { flex:1; min-width:100px; display:flex; align-items:center; justify-content:center; gap:5px; font-family:'Bebas Neue',cursive; font-size:0.8rem; letter-spacing:1px; padding:7px 10px; border-radius:var(--radius-btn); border:1px solid; cursor:pointer; text-decoration:none; transition:background 0.2s; }
+.tw-btn-link { background:rgba(255,69,0,0.07); border-color:rgba(255,69,0,0.25); color:#ff4500; }
+.tw-btn-link:hover { background:rgba(255,69,0,0.15); }
+.tw-btn-share { background:rgba(37,211,102,0.07); border-color:rgba(37,211,102,0.25); color:#25d366; }
+.tw-btn-share:hover { background:rgba(37,211,102,0.15); }
 
 /* GNews */
 #gnews-header { font-family:'Bebas Neue',cursive; font-size:1.4rem; letter-spacing:3px; color:#34a853; text-align:center; padding:0 5%; flex-shrink:0; }
@@ -1066,37 +994,6 @@ body.player-active #feed-col {
 .gn-btn-share { background:rgba(37,211,102,0.07); border-color:rgba(37,211,102,0.25); color:#25d366; }
 .gn-btn-share:hover { background:rgba(37,211,102,0.15); }
 
-/* Partidos de hoy */
-#partidos-hoy-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.55); backdrop-filter:blur(2px); display:none; align-items:flex-start; justify-content:flex-end; z-index:700; padding:64px 12px 0 0; }
-#partidos-hoy-backdrop.open { display:flex; }
-#partidos-hoy-modal { width:100%; max-width:340px; background:var(--surface-1); border:1px solid var(--border-h); border-radius:var(--radius-card); box-shadow:0 16px 48px rgba(0,0,0,0.6); overflow:hidden; animation:fadeIn 0.2s ease; max-height:70vh; display:flex; flex-direction:column; }
-#ph-header { display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--border); }
-#ph-header .ph-title { font-family:'Bebas Neue',cursive; font-size:0.95rem; letter-spacing:0.08em; color:var(--white-bone); display:flex; align-items:center; gap:8px; }
-#ph-close { background:none; border:none; color:rgba(255,255,255,0.35); font-size:1.3rem; cursor:pointer; line-height:1; padding:0 2px; transition:color 0.15s; }
-#ph-close:hover { color:var(--white-bone); }
-#ph-content { padding:10px 12px; overflow-y:auto; flex:1; }
-.ph-day-label { font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:#555; padding:8px 4px 4px; font-weight:600; }
-.ph-match { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 6px; border-radius:12px; transition:background 0.15s; }
-.ph-match:hover { background:rgba(255,255,255,0.03); }
-.ph-match.live { background:rgba(0,255,136,0.05); }
-.ph-team { display:flex; align-items:center; gap:6px; font-size:0.8rem; color:var(--white-bone); flex:1; min-width:0; }
-.ph-team.right { justify-content:flex-end; text-align:right; }
-.ph-team span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.ph-team .fi { font-size:0.95rem; flex-shrink:0; }
-.ph-center { display:flex; flex-direction:column; align-items:center; justify-content:center; min-width:56px; flex-shrink:0; }
-.ph-score { font-family:'Bebas Neue',cursive; font-size:1.05rem; letter-spacing:0.05em; color:var(--white-bone); }
-.ph-score.live { color:#00ff88; }
-.ph-score.pending { color:#444; font-size:0.8rem; }
-.ph-meta { font-size:0.6rem; letter-spacing:0.08em; color:#555; margin-top:1px; display:flex; align-items:center; gap:4px; }
-.ph-meta.live { color:#00ff88; }
-.ph-meta .live-indicator { width:6px; height:6px; border-radius:50%; background:#00ff88; box-shadow:0 0 6px rgba(0,255,136,0.8); display:inline-block; animation:pulse-fade 1.5s infinite ease-in-out; }
-#ph-footer { padding:10px 16px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-#ph-footer .ph-link { color:var(--accent); font-family:'Bebas Neue',cursive; font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase; cursor:pointer; background:none; border:none; display:flex; align-items:center; gap:6px; }
-#ph-footer .ph-link:hover { text-decoration:underline; }
-#ph-footer .ph-status { font-size:0.6rem; color:#555; letter-spacing:0.08em; }
-#ph-tz-note { padding:6px 16px 10px; font-size:0.58rem; letter-spacing:0.06em; color:#444; text-align:center; border-top:1px solid var(--border); }
-#ph-spinner { padding:30px 0; text-align:center; color:#333; font-family:'Bebas Neue',cursive; letter-spacing:2px; font-size:0.8rem; }
-#ph-spinner .spin { width:18px; height:18px; border:2px solid #1a1a1a; border-top-color:#00c3ff; border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
 
 /* =============================================
    MODAL LECTOR DE NOTA (iframe)
@@ -1294,10 +1191,6 @@ body.player-active #feed-col {
 @keyframes tk-enter { from{opacity:0;transform:translateX(50px);filter:blur(10px)} to{opacity:1;transform:translateX(0);filter:blur(0)} }
 @keyframes tk-exit  { from{opacity:1;transform:translateX(0);filter:blur(0)} to{opacity:0;transform:translateX(-50px);filter:blur(10px)} }
 
-@media (max-width:420px) {
-  #partidos-hoy-backdrop { justify-content:center; padding:60px 10px 0; }
-  #partidos-hoy-modal { max-width:100%; }
-}
 </style>
 </head>
 <body>
@@ -1324,7 +1217,6 @@ body.player-active #feed-col {
       <div id="feed-header-top">
         <h1 class="logo" onclick="location.reload()">LA NUBE <span>DE WILSON</span></h1>
         <span id="live-dot"></span>
-        <button id="btn-trionda-header" onclick="openPartidosHoy()" title="Partidos de hoy — Mundial 2026"></button>
       </div>
       <!-- Ticker mercados -->
       <div id="feed-ticker-row">
@@ -1347,8 +1239,8 @@ body.player-active #feed-col {
         <button class="action-btn" id="ab-radio" onclick="toggleRadioSidebar()">
           <span class="ab-dot"></span> RADIO
         </button>
-        <button class="action-btn" id="ab-mundial" onclick="openMundial()">
-          <span class="ab-dot"></span> ⚽ MUNDIAL
+        <button class="action-btn" id="ab-tendencias" onclick="openTendencias()">
+          <span class="ab-dot"></span> TENDENCIAS
         </button>
         <button class="action-btn" id="ab-gnews" onclick="openGNews()">
           <span class="ab-dot"></span> GOOGLE NEWS
@@ -1436,18 +1328,18 @@ body.player-active #feed-col {
   <div class="radio-container" id="radio-list"></div>
 </div>
 
-<!-- OVERLAY MUNDIAL -->
-<div id="mundial-overlay">
-  <button class="overlay-close-btn" onclick="closeMundial()" style="border-color:rgba(0,195,255,0.3);color:#00c3ff;">×</button>
-  <div id="mundial-header">
-    ⚽ MUNDIAL FIFA 2026
-    <span>🇺🇸 🇲🇽 🇨🇦 · 11 JUN – 19 JUL · 48 SELECCIONES</span>
+<!-- OVERLAY TENDENCIAS -->
+<div id="tendencias-overlay">
+  <button class="overlay-close-btn" onclick="closeTendencias()" style="border-color:rgba(255,69,0,0.3);color:#ff4500;">×</button>
+  <div id="tendencias-header">
+    📡 TENDENCIAS
+    <span>ARGENTINA · TECNOLOGÍA · MUNDO</span>
   </div>
-  <div id="mundial-tabs"></div>
-  <div id="mundial-content"></div>
-  <div id="mundial-footer">
-    <span>ESPN · Datos en tiempo real · JSON local como respaldo</span>
-    <button onclick="mundialForceRefresh()" id="mundial-refresh-btn">🔄 Actualizar</button>
+  <div id="tendencias-tabs"></div>
+  <div id="tendencias-content"></div>
+  <div id="tendencias-footer">
+    <span>Reddit · Lo más comentado ahora</span>
+    <button onclick="tendenciasForceRefresh()" id="tendencias-refresh-btn">🔄 Actualizar</button>
   </div>
 </div>
 
@@ -1459,25 +1351,6 @@ body.player-active #feed-col {
     <span>📡 Noticias · San Juan, Argentina</span>
   </div>
   <div style="max-width:700px;width:100%;margin:18px auto 0;padding:0 5%;" id="gnews-content"></div>
-</div>
-
-<!-- MODAL PARTIDOS DE HOY -->
-<div id="partidos-hoy-backdrop" onclick="if(event.target===this) closePartidosHoy()">
-  <div id="partidos-hoy-modal">
-    <div id="ph-header">
-      <span class="ph-title">
-        <span id="ph-dot" class="ab-dot" style="display:none;animation-delay:0ms;background:#ff3333;box-shadow:0 0 6px rgba(255,51,51,0.7);"></span>
-        <span id="ph-title-text">PARTIDOS DE HOY</span>
-      </span>
-      <button id="ph-close" onclick="closePartidosHoy()">×</button>
-    </div>
-    <div id="ph-content"></div>
-    <div id="ph-footer">
-      <button class="ph-link" onclick="closePartidosHoy(); openMundial();">VER LLAVE ▶</button>
-      <span id="ph-status" class="ph-status"></span>
-    </div>
-    <div id="ph-tz-note">HORARIOS EN TU HUSO HORARIO LOCAL</div>
-  </div>
 </div>
 
 <!-- MODAL LECTOR DE NOTA -->
@@ -2532,277 +2405,106 @@ function openArticle(url,source){
 function closeArticleModal(){ const m=document.getElementById('article-modal'); m.classList.remove('open'); document.getElementById('article-iframe').src=''; }
 
 /* =============================================
-   MUNDIAL FIFA 2026
+   TENDENCIAS (Reddit — r/argentina + r/technology + r/worldnews)
 ============================================= */
-const MUNDIAL_END_DATE=new Date('2026-07-20T00:00:00');
-let mundialData=null, mundialLoaded=false, mundialLoading=false;
-let mundialActiveGrp='A', mundialRefreshInterval=null;
+const TENDENCIAS_SUBS='argentina+technology+worldnews';
+const TENDENCIAS_URL=`https://www.reddit.com/r/${TENDENCIAS_SUBS}/hot.json?limit=30`;
+let tendenciasLoaded=false, tendenciasLoading=false, tendenciasFetchPromise=null, tendenciasData=null;
+let tendenciasActiveTab='todos';
 
-(function(){
-  if(new Date()>MUNDIAL_END_DATE){
-    const btn=document.getElementById('ab-mundial'); if(btn) btn.style.display='none';
-    const t=document.getElementById('btn-trionda-header'); if(t) t.style.display='none';
-  }
-})();
-
-function startLiveRefreshIfNeeded(){
-  const hayVivo=mundialData?.eliminatorias?mundialData.eliminatorias.some(f=>f.partidos.some(p=>p.estado==='en_juego')):mundialData?.grupos?.some(g=>g.partidos.some(p=>p.estado==='en_juego'));
-  const t=document.getElementById('btn-trionda-header'); if(t) t.classList.toggle('tw-live',!!hayVivo);
-  if(mundialRefreshInterval){clearInterval(mundialRefreshInterval);mundialRefreshInterval=null;}
-  if(hayVivo) mundialRefreshInterval=setInterval(()=>{mundialLoaded=false;mundialLoading=false;loadMundialData();},45000);
-}
-
-function closeMundial(){ document.getElementById('mundial-overlay').classList.remove('open'); document.getElementById('ab-mundial').classList.remove('mundial-active'); }
-
-async function openMundial(){
-  const overlay=document.getElementById('mundial-overlay');
-  if(overlay.classList.contains('open')){closeMundial();return;}
-  overlay.classList.add('open'); overlay.scrollTo(0,0);
-  document.getElementById('ab-mundial').classList.add('mundial-active');
-  if(mundialLoaded&&mundialData){
-    if(mundialData.eliminatorias) renderMundialBracket(); else renderMundialGrupo(mundialActiveGrp);
-    setTimeout(()=>fitMundialBracket(true),60); return;
-  }
-  showMundialSpinner();
-  await loadMundialData();
-}
-
-async function openPartidosHoy(){
-  const backdrop=document.getElementById('partidos-hoy-backdrop');
-  if(backdrop.classList.contains('open')){closePartidosHoy();return;}
-  backdrop.classList.add('open');
-  if(mundialLoaded&&mundialData){renderPartidosHoy();return;}
-  showPartidosHoySpinner();
-  await loadMundialData();
-  renderPartidosHoy();
-}
-function closePartidosHoy(){ document.getElementById('partidos-hoy-backdrop').classList.remove('open'); }
-function showPartidosHoySpinner(){ document.getElementById('ph-content').innerHTML='<div id="ph-spinner"><div class="spin"></div>CARGANDO...</div>'; }
-function _phFechaKey(d){ return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0'); }
-function _phFormatHora(m){ if(!m.hora_utc) return ''; try{ const d=new Date(m.hora_utc); if(isNaN(d.getTime())) return ''; return d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}); }catch(e){return '';} }
-
-function renderPartidosHoy(){
-  const content=document.getElementById('ph-content'), statusEl=document.getElementById('ph-status'), dotEl=document.getElementById('ph-dot');
-  if(!mundialData||(!mundialData.grupos&&!mundialData.eliminatorias)){ content.innerHTML='<div style="padding:30px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:1px;font-size:0.8rem;">⚠️ NO SE PUDO CARGAR</div>'; return; }
-  let todos=[];
-  if(mundialData.eliminatorias) mundialData.eliminatorias.forEach(f=>f.partidos.forEach(p=>todos.push(p)));
-  else mundialData.grupos.forEach(g=>g.partidos.forEach(p=>todos.push(p)));
-  const hoyKey=_phFechaKey(new Date());
-  let lista=todos.filter(m=>m.estado==='en_juego'||m.fecha===hoyKey), esHoy=true;
-  if(!lista.length){
-    const futuros=todos.filter(m=>m.estado==='pendiente'&&m.fecha);
-    if(futuros.length>0){ const co=futuros.map(m=>{const [dd,mm]=m.fecha.split('/').map(Number);return{m,key:mm*100+dd};}).sort((a,b)=>a.key-b.key); const pf=co[0].m.fecha; lista=todos.filter(m=>m.fecha===pf); esHoy=false; }
-  }
-  dotEl.style.display=lista.some(m=>m.estado==='en_juego')?'inline-block':'none';
-  document.getElementById('ph-title-text').textContent=lista.length===0?'SIN PARTIDOS HOY':(esHoy?'PARTIDOS DE HOY':`PRÓXIMOS · ${lista[0].fecha}`);
-  if(!lista.length){ content.innerHTML='<div style="padding:30px 12px;text-align:center;color:#555;font-size:0.8rem;line-height:1.6;">No hay partidos programados.<br>Volvé pronto.</div>'; statusEl.textContent=''; statusEl.classList.remove('live'); return; }
-  let html='';
-  lista.forEach(m=>{
-    let bL='',bV='';
-    if(mundialData.banderas){bL=mundialData.banderas[m.local]||'';bV=mundialData.banderas[m.visita]||'';}
-    else if(mundialData.grupos){for(const g of mundialData.grupos){if(g.banderas){if(g.banderas[m.local])bL=g.banderas[m.local];if(g.banderas[m.visita])bV=g.banderas[m.visita];}if(bL&&bV)break;}}
-    const fiL=bL?`<span class="fi fi-${bL}"></span>`:'', fiV=bV?`<span class="fi fi-${bV}"></span>`:'';
-    let scoreHTML,metaHTML,matchCls='';
-    if(m.estado==='FT'){ scoreHTML=`<div class="ph-score">${m.goles_local} – ${m.goles_visita}</div>`; metaHTML=`<div class="ph-meta">FINAL</div>`; }
-    else if(m.estado==='en_juego'){ scoreHTML=`<div class="ph-score live">${m.goles_local??0} – ${m.goles_visita??0}</div>`; metaHTML=`<div class="ph-meta live"><span class="live-indicator"></span>${m.reloj||''}</div>`; matchCls=' live'; }
-    else { const ht=_phFormatHora(m); scoreHTML=`<div class="ph-score pending">VS</div>`; metaHTML=`<div class="ph-meta">${m.fecha||''}${ht?' · '+ht+' hs':''}</div>`; }
-    html+=`<div class="ph-match${matchCls}"><div class="ph-team">${fiL}<span>${m.local}</span></div><div class="ph-center">${scoreHTML}${metaHTML}</div><div class="ph-team right"><span>${m.visita}</span>${fiV}</div></div>`;
-  });
-  content.innerHTML=html; statusEl.textContent=''; statusEl.classList.remove('live');
-}
-
-async function mundialForceRefresh(){ mundialLoaded=false; mundialData=null; showMundialSpinner(); await loadMundialData(); }
-function showMundialSpinner(){ document.getElementById('mundial-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;"><div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#00c3ff;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>CARGANDO...</div>`; }
-
-function calcPosiciones(grupo){
-  const pts={},st={};
-  grupo.equipos.forEach(eq=>{pts[eq]=0;st[eq]={j:0,g:0,e:0,p:0,gf:0,gc:0};});
-  grupo.partidos.forEach(m=>{
-    if(m.estado==='FT'||m.estado==='en_juego'){
-      const gl=m.goles_local??0,gv=m.goles_visita??0;
-      if(!st[m.local]||!st[m.visita]) return;
-      st[m.local].j++;st[m.visita].j++;st[m.local].gf+=gl;st[m.local].gc+=gv;st[m.visita].gf+=gv;st[m.visita].gc+=gl;
-      if(gl>gv){pts[m.local]+=3;st[m.local].g++;st[m.visita].p++;}
-      else if(gl<gv){pts[m.visita]+=3;st[m.visita].g++;st[m.local].p++;}
-      else{pts[m.local]+=1;pts[m.visita]+=1;st[m.local].e++;st[m.visita].e++;}
-    }
-  });
-  return grupo.equipos.map(eq=>({nombre:eq,bandera:grupo.banderas[eq]||'',pts:pts[eq]||0,...st[eq],dif:(st[eq].gf-st[eq].gc)})).sort((a,b)=>b.pts-a.pts||b.dif-a.dif||b.gf-a.gf);
-}
-
-const ESPN_ALIASES={'mexico':'México','south africa':'Sudáfrica','korea republic':'Corea del Sur','south korea':'Corea del Sur','czech republic':'Chequia','czechia':'Chequia','canada':'Canadá','bosnia and herzegovina':'Bosnia y Herzegovina','qatar':'Qatar','switzerland':'Suiza','brazil':'Brasil','morocco':'Marruecos','haiti':'Haití','scotland':'Escocia','united states':'Estados Unidos','usa':'Estados Unidos','usmnt':'Estados Unidos','paraguay':'Paraguay','australia':'Australia','turkey':'Turquía','türkiye':'Turquía','germany':'Alemania','curacao':'Curazao',"cote d'ivoire":'Costa de Marfil','ivory coast':'Costa de Marfil','ecuador':'Ecuador','netherlands':'Países Bajos','japan':'Japón','tunisia':'Túnez','sweden':'Suecia','belgium':'Bélgica','egypt':'Egipto','iran':'Irán','new zealand':'Nueva Zelanda','spain':'España','saudi arabia':'Arabia Saudita','uruguay':'Uruguay','france':'Francia','senegal':'Senegal','iraq':'Irak','norway':'Noruega','argentina':'Argentina','algeria':'Argelia','austria':'Austria','jordan':'Jordania','portugal':'Portugal','colombia':'Colombia','uzbekistan':'Uzbekistán','dr congo':'Congo RD','england':'Inglaterra','croatia':'Croacia','ghana':'Ghana','panama':'Panamá'};
-function normalizeTeamName(name){const n=(name||'').toLowerCase().trim().replace(/ü/g,'u').replace(/é/g,'e').replace(/ô/g,'o');return ESPN_ALIASES[n]||name.trim();}
-function teamsMatch(espnName,jsonName){const resolved=normalizeTeamName(espnName);if(resolved===jsonName) return true;const a=resolved.toLowerCase(),b=jsonName.toLowerCase();return a===b||a.includes(b)||b.includes(a);}
-
-function patchWithEspn(base,espn){
+async function fetchTendenciasJSON(){
   try{
-    if(!espn||!espn.events) return;
-    espn.events.forEach(ev=>{
-      const comp=ev.competitions&&ev.competitions[0]; if(!comp) return;
-      const home=comp.competitors.find(c=>c.homeAway==='home'), away=comp.competitors.find(c=>c.homeAway==='away');
-      if(!home||!away) return;
-      const hName=(home.team.displayName||home.team.name||'').trim(), aName=(away.team.displayName||away.team.name||'').trim();
-      if(ev.date){
-        const colls=base.eliminatorias?base.eliminatorias.map(f=>f.partidos):base.grupos.map(g=>g.partidos);
-        colls.forEach(partidos=>partidos.forEach(p=>{if(!teamsMatch(hName,p.local)||!teamsMatch(aName,p.visita)) return;if(!p.hora_utc){p.hora_utc=ev.date;p.fecha=_phFechaKey(new Date(ev.date));}}));
-      }
-      const statusState=ev.status&&ev.status.type&&ev.status.type.state;
-      if(!statusState||statusState==='pre') return;
-      const estado=statusState==='post'?'FT':'en_juego';
-      const hScore=home.score!==undefined&&home.score!==null&&home.score!==''?parseInt(home.score):null;
-      const aScore=away.score!==undefined&&away.score!==null&&away.score!==''?parseInt(away.score):null;
-      if(hScore===null||isNaN(hScore)||aScore===null||isNaN(aScore)) return;
-      const s=ev.status; let reloj='';
-      if(estado==='en_juego'&&s) reloj=(s.type&&s.type.shortDetail)||(s.displayClock?s.displayClock.split(':')[0]+"'":'');
-      const colls=base.eliminatorias?base.eliminatorias.map(f=>f.partidos):base.grupos.map(g=>g.partidos);
-      colls.forEach(partidos=>partidos.forEach(p=>{
-        if(!teamsMatch(hName,p.local)||!teamsMatch(aName,p.visita)) return;
-        if(p.estado==='FT'&&estado!=='FT') return;
-        p.estado=estado;p.goles_local=hScore;p.goles_visita=aScore;
-        if(reloj) p.reloj=reloj; else delete p.reloj;
-      }));
-    });
-  }catch(e){console.warn('patchWithEspn:',e);}
+    const r=await fetch(TENDENCIAS_URL,{signal:AbortSignal.timeout(9000)});
+    if(r.ok) return await r.json();
+  }catch(e){}
+  // Fallback vía proxy si Reddit bloquea el fetch directo (CORS)
+  const proxied='https://api.allorigins.win/raw?url='+encodeURIComponent(TENDENCIAS_URL);
+  const r2=await fetch(proxied,{signal:AbortSignal.timeout(12000)});
+  if(!r2.ok) throw new Error('No se pudo cargar Reddit');
+  return await r2.json();
 }
 
-function buildFromEspn(espn){
-  try{
-    if(!espn||!espn.events||!espn.events.length) return null;
-    const grupos={};
-    espn.events.forEach(ev=>{
-      const comp=ev.competitions&&ev.competitions[0]; if(!comp) return;
-      const match=(ev.name||ev.shortName||'').match(/group\s*([A-L])/i)||(ev.season&&ev.season.slug||'').match(/group-([a-l])/i);
-      const grpL=match?match[1].toUpperCase():null; if(!grpL) return;
-      const home=comp.competitors.find(c=>c.homeAway==='home'), away=comp.competitors.find(c=>c.homeAway==='away');
-      if(!home||!away) return;
-      const statusState=ev.status&&ev.status.type&&ev.status.type.state;
-      const estado=statusState==='post'?'FT':statusState==='in'?'en_juego':'pendiente';
-      const hName=home.team.displayName||home.team.name, aName=away.team.displayName||away.team.name;
-      if(!grupos[grpL]) grupos[grpL]={nombre:grpL,equipos:[],banderas:{},partidos:[]};
-      const g=grupos[grpL];
-      if(!g.equipos.includes(hName)) g.equipos.push(hName);
-      if(!g.equipos.includes(aName)) g.equipos.push(aName);
-      const s=ev.status; let reloj='';
-      if(estado==='en_juego'&&s) reloj=(s.type&&s.type.shortDetail)||(s.displayClock?s.displayClock.split(':')[0]+"'":'');
-      g.partidos.push({local:hName,visita:aName,fecha:ev.date?_phFechaKey(new Date(ev.date)):'',hora_utc:ev.date||'',goles_local:estado!=='pendiente'?parseInt(home.score)||0:null,goles_visita:estado!=='pendiente'?parseInt(away.score)||0:null,estado,reloj});
-    });
-    const arr=Object.values(grupos).sort((a,b)=>a.nombre.localeCompare(b.nombre));
-    return arr.length?{grupos:arr}:null;
-  }catch(e){return null;}
+function parseTendenciasJSON(json){
+  if(!json||!json.data||!json.data.children) return [];
+  return json.data.children.map(c=>c.data).filter(p=>!p.stickied).map(p=>({
+    id:p.id,
+    titulo:p.title,
+    sub:p.subreddit,
+    puntos:p.ups,
+    comentarios:p.num_comments,
+    permalink:'https://reddit.com'+p.permalink,
+    url:p.url,
+    imagen: (p.post_hint==='image' || /\.(jpg|jpeg|png|gif)$/i.test(p.url||'')) ? p.url : (p.thumbnail && p.thumbnail.startsWith('http') ? p.thumbnail : null)
+  }));
 }
 
-function buildMundialTabs(){
-  if(!mundialData||!mundialData.grupos) return;
-  document.getElementById('mundial-tabs').innerHTML=mundialData.grupos.map(g=>`<button class="mw-tab${g.nombre===mundialActiveGrp?' active':''}" onclick="switchMundialGrupo('${g.nombre}')">${g.nombre}</button>`).join('');
+function renderTendencias(){
+  const container=document.getElementById('tendencias-content');
+  if(!tendenciasData||!tendenciasData.length){ container.innerHTML='<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR</div>'; return; }
+  const items=tendenciasActiveTab==='todos'?tendenciasData:tendenciasData.filter(p=>p.sub.toLowerCase()===tendenciasActiveTab);
+  if(!items.length){ container.innerHTML='<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">SIN POSTS EN ESTA CATEGORÍA</div>'; return; }
+  container.innerHTML=items.map(p=>`
+    <div class="tw-card">
+      ${p.imagen?`<img class="tw-thumb" src="${p.imagen}" loading="lazy" onerror="this.remove()">`:''}
+      <div class="tw-card-inner">
+        <div class="tw-source-row">
+          <span class="tw-sub-name">r/${p.sub}</span>
+          <span class="tw-meta">▲ ${p.puntos} · 💬 ${p.comentarios}</span>
+        </div>
+        <div class="tw-title">${p.titulo}</div>
+        <div class="tw-actions">
+          <a class="tw-btn tw-btn-link" href="${p.permalink}" target="_blank" rel="noopener">VER EN REDDIT ▶</a>
+          <a class="tw-btn tw-btn-share" href="https://api.whatsapp.com/send?text=${encodeURIComponent(p.titulo+' '+p.permalink)}" target="_blank" rel="noopener">COMPARTIR</a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('tendencias-overlay').scrollTo(0,0);
 }
-function switchMundialGrupo(grp){ mundialActiveGrp=grp; document.querySelectorAll('.mw-tab').forEach(t=>t.classList.toggle('active',t.textContent.trim()===grp)); renderMundialGrupo(grp); }
 
-async function loadMundialData(){
-  if(mundialLoading) return;
-  mundialLoading=true;
-  showMundialSpinner();
-  let baseData=null;
-  try{ const r=await fetch('mundial.json?'+Date.now(),{signal:AbortSignal.timeout(5000)}); if(r.ok){baseData=await r.json();} }catch(e){}
-  try{ const r2=await fetch('https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard?dates=20260610-20260720',{signal:AbortSignal.timeout(5000)}); if(r2.ok){const espn=await r2.json();if(baseData) patchWithEspn(baseData,espn); else{const fe=buildFromEspn(espn);if(fe) baseData=fe;}} }catch(e){}
-  if(baseData&&(baseData.eliminatorias||(baseData.grupos&&baseData.grupos.length>0))){
-    mundialData=baseData; mundialLoaded=true; mundialLoading=false;
-    if(mundialData.eliminatorias){document.getElementById('mundial-tabs').innerHTML='';renderMundialBracket();}
-    else{buildMundialTabs();renderMundialGrupo(mundialActiveGrp);}
-    startLiveRefreshIfNeeded();
-    if(document.getElementById('partidos-hoy-backdrop').classList.contains('open')) renderPartidosHoy();
-    return;
+function buildTendenciasTabs(){
+  const subs=['todos','argentina','technology','worldnews'];
+  document.getElementById('tendencias-tabs').innerHTML=subs.map(s=>`<button class="tw-tab${s===tendenciasActiveTab?' active':''}" onclick="switchTendenciasTab('${s}')">${s==='todos'?'TODOS':s.toUpperCase()}</button>`).join('');
+}
+function switchTendenciasTab(sub){ tendenciasActiveTab=sub; document.querySelectorAll('.tw-tab').forEach(t=>t.classList.toggle('active',t.textContent.trim().toLowerCase()===sub)); renderTendencias(); }
+
+function showTendenciasSpinner(){ document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;"><div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ff4500;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>CARGANDO...</div>`; }
+
+function startTendenciasFetch(){
+  if(tendenciasFetchPromise) return tendenciasFetchPromise;
+  tendenciasLoading=true;
+  tendenciasFetchPromise=fetchTendenciasJSON().then(json=>{
+    const items=parseTendenciasJSON(json);
+    tendenciasData=items; tendenciasLoaded=true;
+    try{ localStorage.setItem('tendencias_cache',JSON.stringify(items)); }catch(e){}
+    buildTendenciasTabs(); renderTendencias();
+    return items;
+  }).catch(e=>{
+    tendenciasFetchPromise=null;
+    try{
+      const c=localStorage.getItem('tendencias_cache');
+      if(c){ tendenciasData=JSON.parse(c); tendenciasLoaded=true; buildTendenciasTabs(); renderTendencias(); showToast('Mostrando tendencias guardadas'); return tendenciasData; }
+    }catch(err){}
+    throw e;
+  }).finally(()=>{ tendenciasLoading=false; });
+  return tendenciasFetchPromise;
+}
+function prefetchTendencias(){ if(!tendenciasLoaded&&!tendenciasFetchPromise) startTendenciasFetch().catch(()=>{}); }
+
+async function openTendencias(){
+  const overlay=document.getElementById('tendencias-overlay');
+  if(overlay.classList.contains('open')){ closeTendencias(); return; }
+  overlay.classList.add('open');
+  document.getElementById('ab-tendencias').classList.add('tendencias-active');
+  if(tendenciasLoaded){ return; }
+  showTendenciasSpinner();
+  try{ await startTendenciasFetch(); }
+  catch(e){
+    document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ ERROR<br><button onclick="tendenciasLoaded=false;tendenciasFetchPromise=null;openTendencias()" style="margin-top:16px;background:none;border:1px solid #ff4500;color:#ff4500;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>`;
   }
-  mundialLoading=false;
-  document.getElementById('mundial-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR<br><button onclick="mundialForceRefresh()" style="margin-top:16px;background:none;border:1px solid #00c3ff;color:#00c3ff;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>`;
 }
-
-function renderMundialGrupo(grpNombre){
-  const container=document.getElementById('mundial-content');
-  if(!mundialData||!mundialData.grupos){showMundialSpinner();return;}
-  const grupo=mundialData.grupos.find(g=>g.nombre===grpNombre);
-  if(!grupo){container.innerHTML='';return;}
-  const pos=calcPosiciones(grupo);
-  let html=`<div class="mw-group-title">GRUPO ${grupo.nombre} — POSICIONES</div><div class="mw-pos-table"><div class="mw-pos-head"><span>EQUIPO</span><span>PJ</span><span>PTS</span><span>GF</span><span>GC</span></div>`;
-  pos.forEach((eq,i)=>{
-    const col=i===0?'#00c3ff':i===1?'rgba(0,195,255,0.65)':i===2?'#555':'#333';
-    const fi=eq.bandera?`<span class="fi fi-${eq.bandera}" style="font-size:0.9rem;flex-shrink:0;"></span>`:'';
-    html+=`<div class="mw-pos-row"><div class="mw-pos-name" style="color:${col}">${fi}<span>${eq.nombre}</span></div><div class="mw-pos-stat">${eq.j}</div><div class="mw-pos-pts" style="color:${col}">${eq.pts}</div><div class="mw-pos-stat">${eq.gf}</div><div class="mw-pos-stat">${eq.gc}</div></div>`;
-  });
-  html+=`</div><div class="mw-group-title" style="margin-top:10px;">PARTIDOS</div>`;
-  grupo.partidos.forEach(m=>{
-    const bL=grupo.banderas[m.local]||'', bV=grupo.banderas[m.visita]||'';
-    const fiL=bL?`<span class="fi fi-${bL}" style="font-size:1rem;flex-shrink:0;"></span>`:'', fiV=bV?`<span class="fi fi-${bV}" style="font-size:1rem;flex-shrink:0;"></span>`:'';
-    let scoreHTML,extraCls='';
-    if(m.estado==='FT'){scoreHTML=`<div class="mw-score">${m.goles_local} – ${m.goles_visita}</div><div class="mw-date">FT</div>`;extraCls=' ft';}
-    else if(m.estado==='en_juego'){scoreHTML=`<div class="mw-score live">${m.goles_local??0} – ${m.goles_visita??0}</div><div class="mw-date live"><span class="live-indicator"></span>${m.reloj||''}</div>`;extraCls=' live';}
-    else{const ht=_phFormatHora(m);scoreHTML=`<div class="mw-score pending">VS</div><div class="mw-date">${m.fecha||''}${ht?' · '+ht+' hs':''}</div>`;}
-    html+=`<div class="mw-match${extraCls}"><div class="mw-team">${fiL}<span>${m.local}</span></div><div class="mw-center">${scoreHTML}</div><div class="mw-team right"><span>${m.visita}</span>${fiV}</div></div>`;
-  });
-  container.innerHTML=html;
-  document.getElementById('mundial-overlay').scrollTo(0,0);
-}
-
-/* Bracket */
-const MW_BRACKET_H=760, MW_ROUNDS_ORDER=['16vos','8vos','4tos','Semis'], MW_ROUND_COUNTS=[8,4,2,1];
-const MW_NATURAL_W=165*4+50*3+50+190+50+(165*4+50*3), MW_NATURAL_H=24+10+MW_BRACKET_H+24;
-
-function _mwGetFase(nombre){const f=mundialData.eliminatorias.find(x=>x.fase===nombre);return f?f.partidos:[];}
-function _mwMatchBox(m){
-  if(!m) return '<div class="mw-bracket-match placeholder"></div>';
-  const bL=(mundialData.banderas&&mundialData.banderas[m.local])||'', bV=(mundialData.banderas&&mundialData.banderas[m.visita])||'';
-  const isLW=m.estado==='FT'&&m.goles_local>m.goles_visita, isVW=m.estado==='FT'&&m.goles_visita>m.goles_local;
-  const sL=m.goles_local!==null&&m.goles_local!==undefined?m.goles_local:'-', sV=m.goles_visita!==null&&m.goles_visita!==undefined?m.goles_visita:'-';
-  const mc=m.estado==='en_juego'?' live':'', sc=m.estado==='en_juego'?' live':'';
-  const fiL=bL?`<span class="fi fi-${bL}"></span>`:'', fiV=bV?`<span class="fi fi-${bV}"></span>`:'';
-  let sub='';
-  if(m.estado==='FT') sub='<div class="mw-b-sub">FINAL</div>';
-  else if(m.estado==='en_juego') sub=`<div class="mw-b-sub live"><span class="live-indicator" style="width:5px;height:5px;margin-right:3px;"></span>${m.reloj||'EN VIVO'}</div>`;
-  else{const ht=_phFormatHora(m);sub=`<div class="mw-b-sub">${m.fecha||'TBD'}${ht?' · '+ht:''}</div>`;}
-  return `<div class="mw-bracket-match${mc}"><div class="mw-b-team${isLW?' winner':''}"><div class="mw-b-team-info">${fiL}<span>${m.local}</span></div><div class="mw-b-score${sc}">${sL}</div></div><div class="mw-b-team${isVW?' winner':''}"><div class="mw-b-team-info">${fiV}<span>${m.visita}</span></div><div class="mw-b-score${sc}">${sV}</div></div>${sub}</div>`;
-}
-function _mwBuildSide(side){
-  let html=`<div class="mw-bracket-side${side==='R'?' mirror':''}">`;
-  MW_ROUNDS_ORDER.forEach((rn,ri)=>{
-    const all=_mwGetFase(rn), half=Math.ceil(all.length/2);
-    const list=side==='L'?all.slice(0,half):all.slice(half);
-    html+=`<div class="mw-round-wrap"><div class="mw-round-label">${rn==='Semis'?'SEMIFINAL':rn.toUpperCase()}</div><div class="mw-round" style="height:${MW_BRACKET_H}px;">`;
-    list.forEach(m=>{
-      const isOut=ri<MW_ROUNDS_ORDER.length-1, isIn=ri>0;
-      let conn='';
-      if(isOut) conn+=`<div class="conn-h conn-out"></div>`;
-      if(isIn){const vh=MW_BRACKET_H/MW_ROUND_COUNTS[ri-1];conn+=`<div class="conn-v" style="top:calc(50% - ${vh/2}px);height:${vh}px;"></div><div class="conn-h conn-in"></div>`;}
-      html+=`<div class="mw-match-cell">${conn}${_mwMatchBox(m)}</div>`;
-    });
-    html+=`</div></div>`;
-  });
-  html+=`</div>`;
-  return html;
-}
-function renderMundialBracket(){
-  const container=document.getElementById('mundial-content');
-  document.getElementById('mundial-tabs').innerHTML='';
-  if(!mundialData||!mundialData.eliminatorias){showMundialSpinner();return;}
-  const final=_mwGetFase('Final')[0];
-  let html=`<div id="mw-bracket-scale-wrap"><div id="mw-bracket-v2">`;
-  html+=_mwBuildSide('L');
-  html+=`<div class="mw-final-col"><div class="mw-round-label">FINAL${final&&final.fecha?' · '+final.fecha:''}</div><div class="mw-final-area" style="height:${MW_BRACKET_H}px;"><div class="mw-match-cell mw-final-cell"><div class="conn-h conn-in"></div><div class="conn-h conn-out"></div>${_mwMatchBox(final)}</div></div></div>`;
-  html+=_mwBuildSide('R');
-  html+=`</div></div>`;
-  container.innerHTML=html;
-  document.getElementById('mundial-overlay').scrollTo(0,0);
-  fitMundialBracket(true);
-}
-function fitMundialBracket(retry){
-  const wrap=document.getElementById('mw-bracket-scale-wrap'), inner=document.getElementById('mw-bracket-v2');
-  if(!wrap||!inner) return;
-  const availW=wrap.clientWidth;
-  if(availW<40){if(retry) setTimeout(()=>fitMundialBracket(true),80);return;}
-  let scale=Math.min(1,(availW-8)/MW_NATURAL_W);
-  if(!isFinite(scale)||scale<=0) scale=1;
-  inner.style.transform=`scale(${scale})`;
-  wrap.style.height=Math.ceil(MW_NATURAL_H*scale)+'px';
-}
-window.addEventListener('resize',()=>{if(document.getElementById('mw-bracket-v2')) fitMundialBracket();});
+function closeTendencias(){ document.getElementById('tendencias-overlay').classList.remove('open'); document.getElementById('ab-tendencias').classList.remove('tendencias-active'); }
+async function tendenciasForceRefresh(){ tendenciasLoaded=false; tendenciasData=null; tendenciasFetchPromise=null; showTendenciasSpinner(); await startTendenciasFetch(); }
 
 /* =============================================
    UTILIDADES
@@ -2891,6 +2593,10 @@ window.onload=()=>{
 function _scheduleGNewsPrefetch(){setTimeout(()=>prefetchGNews(),500);}
 window.addEventListener('click',_scheduleGNewsPrefetch,{once:true});
 window.addEventListener('touchstart',_scheduleGNewsPrefetch,{once:true});
+
+function _scheduleTendenciasPrefetch(){setTimeout(()=>prefetchTendencias(),700);}
+window.addEventListener('click',_scheduleTendenciasPrefetch,{once:true});
+window.addEventListener('touchstart',_scheduleTendenciasPrefetch,{once:true});
 
 /* PIE DE PÁGINA */
 function renderFooter() {
