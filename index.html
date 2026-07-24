@@ -1332,13 +1332,13 @@ body.player-active #feed-col {
 <div id="tendencias-overlay">
   <button class="overlay-close-btn" onclick="closeTendencias()" style="border-color:rgba(255,69,0,0.3);color:#ff4500;">×</button>
   <div id="tendencias-header">
-    📡 TENDENCIAS
-    <span>ARGENTINA · TECNOLOGÍA · MUNDO</span>
+    🔥 TENDENCIAS
+    <span>LO QUE EL MUNDO BUSCA Y LEE AHORA</span>
   </div>
   <div id="tendencias-tabs"></div>
   <div id="tendencias-content"></div>
   <div id="tendencias-footer">
-    <span>Reddit · Lo más comentado ahora</span>
+    <span>Wikipedia · Google News · Actualizado cada hora</span>
     <button onclick="tendenciasForceRefresh()" id="tendencias-refresh-btn">🔄 Actualizar</button>
   </div>
 </div>
@@ -2328,7 +2328,6 @@ const GNEWS_RSS_URL='https://news.google.com/rss/headlines/section/geo/San%20Jua
 const GNEWS_RSS_URL_FALLBACK='https://news.google.com/rss/topics/CAAqHAgKIhZDQklTQ2pvSWJHOWpZV3hmZGpJb0FBUAE/sections/CAQiUENCSVNOam9JYkc1allXeGZkakpDRUd4dlkyRnNYM1l5WDNObFkzUnBiMjV5Q3hJSkwyMHZNRFZrZDJ0ZmVnc0tDUzl0THpBMVpIZHJYeWdBKjEIACotCAoiJ0NCSVNGem9JYkc1allXeGZkako2Q3dvSkwyMHZNRFZrZDJ0ZktBQVABUAE?hl=es-419&gl=AR&ceid=AR%3Aes-419';
 const GNEWS_PROXIES=[
   u=>`https://googlenews.smurua4.workers.dev/?url=${encodeURIComponent(u)}`,
-  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
   u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
   u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
 ];
@@ -2448,97 +2447,245 @@ function openArticle(url,source){
 function closeArticleModal(){ const m=document.getElementById('article-modal'); m.classList.remove('open'); document.getElementById('article-iframe').src=''; }
 
 /* =============================================
-   TENDENCIAS (Reddit — r/argentina + r/technology + r/worldnews)
+   TENDENCIAS — fuentes duales, tiempo real, en español
+   1) Wikipedia trending (es) — qué busca la gente HOY + imagen
+   2) Google News RSS (es)    — contexto noticioso fresco
+   Ambas: sin proxy, sin CORS, sin clave, actualizadas cada hora.
 ============================================= */
-const TENDENCIAS_SUBS='argentina+technology+worldnews';
-const TENDENCIAS_URL=`https://www.reddit.com/r/${TENDENCIAS_SUBS}/hot.json?limit=30`;
-let tendenciasLoaded=false, tendenciasLoading=false, tendenciasFetchPromise=null, tendenciasData=null;
-let tendenciasActiveTab='todos';
 
-const TENDENCIAS_PROXIES=[
-  u=>`https://tendencias.smurua4.workers.dev/?url=${encodeURIComponent(u)}`
-];
-async function tryTendenciasProxy(proxyFn,url,timeout=9000){
-  const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),timeout);
-  try{ const r=await fetch(proxyFn(url),{signal:ctrl.signal}); clearTimeout(t); if(!r.ok) throw new Error('http '+r.status); const j=await r.json(); if(!j||!j.data||!j.data.children) throw new Error('formato inesperado'); return j; }
-  catch(e){ clearTimeout(t); throw e; }
-}
-async function fetchTendenciasJSON(){
-  try{
-    const r=await fetch(TENDENCIAS_URL,{signal:AbortSignal.timeout(7000)});
-    if(r.ok){ const j=await r.json(); if(j?.data?.children) return j; }
-  }catch(e){}
-  const results=await Promise.allSettled(TENDENCIAS_PROXIES.map(p=>tryTendenciasProxy(p,TENDENCIAS_URL)));
-  const winner=results.find(r=>r.status==='fulfilled');
-  if(winner) return winner.value;
-  throw new Error('Todos los proxies fallaron');
-}
+// Pestañas: fuente × categoría
+const TEND_TABS = {
+  hoy:      { label:'🔥 HOY',       tipo:'wiki'   },
+  noticias: { label:'📰 NOTICIAS',  tipo:'reddit' },
+  mundo:    { label:'🌍 MUNDO',     tipo:'reddit' },
+  tech:     { label:'⚡ TECH',      tipo:'reddit' },
+  ciencia:  { label:'🔬 CIENCIA',   tipo:'reddit' },
+};
 
-function parseTendenciasJSON(json){
-  if(!json||!json.data||!json.data.children) return [];
-  return json.data.children.map(c=>c.data).filter(p=>!p.stickied).map(p=>({
-    id:p.id,
-    titulo:p.title,
-    sub:p.subreddit,
-    puntos:p.ups,
-    comentarios:p.num_comments,
-    permalink:'https://reddit.com'+p.permalink,
-    url:p.url,
-    imagen: (p.post_hint==='image' || /\.(jpg|jpeg|png|gif)$/i.test(p.url||'')) ? p.url : (p.thumbnail && p.thumbnail.startsWith('http') ? p.thumbnail : null)
+let tendenciasLoaded=false, tendenciasLoading=false, tendenciasFetchPromise=null;
+let tendenciasData={};   // { tabKey: [cards] }
+let tendenciasActiveTab='hoy';
+
+/* ── Wikipedia: top 20 artículos más vistos ayer en es.wikipedia ── */
+async function fetchWikiTrending(){
+  const ayer = new Date(Date.now() - 86400000);
+  const y=ayer.getUTCFullYear(), m=String(ayer.getUTCMonth()+1).padStart(2,'0'), d=String(ayer.getUTCDate()).padStart(2,'0');
+  const url=`https://wikimedia.org/api/rest_v1/metrics/pageviews/top/es.wikipedia/all-access/${y}/${m}/${d}`;
+  const r = await fetch(url,{signal:AbortSignal.timeout(9000)});
+  if(!r.ok) throw new Error('Wiki HTTP '+r.status);
+  const j = await r.json();
+  const arts = (j?.items?.[0]?.articles||[])
+    .filter(a=>!['Wikipedia:','Especial:','Portal:','Ayuda:','Archivo:'].some(p=>a.article.startsWith(p)))
+    .slice(0,25);
+
+  // Enriquecemos con imagen y extracto (en paralelo, máx 8 para no saturar)
+  const top = arts.slice(0,20);
+  const enriched = await Promise.allSettled(top.map(async a=>{
+    const title = encodeURIComponent(a.article);
+    const api = `https://es.wikipedia.org/api/rest_v1/page/summary/${title}`;
+    const r2 = await fetch(api,{signal:AbortSignal.timeout(6000)});
+    if(!r2.ok) return { titulo:a.article.replace(/_/g,' '), vistas:a.views, imagen:null, resumen:'', url:`https://es.wikipedia.org/wiki/${a.article}`, fuente:'Wikipedia', tipo:'wiki' };
+    const s = await r2.json();
+    return {
+      id: 'wiki-'+a.article,
+      titulo: s.title||a.article.replace(/_/g,' '),
+      vistas: a.views,
+      imagen: s.thumbnail?.source||null,
+      resumen: s.extract ? s.extract.slice(0,160)+'…' : '',
+      url: s.content_urls?.desktop?.page||`https://es.wikipedia.org/wiki/${a.article}`,
+      fuente: 'Wikipedia · es',
+      tipo: 'wiki',
+      rank: top.indexOf(a)+1
+    };
   }));
+  return enriched.filter(r=>r.status==='fulfilled').map(r=>r.value);
 }
 
+/* ── Google News RSS (español / Argentina / San Juan) vía Worker propio ──
+   Google News no bloquea las IPs de Cloudflare como sí hace Reddit, así
+   que reutilizamos el mismo Worker únicamente como "traductor CORS"
+   (agrega el header Access-Control-Allow-Origin), sin tocar contenido.
+   Parseamos el XML del RSS directo en el navegador — sin depender de
+   rss2json ni de ningún otro conversor externo. */
+
+const TENDENCIAS_WORKER = 'https://tendencias.smurua4.workers.dev/';
+
+// Feeds RSS de Google News por pestaña. hl=es-419&gl=AR&ceid=AR:es fuerza
+// español + edición Argentina. Editá estas URLs para ajustar cobertura.
+const GNEWS_FEEDS = {
+  // Búsqueda específica San Juan, con fallback a portada Argentina si no hay notas
+  noticias: 'https://news.google.com/rss/search?q=%22San%20Juan%22%20Argentina&hl=es-419&gl=AR&ceid=AR:es',
+  mundo:    'https://news.google.com/rss/headlines/section/topic/WORLD?hl=es-419&gl=AR&ceid=AR:es',
+  tech:     'https://news.google.com/rss/headlines/section/topic/TECHNOLOGY?hl=es-419&gl=AR&ceid=AR:es',
+  ciencia:  'https://news.google.com/rss/headlines/section/topic/SCIENCE?hl=es-419&gl=AR&ceid=AR:es'
+};
+
+// Feed de respaldo si "noticias" (San Juan) no trae resultados ese día
+const GNEWS_FALLBACK_NOTICIAS = 'https://news.google.com/rss?hl=es-419&gl=AR&ceid=AR:es';
+
+function siteFavicon(url){
+  try{ return `https://www.google.com/s2/favicons?sz=64&domain=${new URL(url).hostname}`; }
+  catch(e){ return null; }
+}
+
+async function fetchGNewsXML(feedUrl){
+  const proxied = `${TENDENCIAS_WORKER}?url=${encodeURIComponent(feedUrl)}`;
+  const r = await fetch(proxied, { signal: AbortSignal.timeout(9000) });
+  if(!r.ok) throw new Error('Worker HTTP '+r.status);
+  const xmlText = await r.text();
+
+  const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
+  if(doc.querySelector('parsererror')) throw new Error('XML inválido (¿el proxy devolvió HTML de error?)');
+
+  return Array.from(doc.querySelectorAll('item'));
+}
+
+function mapGNewsItems(items){
+  return items.slice(0, 20).map((item, i) => {
+    const tituloCompleto = item.querySelector('title')?.textContent || '';
+    // Google News suele traer "Título - Medio" al final; separamos la fuente
+    const partes = tituloCompleto.split(' - ');
+    const fuenteDelTitulo = partes.length > 1 ? partes.pop() : '';
+    const titulo = partes.join(' - ') || tituloCompleto;
+
+    const link = item.querySelector('link')?.textContent || '';
+    const pubDate = item.querySelector('pubDate')?.textContent || '';
+    const sourceTag = item.querySelector('source')?.textContent || fuenteDelTitulo;
+
+    let fecha = '';
+    if(pubDate){
+      const d = new Date(pubDate);
+      if(!isNaN(d)) fecha = d.toLocaleDateString('es-AR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    }
+
+    return {
+      id:      'gn-'+i+'-'+(link||titulo).slice(0,40),
+      titulo:  titulo,
+      imagen:  siteFavicon(link),
+      resumen: sourceTag || '',
+      url:     link,
+      fuente:  sourceTag || 'Google News',
+      fecha:   fecha,
+      tipo:    'reddit', // reutilizamos el mismo estilo de tarjeta que ya existía
+      rank:    i+1,
+      hnUrl:   link
+    };
+  }).filter(n => n.url && n.titulo);
+}
+
+async function fetchRedditCategory(tabKey){
+  const feedUrl = GNEWS_FEEDS[tabKey];
+  if(!feedUrl) throw new Error('Tab desconocida: '+tabKey);
+
+  let items = await fetchGNewsXML(feedUrl);
+
+  // Si es la pestaña de San Juan y no hay notas ese día, caemos a portada Argentina
+  if(!items.length && tabKey==='noticias'){
+    console.warn('[tendencias] Sin notas de San Juan hoy, usando portada Argentina');
+    items = await fetchGNewsXML(GNEWS_FALLBACK_NOTICIAS);
+  }
+
+  if(!items.length) throw new Error('Sin resultados en el feed de Google News');
+
+  const mapeados = mapGNewsItems(items);
+  if(!mapeados.length) throw new Error('Resultados sin título/URL utilizable');
+  return mapeados;
+}
+
+/* ── Render unificado ── */
 function renderTendencias(){
-  const container=document.getElementById('tendencias-content');
-  if(!tendenciasData||!tendenciasData.length){ container.innerHTML='<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ NO SE PUDO CARGAR</div>'; return; }
-  const items=tendenciasActiveTab==='todos'?tendenciasData:tendenciasData.filter(p=>p.sub.toLowerCase()===tendenciasActiveTab);
-  if(!items.length){ container.innerHTML='<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">SIN POSTS EN ESTA CATEGORÍA</div>'; return; }
-  container.innerHTML=items.map(p=>`
+  const container = document.getElementById('tendencias-content');
+  const items = tendenciasData[tendenciasActiveTab]||[];
+
+  if(!items.length){
+    container.innerHTML='<div style="padding:40px 0;text-align:center;color:#555;font-family:\'Bebas Neue\',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ SIN CONTENIDO</div>';
+    return;
+  }
+
+  container.innerHTML = items.map(p => {
+    const esWiki   = p.tipo==='wiki';
+    const esReddit = p.tipo==='reddit';
+    const faviconTag = esReddit && p.imagen ? `<img src="${p.imagen}" style="width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:4px;" onerror="this.style.display='none'">` : '';
+    const badge = esWiki
+      ? `<span class="tw-sub-name">🔥 #${p.rank||'?'} · ${(p.vistas||0).toLocaleString('es-AR')} vistas</span>`
+      : `<span class="tw-sub-name">${faviconTag}${p.fuente||''}</span>`;
+    const meta = `<span class="tw-meta">${p.fecha||''}</span>`;
+    const btnLabel = esWiki ? 'VER EN WIKIPEDIA ▶' : 'LEER ARTÍCULO ▶';
+    const imgTag = esWiki && p.imagen
+      ? `<img class="tw-thumb" src="${p.imagen}" loading="lazy" onerror="this.style.display='none'">`
+      : '';
+
+    return `
     <div class="tw-card">
-      ${p.imagen?`<img class="tw-thumb" src="${p.imagen}" loading="lazy" onerror="this.remove()">`:''}
+      ${imgTag}
       <div class="tw-card-inner">
-        <div class="tw-source-row">
-          <span class="tw-sub-name">r/${p.sub}</span>
-          <span class="tw-meta">▲ ${p.puntos} · 💬 ${p.comentarios}</span>
-        </div>
+        <div class="tw-source-row">${badge}${meta}</div>
         <div class="tw-title">${p.titulo}</div>
+        ${p.resumen ? `<div style="font-size:0.78rem;color:#666;line-height:1.5;margin-bottom:10px;">${p.resumen}</div>` : ''}
         <div class="tw-actions">
-          <a class="tw-btn tw-btn-link" href="${p.permalink}" target="_blank" rel="noopener">VER EN REDDIT ▶</a>
-          <a class="tw-btn tw-btn-share" href="https://api.whatsapp.com/send?text=${encodeURIComponent(p.titulo+' '+p.permalink)}" target="_blank" rel="noopener">COMPARTIR</a>
+          <a class="tw-btn tw-btn-link" href="${p.url}" target="_blank" rel="noopener">${btnLabel}</a>
+          
+          <a class="tw-btn tw-btn-share" href="https://api.whatsapp.com/send?text=${encodeURIComponent(p.titulo+' '+p.url)}" target="_blank" rel="noopener">COMPARTIR</a>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
+
   document.getElementById('tendencias-overlay').scrollTo(0,0);
 }
 
 function buildTendenciasTabs(){
-  const subs=['todos','argentina','technology','worldnews'];
-  document.getElementById('tendencias-tabs').innerHTML=subs.map(s=>`<button class="tw-tab${s===tendenciasActiveTab?' active':''}" onclick="switchTendenciasTab('${s}')">${s==='todos'?'TODOS':s.toUpperCase()}</button>`).join('');
+  document.getElementById('tendencias-tabs').innerHTML = Object.entries(TEND_TABS).map(([k,v])=>
+    `<button class="tw-tab${k===tendenciasActiveTab?' active':''}" onclick="switchTendenciasTab('${k}')">${v.label}</button>`
+  ).join('');
 }
-function switchTendenciasTab(sub){ tendenciasActiveTab=sub; document.querySelectorAll('.tw-tab').forEach(t=>t.classList.toggle('active',t.textContent.trim().toLowerCase()===sub)); renderTendencias(); }
 
-function showTendenciasSpinner(){ document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;"><div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ff4500;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>CARGANDO...</div>`; }
+async function switchTendenciasTab(tab){
+  tendenciasActiveTab = tab;
+  document.querySelectorAll('.tw-tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
+  buildTendenciasTabs();
+
+  if(tendenciasData[tab]?.length){ renderTendencias(); return; }
+
+  showTendenciasSpinner();
+  try{
+    const cfg = TEND_TABS[tab];
+    if(cfg.tipo==='wiki'){
+      tendenciasData[tab] = await fetchWikiTrending();
+    } else {
+      tendenciasData[tab] = await fetchRedditCategory(tab);
+    }
+    renderTendencias();
+  } catch(e){
+    console.error('[tendencias] Error en pestaña '+tab+':', e);
+    document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ ERROR<div style="font-family:sans-serif;letter-spacing:0;font-size:0.72rem;color:#666;margin-top:8px;max-width:320px;margin-left:auto;margin-right:auto;">${(e?.message||e||'').toString().slice(0,180)}</div><button onclick="delete tendenciasData['${tab}'];switchTendenciasTab('${tab}')" style="margin-top:16px;background:none;border:1px solid #ff4500;color:#ff4500;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>`;
+  }
+}
+
+function showTendenciasSpinner(){
+  document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;"><div style="width:20px;height:20px;border:2px solid #1a1a1a;border-top-color:#ff4500;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px;"></div>CARGANDO...</div>`;
+}
 
 function startTendenciasFetch(){
   if(tendenciasFetchPromise) return tendenciasFetchPromise;
   tendenciasLoading=true;
-  tendenciasFetchPromise=fetchTendenciasJSON().then(json=>{
-    const items=parseTendenciasJSON(json);
-    tendenciasData=items; tendenciasLoaded=true;
-    try{ localStorage.setItem('tendencias_cache',JSON.stringify(items)); }catch(e){}
+  tendenciasFetchPromise = fetchWikiTrending().then(items=>{
+    tendenciasData['hoy']=items;
+    tendenciasLoaded=true;
+    try{ localStorage.setItem('tendencias_cache', JSON.stringify({hoy:items,ts:Date.now()})); }catch(e){}
     buildTendenciasTabs(); renderTendencias();
     return items;
   }).catch(e=>{
     tendenciasFetchPromise=null;
     try{
       const c=localStorage.getItem('tendencias_cache');
-      if(c){ tendenciasData=JSON.parse(c); tendenciasLoaded=true; buildTendenciasTabs(); renderTendencias(); showToast('Mostrando tendencias guardadas'); return tendenciasData; }
+      if(c){ const p=JSON.parse(c); if(p.hoy){ tendenciasData['hoy']=p.hoy; tendenciasLoaded=true; buildTendenciasTabs(); renderTendencias(); showToast('Mostrando tendencias guardadas'); return p.hoy; } }
     }catch(err){}
     throw e;
   }).finally(()=>{ tendenciasLoading=false; });
   return tendenciasFetchPromise;
 }
+
 function prefetchTendencias(){ if(!tendenciasLoaded&&!tendenciasFetchPromise) startTendenciasFetch().catch(()=>{}); }
 
 async function openTendencias(){
@@ -2550,10 +2697,12 @@ async function openTendencias(){
   showTendenciasSpinner();
   try{ await startTendenciasFetch(); }
   catch(e){
-    document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ ERROR<br><button onclick="tendenciasLoaded=false;tendenciasFetchPromise=null;openTendencias()" style="margin-top:16px;background:none;border:1px solid #ff4500;color:#ff4500;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>`;
+    document.getElementById('tendencias-content').innerHTML=`<div style="padding:40px 0;text-align:center;color:#555;font-family:'Bebas Neue',cursive;letter-spacing:2px;font-size:0.9rem;">⚠️ ERROR DE CONEXIÓN<br><button onclick="tendenciasLoaded=false;tendenciasFetchPromise=null;openTendencias()" style="margin-top:16px;background:none;border:1px solid #ff4500;color:#ff4500;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>`;
   }
 }
+
 function closeTendencias(){ document.getElementById('tendencias-overlay').classList.remove('open'); document.getElementById('ab-tendencias').classList.remove('tendencias-active'); }
+
 async function tendenciasForceRefresh(){ tendenciasLoaded=false; tendenciasData=null; tendenciasFetchPromise=null; showTendenciasSpinner(); await startTendenciasFetch(); }
 
 /* =============================================
