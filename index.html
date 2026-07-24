@@ -727,6 +727,24 @@ body.player-active #feed-col {
   font-weight: 500;
   letter-spacing: 0.06em;
 }
+.heart-btn {
+  background: none; border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0;
+  margin-left: auto; /* empuja el corazón al extremo derecho */
+  transition: transform 0.2s ease;
+  filter: grayscale(1) opacity(0.45);
+}
+.heart-btn:hover { transform: scale(1.25); filter: grayscale(0) opacity(1); }
+.heart-btn.liked { filter: grayscale(0) opacity(1); animation: heartPop 0.35s ease; }
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.45); }
+  70%  { transform: scale(0.85); }
+  100% { transform: scale(1); }
+}
 
 /* =============================================
    SPONSOR INLINE (entre noticias, mobile / desktop sin side)
@@ -2040,6 +2058,7 @@ function renderFeed(){
       <div class="share-bar">
         <button class="share-btn" onclick="shareNote('${noteId}','${title.replace(/'/g,"\\'")}')">📲 Compartir</button>
         <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar link</button>
+        <button class="heart-btn" id="heart-${noteId}" title="Me gusta" onclick="likeNote('${noteId}',this)">❤️</button>
       </div>
     `;
     container.appendChild(card);
@@ -2049,6 +2068,15 @@ function renderFeed(){
   if (noteCount===0){
     container.innerHTML=`<div style="padding:60px 20px;text-align:center;color:#333;font-family:'Bebas Neue',cursive;letter-spacing:2px;">SIN NOTICIAS DISPONIBLES</div>`;
   }
+
+  // Restaurar estado de corazones guardados en localStorage
+  container.querySelectorAll('.heart-btn').forEach(btn => {
+    const noteId = btn.id.replace('heart-','');
+    if(localStorage.getItem(`lnw_like_${noteId}`)){
+      btn.classList.add('liked');
+      btn.title='¡Ya te gustó!';
+    }
+  });
 }
 
 function toggleReadMore(extraId,btnId){
@@ -2709,7 +2737,35 @@ async function tendenciasForceRefresh(){ tendenciasLoaded=false; tendenciasData=
    UTILIDADES
 ============================================= */
 function showToast(msg){const t=document.getElementById('toast');t.innerText=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-function shareNote(id,title){const url=`${location.origin}${location.pathname}#${id}`;if(navigator.share){navigator.share({title:'La Nube de Wilson',text:`Visto en La Nube de Wilson: ${title}`,url});}else{window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(title+' '+url)}`);}}
+function shareNote(id,title){
+  const url=`${location.origin}${location.pathname}#${id}`;
+  // Evento GA4: compartir artículo
+  if(typeof gtag==='function') gtag('event','share_article',{article_id:id,article_title:title.slice(0,100)});
+  if(navigator.share){
+    navigator.share({title:'La Nube de Wilson',text:`Visto en La Nube de Wilson: ${title}`,url}).catch(()=>{});
+  } else {
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(title+' '+url)}`);
+  }
+}
+
+function likeNote(id,btn){
+  const key='lnw_like_'+id;
+  const alreadyLiked=localStorage.getItem(key);
+  const card=document.getElementById(id);
+  const titleEl=card&&card.querySelector('.note-title');
+  const title=titleEl?titleEl.textContent.slice(0,100):'';
+  if(alreadyLiked){
+    localStorage.removeItem(key);
+    btn.classList.remove('liked');
+    btn.title='Me gusta';
+  } else {
+    localStorage.setItem(key,'1');
+    btn.classList.add('liked');
+    btn.title='¡Ya te gustó!';
+    showToast('❤️ ¡Guardado en tus favoritos!');
+    if(typeof gtag==='function') gtag('event','like_article',{article_id:id,article_title:title});
+  }
+}
 function copyLink(id){const url=`${location.origin}${location.pathname}#${id}`;navigator.clipboard.writeText(url).then(()=>showToast('¡Link copiado! 🔗'));}
 function escapeJs(s){return s.replace(/'/g,"\\'").replace(/"/g,'\\"');}
 function checkDeepLinking(){const hash=window.location.hash;if(hash&&hash.startsWith('#nota-')){const el=document.getElementById(hash.substring(1));if(el) el.scrollIntoView({behavior:'smooth'});}}
@@ -2755,9 +2811,59 @@ function registerServiceWorker(){
    Además, si hay caché local, el feed se pinta al
    instante y fetchData() revalida en segundo plano.
 ============================================= */
+/* =============================================
+   AUTO-REFRESH DEL FEED — cada 10 minutos en silencio.
+   NO interrumpe radio, streams ni vibes: si hay audio
+   activo, solo descarga los datos nuevos en segundo plano
+   y actualiza el feed la próxima vez que no haya nada sonando.
+============================================= */
+let _autoRefreshPending = false;
+
+function isAudioActive(){
+  const radio = document.getElementById('radio-audio');
+  const ytSrc  = document.getElementById('player-yt')?.src  || '';
+  const kkSrc  = document.getElementById('player-kick')?.src || '';
+  const radioOn = radio && radio.src && !radio.paused;
+  const ytOn    = ytSrc  !== '' && ytSrc  !== window.location.href;
+  const kickOn  = kkSrc  !== '' && kkSrc  !== window.location.href;
+  return radioOn || ytOn || kickOn;
+}
+
+async function silentRefreshFeed(){
+  const prevHash = allNews.join('|').slice(0, 500); // huella rápida
+  await fetchData();                                 // actualiza allNews globalmente
+  const newHash  = allNews.join('|').slice(0, 500);
+  if(prevHash === newHash) return;                   // sin cambios, nada que hacer
+
+  if(!isAudioActive()){
+    // Sin audio: actualizamos el feed en el momento
+    renderFeed();
+    _autoRefreshPending = false;
+  } else {
+    // Con audio activo: marcamos que hay contenido nuevo sin tocar la UI
+    _autoRefreshPending = true;
+    // Cuando el usuario detenga el audio se aplicará el refresh pendiente
+  }
+}
+
+// Escucha la detención del audio para aplicar el refresh pendiente
+document.addEventListener('DOMContentLoaded',()=>{
+  const radio = document.getElementById('radio-audio');
+  if(radio){
+    radio.addEventListener('pause', ()=>{
+      if(_autoRefreshPending && !isAudioActive()){ renderFeed(); _autoRefreshPending=false; }
+    });
+    radio.addEventListener('ended', ()=>{
+      if(_autoRefreshPending && !isAudioActive()){ renderFeed(); _autoRefreshPending=false; }
+    });
+  }
+});
+
 document.addEventListener('DOMContentLoaded',()=>{
   loadCachedNews();   // pintado instantáneo si hay caché (stale)
   fetchData();        // revalida contra Google Sheets (while-revalidate)
+  // Auto-refresh silencioso cada 10 minutos
+  setInterval(silentRefreshFeed, 10 * 60 * 1000);
 });
 
 window.onload=()=>{
