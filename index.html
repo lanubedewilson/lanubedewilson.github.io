@@ -2335,8 +2335,8 @@ async function fetchRadiosFromAPI(){
     const existingNames=new Set(RADIO_STATIONS.map(s=>s.name.trim().toLowerCase()));
     RADIO_STATIONS.push(...apiStations.filter(s=>!existingNames.has(s.name.toLowerCase())));
     radioBrowserLoaded=true; radioBrowserLoading=false;
-    renderRadioAccordion();
-  } catch(e){ console.error('Radio Browser API error:',e); radioBrowserLoaded=true; radioBrowserLoading=false; renderRadioAccordion(); }
+    renderRadioAccordion(); // re-render con todas las radios del mundo ya agregadas
+  } catch(e){ console.error('Radio Browser API error:',e); radioBrowserLoading=false; /* NO seteamos radioBrowserLoaded=true para permitir reintentos */ renderRadioAccordion(); }
 }
 
 function toggleRadioSidebar(){
@@ -2344,7 +2344,7 @@ function toggleRadioSidebar(){
   if(!sb) return;
   const isOpen=sb.classList.contains('open');
   if(isOpen){ sb.classList.remove('open'); }
-  else { sb.classList.add('open'); if(!radioBrowserLoaded&&!radioBrowserLoading) fetchRadiosFromAPI(); else renderRadioAccordion(); }
+  else { sb.classList.add('open'); if(!radioBrowserLoaded&&!radioBrowserLoading){ renderRadioAccordion(); fetchRadiosFromAPI(); } else renderRadioAccordion(); }
 }
 
 /* =============================================
