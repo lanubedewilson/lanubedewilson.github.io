@@ -2301,8 +2301,8 @@ async function fetchRadiosFromAPI(){
       q('DE',8),q('AT',6),q('BE',6),q('BG',6),q('CZ',6),q('DK',6),q('ES',8),q('FI',6),q('FR',8),q('GB',8),
       q('GR',6),q('HR',5),q('HU',6),q('IE',6),q('IT',8),q('NL',6),q('NO',6),q('PL',6),q('PT',6),
       q('RO',6),q('RS',5),q('SE',6),q('CH',6),q('UA',6),
-      q('GH',5),q('KE',5),q('NG',5),q('MA',5),q('ZA',6),
-      q('PH',5),q('HK',5),q('IN',8),q('ID',6),q('IL',5),q('JP',8),q('MY',5),q('KR',6),q('SG',5),q('TH',5),q('TW',5),q('TR',6)
+      q('GH',4),q('KE',4),q('NG',4),q('MA',4),q('ZA',5),
+      q('PH',3),q('HK',5),q('IN',5),q('ID',3),q('IL',4),q('JP',6),q('MY',3),q('KR',3),q('SG',5),q('TH',2),q('TW',2),q('TR',5)
     ]);
     const map=(arr,loc)=>arr.map(s=>({name:(s.name||'').trim()||'Radio',url:(s.url_resolved||s.url||'').trim(),location:loc})).filter(s=>s.url);
     const argProvincias=new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé','san luis','neuquén','neuquen','chubut']);
@@ -2333,9 +2333,37 @@ async function fetchRadiosFromAPI(){
       ...map(resTR,'Turquía')
     ];
     const existingNames=new Set(RADIO_STATIONS.map(s=>s.name.trim().toLowerCase()));
-    RADIO_STATIONS.push(...apiStations.filter(s=>!existingNames.has(s.name.toLowerCase())));
+    const newStations=apiStations.filter(s=>!existingNames.has(s.name.toLowerCase()));
+
+    // Nivel 2: verificación silenciosa de streams para países orientales y africanos
+    // Los países occidentales/latinoamericanos se agregan directamente (más confiables)
+    const VERIFY_LOCATIONS=new Set(['Corea del Sur','Japón','Tailandia','Taiwán','Indonesia','Malasia','Filipinas','India','Turquía','Ghana','Kenia','Nigeria','Marruecos','Hong Kong','Singapur']);
+    const toVerify   = newStations.filter(s =>  VERIFY_LOCATIONS.has(s.location));
+    const trustworthy= newStations.filter(s => !VERIFY_LOCATIONS.has(s.location));
+
+    // Agrega inmediatamente las confiables y renderiza para que el usuario ya vea algo
+    RADIO_STATIONS.push(...trustworthy);
     radioBrowserLoaded=true; radioBrowserLoading=false;
-    renderRadioAccordion(); // re-render con todas las radios del mundo ya agregadas
+    renderRadioAccordion();
+
+    // Verifica en paralelo las dudosas con timeout de 4s; agrega solo las que responden
+    if(toVerify.length){
+      const checkStream=url=>{
+        const ctrl=new AbortController();
+        const t=setTimeout(()=>ctrl.abort(),4000);
+        return fetch(url,{method:'HEAD',signal:ctrl.signal,mode:'no-cors',cache:'no-store'})
+          .then(()=>true).catch(()=>false).finally(()=>clearTimeout(t));
+      };
+      Promise.all(toVerify.map(s=>checkStream(s.url).then(ok=>ok?s:null)))
+        .then(results=>{
+          const verified=results.filter(Boolean);
+          if(verified.length){
+            const nowNames=new Set(RADIO_STATIONS.map(s=>s.name.toLowerCase()));
+            RADIO_STATIONS.push(...verified.filter(s=>!nowNames.has(s.name.toLowerCase())));
+            renderRadioAccordion(); // segundo render silencioso con las orientales verificadas
+          }
+        }).catch(()=>{});
+    }
   } catch(e){ console.error('Radio Browser API error:',e); radioBrowserLoading=false; /* NO seteamos radioBrowserLoaded=true para permitir reintentos */ renderRadioAccordion(); }
 }
 
