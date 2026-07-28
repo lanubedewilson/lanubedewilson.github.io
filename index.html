@@ -301,17 +301,17 @@ body.player-active #feed-col {
 ============================================= */
 #action-bar {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 7px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--border);
 }
 
 @media (orientation: landscape) and (min-width: 600px) {
-  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
 }
 @media (min-width: 700px) {
-  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
 }
 
 .action-btn {
@@ -376,6 +376,69 @@ body.player-active #feed-col {
   border-color: rgba(52,168,83,0.4);
   color: #34a853;
 }
+
+/* San Juan */
+#ab-sanjuan { border-color: rgba(255,204,0,0.12); }
+#ab-sanjuan .ab-dot { background:#ffcc00; box-shadow:0 0 6px rgba(255,204,0,0.7); animation-delay:900ms; }
+#ab-sanjuan:hover, #ab-sanjuan.sanjuan-active {
+  background: rgba(255,204,0,0.07);
+  border-color: rgba(255,204,0,0.4);
+  color: #ffcc00;
+}
+
+/* Overlay San Juan */
+#sanjuan-overlay {
+  position: fixed;
+  top: 0; right: -100%;
+  width: 100%; max-width: 680px;
+  height: 100%;
+  background: rgba(8,8,8,0.97);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-left: 1px solid rgba(255,204,0,0.15);
+  z-index: 400;
+  overflow-y: auto;
+  transition: right 0.32s cubic-bezier(0.16,1,0.3,1);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,204,0,0.2) transparent;
+}
+#sanjuan-overlay.open { right: 0; }
+#sanjuan-overlay::-webkit-scrollbar { width: 4px; }
+#sanjuan-overlay::-webkit-scrollbar-thumb { background: rgba(255,204,0,0.2); border-radius: 2px; }
+
+#sanjuan-header {
+  position: sticky; top: 0; z-index: 10;
+  background: rgba(8,8,8,0.95);
+  backdrop-filter: blur(12px);
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid rgba(255,204,0,0.12);
+  display: flex; flex-direction: column; gap: 2px;
+}
+#sanjuan-header > span:first-child {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 1.1rem; letter-spacing: 2px; color: #ffcc00;
+}
+#sanjuan-header > span:last-child {
+  font-size: 0.62rem; color: rgba(255,204,0,0.45); letter-spacing: 0.12em;
+}
+#sanjuan-content { max-width:680px; width:100%; margin:14px auto 0; padding:0 14px 40px; display:flex; flex-direction:column; gap:10px; }
+
+/* Tarjetas */
+.sj-card { background:rgba(255,255,255,0.03); border:1px solid rgba(255,204,0,0.09); border-radius:14px; padding:13px 14px 10px; display:flex; flex-direction:column; gap:6px; transition:border-color 0.2s,background 0.2s; }
+.sj-card:hover { border-color:rgba(255,204,0,0.22); background:rgba(255,204,0,0.04); }
+.sj-card-meta { display:flex; align-items:center; gap:7px; }
+.sj-card-source { font-family:'Bebas Neue',cursive; font-size:0.68rem; color:rgba(255,204,0,0.6); letter-spacing:1.5px; }
+.sj-card-date { color:rgba(255,255,255,0.22); font-size:0.58rem; letter-spacing:0.08em; }
+.sj-card-title { font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:0.04em; color:var(--white-bone); line-height:1.25; }
+.sj-card-body { font-size:0.78rem; color:rgba(255,255,255,0.5); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+.sj-card-actions { display:flex; align-items:center; gap:8px; margin-top:4px; }
+.sj-btn { display:flex; align-items:center; gap:4px; padding:5px 11px; border-radius:9px; border:1px solid rgba(255,204,0,0.18); background:transparent; color:rgba(255,204,0,0.65); font-family:'Bebas Neue',cursive; font-size:0.68rem; letter-spacing:1.2px; cursor:pointer; transition:background 0.18s,border-color 0.18s,color 0.18s; text-decoration:none; }
+.sj-btn:hover { background:rgba(255,204,0,0.1); border-color:rgba(255,204,0,0.4); color:#ffcc00; }
+.sj-btn-heart { margin-left:auto; }
+.sj-btn-heart.liked { color:#ff4466; border-color:rgba(255,68,102,0.4); }
+.sj-btn-heart.liked:hover { background:rgba(255,68,102,0.1); }
+#sanjuan-footer { text-align:center; padding:14px 16px; font-size:0.6rem; color:rgba(255,204,0,0.25); letter-spacing:0.1em; border-top:1px solid rgba(255,204,0,0.07); }
+.sj-empty { padding:50px 20px; text-align:center; color:#333; font-family:'Bebas Neue',cursive; letter-spacing:2px; font-size:0.85rem; line-height:2; }
 
 /* =============================================
    NOW PLAYING BAR
@@ -1263,6 +1326,9 @@ body.player-active #feed-col {
         <button class="action-btn" id="ab-gnews" onclick="openGNews()">
           <span class="ab-dot"></span> GOOGLE NEWS
         </button>
+        <button class="action-btn" id="ab-sanjuan" onclick="openSanJuan()">
+          <span class="ab-dot"></span> SAN JUAN
+        </button>
       </div>
       <!-- Now playing -->
       <div id="now-playing-bar">
@@ -1369,6 +1435,17 @@ body.player-active #feed-col {
     <span>📡 Noticias · San Juan, Argentina</span>
   </div>
   <div style="max-width:700px;width:100%;margin:18px auto 0;padding:0 5%;" id="gnews-content"></div>
+</div>
+
+<!-- OVERLAY SAN JUAN -->
+<div id="sanjuan-overlay">
+  <button class="overlay-close-btn" onclick="closeSanJuan()" style="border-color:rgba(255,204,0,0.3);color:#ffcc00;">×</button>
+  <div id="sanjuan-header">
+    <span>🏔️ SAN JUAN — HOY</span>
+    <span>📡 NOTICIAS LOCALES · ACTUALIZADO DIARIAMENTE</span>
+  </div>
+  <div id="sanjuan-content"></div>
+  <div id="sanjuan-footer">FUENTE: GOOGLE NEWS · LA NUBE DE WILSON</div>
 </div>
 
 <!-- MODAL LECTOR DE NOTA -->
@@ -2301,8 +2378,8 @@ async function fetchRadiosFromAPI(){
       q('DE',8),q('AT',6),q('BE',6),q('BG',6),q('CZ',6),q('DK',6),q('ES',8),q('FI',6),q('FR',8),q('GB',8),
       q('GR',6),q('HR',5),q('HU',6),q('IE',6),q('IT',8),q('NL',6),q('NO',6),q('PL',6),q('PT',6),
       q('RO',6),q('RS',5),q('SE',6),q('CH',6),q('UA',6),
-      q('GH',4),q('KE',4),q('NG',4),q('MA',4),q('ZA',5),
-      q('PH',3),q('HK',5),q('IN',5),q('ID',3),q('IL',4),q('JP',6),q('MY',3),q('KR',3),q('SG',5),q('TH',2),q('TW',2),q('TR',5)
+      q('GH',5),q('KE',5),q('NG',5),q('MA',5),q('ZA',6),
+      q('PH',5),q('HK',5),q('IN',8),q('ID',6),q('IL',5),q('JP',8),q('MY',5),q('KR',6),q('SG',5),q('TH',5),q('TW',5),q('TR',6)
     ]);
     const map=(arr,loc)=>arr.map(s=>({name:(s.name||'').trim()||'Radio',url:(s.url_resolved||s.url||'').trim(),location:loc})).filter(s=>s.url);
     const argProvincias=new Set(['mendoza','córdoba','cordoba','san juan','sanjuan','santa fe','santa fé','san luis','neuquén','neuquen','chubut']);
@@ -2333,37 +2410,9 @@ async function fetchRadiosFromAPI(){
       ...map(resTR,'Turquía')
     ];
     const existingNames=new Set(RADIO_STATIONS.map(s=>s.name.trim().toLowerCase()));
-    const newStations=apiStations.filter(s=>!existingNames.has(s.name.toLowerCase()));
-
-    // Nivel 2: verificación silenciosa de streams para países orientales y africanos
-    // Los países occidentales/latinoamericanos se agregan directamente (más confiables)
-    const VERIFY_LOCATIONS=new Set(['Corea del Sur','Japón','Tailandia','Taiwán','Indonesia','Malasia','Filipinas','India','Turquía','Ghana','Kenia','Nigeria','Marruecos','Hong Kong','Singapur']);
-    const toVerify   = newStations.filter(s =>  VERIFY_LOCATIONS.has(s.location));
-    const trustworthy= newStations.filter(s => !VERIFY_LOCATIONS.has(s.location));
-
-    // Agrega inmediatamente las confiables y renderiza para que el usuario ya vea algo
-    RADIO_STATIONS.push(...trustworthy);
+    RADIO_STATIONS.push(...apiStations.filter(s=>!existingNames.has(s.name.toLowerCase())));
     radioBrowserLoaded=true; radioBrowserLoading=false;
-    renderRadioAccordion();
-
-    // Verifica en paralelo las dudosas con timeout de 4s; agrega solo las que responden
-    if(toVerify.length){
-      const checkStream=url=>{
-        const ctrl=new AbortController();
-        const t=setTimeout(()=>ctrl.abort(),4000);
-        return fetch(url,{method:'HEAD',signal:ctrl.signal,mode:'no-cors',cache:'no-store'})
-          .then(()=>true).catch(()=>false).finally(()=>clearTimeout(t));
-      };
-      Promise.all(toVerify.map(s=>checkStream(s.url).then(ok=>ok?s:null)))
-        .then(results=>{
-          const verified=results.filter(Boolean);
-          if(verified.length){
-            const nowNames=new Set(RADIO_STATIONS.map(s=>s.name.toLowerCase()));
-            RADIO_STATIONS.push(...verified.filter(s=>!nowNames.has(s.name.toLowerCase())));
-            renderRadioAccordion(); // segundo render silencioso con las orientales verificadas
-          }
-        }).catch(()=>{});
-    }
+    renderRadioAccordion(); // re-render con todas las radios del mundo ya agregadas
   } catch(e){ console.error('Radio Browser API error:',e); radioBrowserLoading=false; /* NO seteamos radioBrowserLoaded=true para permitir reintentos */ renderRadioAccordion(); }
 }
 
@@ -2930,6 +2979,132 @@ window.addEventListener('touchstart',_scheduleGNewsPrefetch,{once:true});
 function _scheduleTendenciasPrefetch(){setTimeout(()=>prefetchTendencias(),700);}
 window.addEventListener('click',_scheduleTendenciasPrefetch,{once:true});
 window.addEventListener('touchstart',_scheduleTendenciasPrefetch,{once:true});
+
+/* =============================================
+   SAN JUAN — Feed de noticias locales
+   Lee la hoja "San Juan" del mismo Google Sheet
+   GID: se obtiene de la URL al abrir esa pestaña
+   ⚠️ IMPORTANTE: reemplazá SJ_GID con el gid real
+      de tu hoja "San Juan" (lo ves en la URL del Sheet
+      cuando estás parado en esa pestaña: ...#gid=XXXXXXX)
+============================================= */
+const SJ_SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub';
+const SJ_GID = '420655085'; // ← pegá aquí el gid de la hoja "San Juan"
+
+let sjLoaded = false, sjLoading = false, sjData = [];
+
+function parseSJCsv(text) {
+  const rows = text.split('\n').filter(r => r.trim() !== '');
+  // fila 0 = headers, empezamos desde fila 1
+  return rows.slice(1).map(row => {
+    const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    const clean = c => (cols[c] || '').replace(/^"|"$/g, '').trim();
+    return {
+      titulo   : clean(0),
+      contenido: clean(1),
+      autor    : clean(2),
+      estado   : clean(3),
+      categoria: clean(4),
+      imagen   : clean(5),
+      fecha    : clean(6),
+      link     : clean(7)
+    };
+  }).filter(r => r.titulo && r.estado.toLowerCase() === 'publicar');
+}
+
+async function fetchSanJuan() {
+  if (sjLoading) return;
+  sjLoading = true;
+  const url = `${SJ_SHEET_BASE}?gid=${SJ_GID}&single=true&output=csv&t=${Date.now()}`;
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+    sjData = parseSJCsv(text);
+    sjLoaded = true;
+    renderSanJuan();
+  } catch(e) {
+    document.getElementById('sanjuan-content').innerHTML =
+      `<div class="sj-empty">⚠️ ERROR DE CONEXIÓN<br><small style="font-size:0.7rem;letter-spacing:1px;color:#444;">Revisá que la hoja "San Juan" esté publicada</small><br><button onclick="sjLoaded=false;fetchSanJuan()" style="margin-top:16px;background:none;border:1px solid #ffcc00;color:#ffcc00;padding:8px 20px;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:0.85rem;letter-spacing:1px;cursor:pointer;">🔄 REINTENTAR</button></div>`;
+  } finally {
+    sjLoading = false;
+  }
+}
+
+function renderSanJuan() {
+  const container = document.getElementById('sanjuan-content');
+  if (!container) return;
+
+  if (!sjData.length) {
+    container.innerHTML = `<div class="sj-empty">📭 AÚN NO HAY NOTICIAS<br><small style="font-size:0.7rem;letter-spacing:1px;color:#444;">Ejecutá el script de Apps Script para importar noticias</small></div>`;
+    return;
+  }
+
+  container.innerHTML = sjData.map((n, i) => {
+    const id = 'sj-' + i;
+    const liked = localStorage.getItem('sj_like_' + id) ? 'liked' : '';
+    const heart = liked ? '❤️' : '🤍';
+    const cuerpo = n.contenido ? `<div class="sj-card-body">${n.contenido}</div>` : '';
+    const fuente = n.link
+      ? `<a class="sj-btn" href="${n.link}" target="_blank" rel="noopener">🔗 VER FUENTE</a>`
+      : '';
+    return `<div class="sj-card" id="${id}">
+      <div class="sj-card-meta">
+        <span class="sj-card-source">${n.autor || 'Google News'}</span>
+        <span class="sj-card-date">${n.fecha || ''}</span>
+      </div>
+      <div class="sj-card-title">${n.titulo}</div>
+      ${cuerpo}
+      <div class="sj-card-actions">
+        ${fuente}
+        <button class="sj-btn" onclick="sjShare('${id}','${escapeJs(n.titulo)}','${escapeJs(n.link||'')}')">📲 COMPARTIR</button>
+        <button class="sj-btn sj-btn-heart ${liked}" id="heart-${id}" onclick="sjLike('${id}',this)">${heart}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function sjLike(id, btn) {
+  const key = 'sj_like_' + id;
+  if (localStorage.getItem(key)) {
+    localStorage.removeItem(key);
+    btn.classList.remove('liked');
+    btn.innerHTML = '🤍';
+    btn.title = 'Me gusta';
+  } else {
+    localStorage.setItem(key, '1');
+    btn.classList.add('liked');
+    btn.innerHTML = '❤️';
+    btn.title = '¡Ya te gustó!';
+    showToast('❤️ ¡Guardado en tus favoritos!');
+  }
+}
+
+function sjShare(id, titulo, link) {
+  const url = link || window.location.href;
+  if (navigator.share) {
+    navigator.share({ title: 'La Nube de Wilson', text: titulo, url }).catch(() => {});
+  } else {
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(titulo + ' ' + url)}`);
+  }
+}
+
+function openSanJuan() {
+  const overlay = document.getElementById('sanjuan-overlay');
+  if (overlay.classList.contains('open')) { closeSanJuan(); return; }
+  overlay.classList.add('open');
+  document.getElementById('ab-sanjuan').classList.add('sanjuan-active');
+  if (!sjLoaded) {
+    document.getElementById('sanjuan-content').innerHTML =
+      `<div class="sj-empty" style="color:#555;"><div style="width:20px;height:20px;border:2px solid #222;border-top-color:#ffcc00;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px;"></div>CARGANDO NOTICIAS...</div>`;
+    fetchSanJuan();
+  }
+}
+
+function closeSanJuan() {
+  document.getElementById('sanjuan-overlay').classList.remove('open');
+  document.getElementById('ab-sanjuan').classList.remove('sanjuan-active');
+}
 
 /* PIE DE PÁGINA */
 function renderFooter() {
