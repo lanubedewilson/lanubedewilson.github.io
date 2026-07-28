@@ -301,17 +301,17 @@ body.player-active #feed-col {
 ============================================= */
 #action-bar {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 7px;
   padding: 8px 12px;
   border-bottom: 1px solid var(--border);
 }
 
 @media (orientation: landscape) and (min-width: 600px) {
-  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr; }
 }
 @media (min-width: 700px) {
-  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr 1fr; }
+  #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr; }
 }
 
 .action-btn {
@@ -430,6 +430,8 @@ body.player-active #feed-col {
 .sj-card-source { font-family:'Bebas Neue',cursive; font-size:0.68rem; color:rgba(255,204,0,0.6); letter-spacing:1.5px; }
 .sj-card-date { color:rgba(255,255,255,0.22); font-size:0.58rem; letter-spacing:0.08em; }
 .sj-card-title { font-family:'Bebas Neue',cursive; font-size:1rem; letter-spacing:0.04em; color:var(--white-bone); line-height:1.25; }
+.sj-card-img { width:100%; border-radius:9px; overflow:hidden; margin:2px 0 4px; max-height:180px; }
+.sj-card-img img { width:100%; height:180px; object-fit:cover; display:block; border-radius:9px; }
 .sj-card-body { font-size:0.78rem; color:rgba(255,255,255,0.5); line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
 .sj-card-actions { display:flex; align-items:center; gap:8px; margin-top:4px; }
 .sj-btn { display:flex; align-items:center; gap:4px; padding:5px 11px; border-radius:9px; border:1px solid rgba(255,204,0,0.18); background:transparent; color:rgba(255,204,0,0.65); font-family:'Bebas Neue',cursive; font-size:0.68rem; letter-spacing:1.2px; cursor:pointer; transition:background 0.18s,border-color 0.18s,color 0.18s; text-decoration:none; }
@@ -1323,11 +1325,8 @@ body.player-active #feed-col {
         <button class="action-btn" id="ab-tendencias" onclick="openTendencias()">
           <span class="ab-dot"></span> TENDENCIAS
         </button>
-        <button class="action-btn" id="ab-gnews" onclick="openGNews()">
-          <span class="ab-dot"></span> GOOGLE NEWS
-        </button>
         <button class="action-btn" id="ab-sanjuan" onclick="openSanJuan()">
-          <span class="ab-dot"></span> SAN JUAN
+          <span class="ab-dot"></span> GNEWS SAN JUAN
         </button>
       </div>
       <!-- Now playing -->
@@ -2989,7 +2988,7 @@ window.addEventListener('touchstart',_scheduleTendenciasPrefetch,{once:true});
       cuando estás parado en esa pestaña: ...#gid=XXXXXXX)
 ============================================= */
 const SJ_SHEET_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQzBWeCou5kJh15fRReZ85IvkrYGDsWKwzBQjxaF50y9VuGXd2Sen6Aev-nBlLr7MbLjsdOMDYtlnsE/pub';
-const SJ_GID = '420655085'; // ← pegá aquí el gid de la hoja "San Juan"
+const SJ_GID = '420655085';
 
 let sjLoaded = false, sjLoading = false, sjData = [];
 
@@ -3044,6 +3043,9 @@ function renderSanJuan() {
     const id = 'sj-' + i;
     const liked = localStorage.getItem('sj_like_' + id) ? 'liked' : '';
     const heart = liked ? '❤️' : '🤍';
+    const imgHtml = n.imagen
+      ? `<div class="sj-card-img"><img src="${n.imagen}" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></div>`
+      : '';
     const cuerpo = n.contenido ? `<div class="sj-card-body">${n.contenido}</div>` : '';
     const fuente = n.link
       ? `<a class="sj-btn" href="${n.link}" target="_blank" rel="noopener">🔗 VER FUENTE</a>`
@@ -3054,6 +3056,7 @@ function renderSanJuan() {
         <span class="sj-card-date">${n.fecha || ''}</span>
       </div>
       <div class="sj-card-title">${n.titulo}</div>
+      ${imgHtml}
       ${cuerpo}
       <div class="sj-card-actions">
         ${fuente}
