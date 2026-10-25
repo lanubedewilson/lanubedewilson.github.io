@@ -314,6 +314,17 @@ body.player-active #feed-col {
   #action-bar { grid-template-columns: 1fr 1fr 1fr 1fr; }
 }
 
+/* 3 botones activos: sin huecos en la grilla (quitar si se suma un 4.º botón) */
+#action-bar .action-btn:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (orientation: landscape) and (min-width: 600px) {
+  #action-bar { grid-template-columns: 1fr 1fr 1fr; }
+  #action-bar .action-btn:last-child:nth-child(odd) { grid-column: auto; }
+}
+@media (min-width: 700px) {
+  #action-bar { grid-template-columns: 1fr 1fr 1fr; }
+  #action-bar .action-btn:last-child:nth-child(odd) { grid-column: auto; }
+}
+
 .action-btn {
   display: flex;
   align-items: center;
@@ -1325,9 +1336,12 @@ body.player-active #feed-col {
         <button class="action-btn" id="ab-tendencias" onclick="openTendencias()">
           <span class="ab-dot"></span> TENDENCIAS
         </button>
+        <!-- BOTÓN RESERVADO: las notas de San Juan ya salen en el feed central.
+             Se reconvertirá en el módulo de audio / video / streaming (técnica, novedades).
         <button class="action-btn" id="ab-sanjuan" onclick="openSanJuan()">
           <span class="ab-dot"></span> GNEWS SAN JUAN
         </button>
+        -->
       </div>
       <!-- Now playing -->
       <div id="now-playing-bar">
@@ -1984,15 +1998,123 @@ async function updateTicker(){
    para pintar el feed al instante en visitas siguientes,
    mientras se revalida contra Google Sheets en segundo plano.
 ============================================= */
-const NEWS_CACHE_KEY = 'lnw_news_cache_v1';
+/* =============================================
+   FEED UNIFICADO (Wilson + San Juan)
+   - parseCsv: parser CSV real (comillas y saltos de línea)
+   - Ambas fuentes se normalizan al mismo objeto
+   - mergeNews: intercala por día sin alterar el orden interno
+============================================= */
+let mainNews = [], sjNews = [];
+const SJ_MAX_FEED = 40;   // tope de notas de San Juan en el feed central
+
+function parseCsv(text){
+  const rows=[]; let row=[], cell='', inQ=false;
+  text=(text||'').replace(/^\uFEFF/,'');
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(inQ){
+      if(c==='"'){ if(text[i+1]==='"'){ cell+='"'; i++; } else inQ=false; }
+      else cell+=c;
+    } else if(c==='"'){ inQ=true; }
+    else if(c===','){ row.push(cell); cell=''; }
+    else if(c==='\n'||c==='\r'){
+      if(c==='\r'&&text[i+1]==='\n') i++;
+      row.push(cell); cell=''; rows.push(row); row=[];
+    } else cell+=c;
+  }
+  if(cell!==''||row.length){ row.push(cell); rows.push(row); }
+  return rows.filter(r=>r.some(c=>c.trim()!==''));
+}
+
+function normCat(s){
+  return ((s||'data').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s/g,''))||'data';
+}
+function hashStr(s){ let h=5381; for(let i=0;i<s.length;i++) h=((h<<5)+h+s.charCodeAt(i))|0; return (h>>>0).toString(36); }
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Devuelve un número AAAAMMDD comparable (o null si no se puede leer)
+function parseDayKey(str){
+  if(!str) return null;
+  let m=str.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return (+m[1])*10000+(+m[2])*100+(+m[3]);
+  m=str.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if(!m) return null;
+  let d=+m[1], mo=+m[2], y=+m[3];
+  if(y<100) y+=2000;
+  if(mo>12 && d<=12){ const t=d; d=mo; mo=t; }   // por si viene mm/dd/aaaa
+  if(mo<1||mo>12||d<1||d>31) return null;
+  return y*10000+mo*100+d;
+}
+
+// Si una fecha no se puede leer, hereda el día de la nota vecina (las listas ya vienen ordenadas)
+function fillDays(list){
+  let last=null;
+  list.forEach(n=>{ const k=parseDayKey(n.fecha); if(k==null) n.day=last; else { n.day=k; last=k; } });
+  let next=null;
+  for(let i=list.length-1;i>=0;i--){ if(list[i].day==null) list[i].day=next; else next=list[i].day; }
+  list.forEach(n=>{ if(n.day==null) n.day=0; });
+  return list;
+}
+
+// Hoja principal: fila 0 = encabezados, fila 1 = control, datos desde fila 2. Más nueva = última fila.
+function buildMainNews(rows){
+  const data=rows.slice(2), out=[];
+  for(let i=data.length-1;i>=0 && i>=data.length-70;i--){
+    const c=data[i]; if(c.length<4) continue;
+    const g=k=>(c[k]||'').trim();
+    if(g(3).toLowerCase()!=='publicar') continue;
+    out.push({
+      id:`nota-${i+1}`, src:'main',
+      titulo:g(0), contenido:g(1), autor:g(2)||'Redacción',
+      categoria:normCat(g(4)), imagen:g(5), fecha:g(6), link:g(7)
+    });
+  }
+  return fillDays(out);
+}
+
+// Hoja San Juan: fila 0 = encabezados, el script ya la ordena (más nueva arriba)
+function buildSjNews(rows){
+  const out=[], seen=new Set();
+  rows.slice(1).forEach(c=>{
+    const g=k=>(c[k]||'').trim();
+    if(!g(0) || g(3).toLowerCase()!=='publicar') return;
+    const id='nota-sj-'+hashStr(g(7)||g(0));
+    if(seen.has(id)) return; seen.add(id);
+    out.push({
+      id, src:'sj',
+      titulo:g(0), contenido:g(1), autor:g(2)||'Google News',
+      categoria:'sanjuan', imagen:g(5), fecha:g(6), link:g(7)
+    });
+  });
+  return fillDays(out.slice(0,SJ_MAX_FEED));
+}
+
+// Mezcla dos listas ya ordenadas (nueva→vieja). En empate de día, va primero Wilson.
+function mergeNews(a,b){
+  const out=[]; let i=0,j=0;
+  while(i<a.length||j<b.length){
+    if(j>=b.length || (i<a.length && a[i].day>=b[j].day)) out.push(a[i++]); else out.push(b[j++]);
+  }
+  return out;
+}
+
+function newsFingerprint(){ return allNews.map(n=>n.id+'|'+n.titulo).join('~').slice(0,800); }
+
+/* =============================================
+   CACHÉ DE NOTICIAS (stale-while-revalidate)
+============================================= */
+const NEWS_CACHE_KEY = 'lnw_news_cache_v2';
 
 function loadCachedNews(){
   try {
+    try { localStorage.removeItem('lnw_news_cache_v1'); } catch(e){}
     const raw = localStorage.getItem(NEWS_CACHE_KEY);
     if (!raw) return false;
     const cached = JSON.parse(raw);
-    if (!cached || !Array.isArray(cached.allNews) || !cached.allNews.length) return false;
-    allNews  = cached.allNews;
+    if (!cached || !Array.isArray(cached.mainNews) || !cached.mainNews.length) return false;
+    mainNews = cached.mainNews;
+    sjNews   = Array.isArray(cached.sjNews) ? cached.sjNews : [];
+    allNews  = mergeNews(mainNews, sjNews);
     sponsors = cached.sponsors || [];
     if (sponsors.length) startSponsors();
     renderFeed();
@@ -2003,8 +2125,8 @@ function loadCachedNews(){
 
 function saveCachedNews(){
   try {
-    localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({ allNews, sponsors, ts: Date.now() }));
-  } catch(e){ /* cuota excedida u otro error: no es crítico, seguimos sin caché */ }
+    localStorage.setItem(NEWS_CACHE_KEY, JSON.stringify({ mainNews, sjNews, sponsors, ts: Date.now() }));
+  } catch(e){ /* cuota excedida u otro error: no es crítico */ }
 }
 
 /* =============================================
@@ -2018,12 +2140,25 @@ async function fetchData(){
   const vibesUrl   = `${base}?gid=505010971&single=true&output=csv&t=${now}`;
   const inicioUrl  = `${base}?gid=1221607127&single=true&output=csv&t=${now}`;
   try {
-    const res=await fetch(newsUrl);
-    const text=await res.text();
-    const allRows=text.split('\n').filter(r=>r.trim()!=='');
-    const ctrl=(allRows[1]||'').split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-    const isLive=(ctrl[3]||'').replace(/"/g,'').trim().toLowerCase()==='on';
-    allNews=allRows.slice(2).filter(r=>r.trim()!=='').reverse().slice(0,70);
+    // Descarga en paralelo: si San Juan falla, el feed principal sigue igual
+    const sjUrl=`${SJ_SHEET_BASE}?gid=${SJ_GID}&single=true&output=csv&t=${now}`;
+    const [res, sjRes]=await Promise.all([
+      fetch(newsUrl),
+      fetch(sjUrl).catch(()=>null)
+    ]);
+    const rows=parseCsv(await res.text());
+    const ctrl=rows[1]||[];
+    const isLive=(ctrl[3]||'').trim().toLowerCase()==='on';
+    mainNews=buildMainNews(rows);
+
+    try {
+      if (sjRes && sjRes.ok) {
+        const sjRows=parseCsv(await sjRes.text());
+        if (sjRows.length) sjNews=buildSjNews(sjRows);   // si falla, queda el último bueno
+      }
+    } catch(e){ console.error('San Juan feed error:',e); }
+
+    allNews=mergeNews(mainNews,sjNews);
 
     const resSpo=await fetch(sponsorsUrl);
     const textSpo=await resSpo.text();
@@ -2079,26 +2214,24 @@ function renderFeed(){
   container.innerHTML='';
   let noteCount=0, spIdx=0;
 
-  allNews.forEach((row,index)=>{
-    const col=row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-    if (col.length<4) return;
-    const title  =(col[0]||'').replace(/"/g,'');
-    const content=(col[1]||'').replace(/"/g,'');
-    const author =(col[2]||'Redacción').replace(/"/g,'').trim();
-    const status =(col[3]||'').trim().toLowerCase();
-    const cat    =(col[4]||'data').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s/g,'');
-    const img    =(col[5]||'').trim().replace(/"/g,'');
-    const date   =(col[6]||'').replace(/"/g,'').trim();
-    const link   =(col[7]||'').replace(/"/g,'').trim();
-    if (status!=='publicar') return;
-
+  allNews.forEach(item=>{
     // Sponsor inline cada 4 noticias (solo visible en mobile / sin columnas)
     if (noteCount>0 && noteCount%4===0 && sponsors.length) {
       const sp=_buildSponsorInline(spIdx++);
       if (sp) container.appendChild(sp);
     }
 
-    const noteId=`nota-${allNews.length-index}`;
+    // Las notas de Google News vienen de afuera: se escapan. Las de Wilson se muestran tal cual.
+    const safe = item.src==='sj' ? escHtml : (x=>x);
+    const title   = safe(item.titulo);
+    const content = safe(item.contenido);
+    const author  = safe(item.autor);
+    const cat     = item.categoria;
+    const img     = item.imagen;
+    const date    = safe(item.fecha);
+    const link    = item.link;
+    const noteId  = item.id;
+
     const previewLen=300;
     let cutAt=previewLen;
     if (content.length>previewLen){
@@ -2109,30 +2242,33 @@ function renderFeed(){
     const extra  =content.length>cutAt?content.slice(cutAt).trimStart():'';
     const hasExtra=extra.length>0;
     const extraId=`extra-${noteId}`, btnId=`btn-${noteId}`;
+    const badge = cat==='sanjuan' ? 'SAN JUAN' : cat.toUpperCase();
+    const titleJs = escapeJs(item.titulo).replace(/"/g,'&quot;');
+    const srcLink = link ? `<a href="${escHtml(link)}" target="_blank" rel="noopener noreferrer" class="note-source-link">↗ fuente</a>` : '';
 
     const card=document.createElement('div');
     card.className=`note-card cat-${cat}`;
     card.id=noteId;
     card.innerHTML=`
       <div class="note-meta-row">
-        <span class="note-cat-badge">[${cat.toUpperCase()}]</span>
+        <span class="note-cat-badge">[${badge}]</span>
         <div class="note-author-date">
           <span style="color:var(--accent-green);display:block;">✍️ ${author}</span>
           <span style="color:#444;">📅 ${date}</span>
         </div>
       </div>
-      ${img?`<img src="${img}" class="note-img" loading="lazy">`:''}
+      ${img?`<img src="${escHtml(img)}" class="note-img" loading="lazy" onerror="this.style.display='none'">`:''}
       <h2 class="note-title">${title}</h2>
       <div class="note-content">${preview}</div>
       ${hasExtra?`
         <div class="note-extra-content" id="${extraId}">
           <div class="note-content" style="padding-top:6px;">${extra}</div>
-          ${link?`<a href="${link}" target="_blank" rel="noopener noreferrer" class="note-source-link">↗ fuente</a>`:''}
+          ${srcLink}
         </div>
         <button class="note-read-more" id="${btnId}" onclick="toggleReadMore('${extraId}','${btnId}')">LEER MÁS <span>↓</span></button>
-      `:`${link?`<a href="${link}" target="_blank" rel="noopener noreferrer" class="note-source-link">↗ fuente</a>`:''}`}
+      `:srcLink}
       <div class="share-bar">
-        <button class="share-btn" onclick="shareNote('${noteId}','${title.replace(/'/g,"\\'")}')">📲 Compartir</button>
+        <button class="share-btn" onclick="shareNote('${noteId}','${titleJs}')">📲 Compartir</button>
         <button class="share-btn" onclick="copyLink('${noteId}')">🔗 Copiar link</button>
         <button class="heart-btn" id="heart-${noteId}" title="Me gusta" onclick="likeNote('${noteId}',this)">❤️</button>
       </div>
@@ -2906,9 +3042,9 @@ function isAudioActive(){
 }
 
 async function silentRefreshFeed(){
-  const prevHash = allNews.join('|').slice(0, 500); // huella rápida
+  const prevHash = newsFingerprint(); // huella rápida
   await fetchData();                                 // actualiza allNews globalmente
-  const newHash  = allNews.join('|').slice(0, 500);
+  const newHash  = newsFingerprint();
   if(prevHash === newHash) return;                   // sin cambios, nada que hacer
 
   if(!isAudioActive()){
@@ -2972,8 +3108,9 @@ window.onload=()=>{
 
 // Prefetch GNews al primer toque
 function _scheduleGNewsPrefetch(){setTimeout(()=>prefetchGNews(),500);}
-window.addEventListener('click',_scheduleGNewsPrefetch,{once:true});
-window.addEventListener('touchstart',_scheduleGNewsPrefetch,{once:true});
+// (desactivado: el panel GNews ya no tiene botón; el feed central lee la hoja San Juan)
+// window.addEventListener('click',_scheduleGNewsPrefetch,{once:true});
+// window.addEventListener('touchstart',_scheduleGNewsPrefetch,{once:true});
 
 function _scheduleTendenciasPrefetch(){setTimeout(()=>prefetchTendencias(),700);}
 window.addEventListener('click',_scheduleTendenciasPrefetch,{once:true});
