@@ -2047,12 +2047,23 @@ function parseDayKey(str){
 }
 
 // Si una fecha no se puede leer, hereda el día de la nota vecina (las listas ya vienen ordenadas)
+// Fecha de hoy en San Juan (AAAAMMDD). Las fuentes pueden estar en otro huso (n8n suele escribir en UTC).
+function hoyKey(){
+  try {
+    const f=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Argentina/San_Juan',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+    return parseInt(f.replace(/-/g,''),10);
+  } catch(e){ const d=new Date(); return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate(); }
+}
+
 function fillDays(list){
   let last=null;
   list.forEach(n=>{ const k=parseDayKey(n.fecha); if(k==null) n.day=last; else { n.day=k; last=k; } });
   let next=null;
   for(let i=list.length-1;i>=0;i--){ if(list[i].day==null) list[i].day=next; else next=list[i].day; }
   list.forEach(n=>{ if(n.day==null) n.day=0; });
+  // Una nota no puede ser "del futuro": si la fuente escribe en UTC (o con un error), se cuenta como de hoy
+  const hoy=hoyKey();
+  list.forEach(n=>{ if(n.day>hoy) n.day=hoy; });
   return list;
 }
 
@@ -2086,16 +2097,36 @@ function buildSjNews(rows){
       categoria:'sanjuan', imagen:g(5), fecha:g(6), link:g(7)
     });
   });
-  return fillDays(out.slice(0,SJ_MAX_FEED));
+  const list=fillDays(out.slice(0,SJ_MAX_FEED));
+  const d=new Date(), today=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();
+  list.forEach(n=>{ if(!n.day) n.day=today; });
+  return list;
 }
 
-// Mezcla dos listas ya ordenadas (nueva→vieja). En empate de día, va primero Wilson.
+// Mezcla dos listas ya ordenadas (nueva→vieja). Si el día es distinto, manda el más nuevo.
+// Si es el mismo día, intercala: 2 notas de Wilson, 1 de San Juan.
 function mergeNews(a,b){
-  const out=[]; let i=0,j=0;
+  const out=[]; let i=0,j=0,tie=0;
   while(i<a.length||j<b.length){
-    if(j>=b.length || (i<a.length && a[i].day>=b[j].day)) out.push(a[i++]); else out.push(b[j++]);
+    let takeA;
+    if(j>=b.length) takeA=true;
+    else if(i>=a.length) takeA=false;
+    else if(a[i].day>b[j].day) takeA=true;
+    else if(a[i].day<b[j].day) takeA=false;
+    else takeA=(tie++%3)!==2;
+    out.push(takeA ? a[i++] : b[j++]);
   }
   return out;
+}
+
+function feedDebug(msg){
+  console.info('[feed]',msg);
+  if(!/[?&]debug\b/.test(location.search)) return;
+  let el=document.getElementById('feed-debug');
+  if(!el){ el=document.createElement('div'); el.id='feed-debug';
+    el.style.cssText='position:fixed;left:6px;right:6px;bottom:6px;z-index:99999;background:#000c;color:#0f0;font:11px monospace;padding:6px 8px;border-radius:8px;pointer-events:none;';
+    document.body.appendChild(el); }
+  el.textContent=msg;
 }
 
 function newsFingerprint(){ return allNews.map(n=>n.id+'|'+n.titulo).join('~').slice(0,800); }
@@ -2159,6 +2190,9 @@ async function fetchData(){
     } catch(e){ console.error('San Juan feed error:',e); }
 
     allNews=mergeNews(mainNews,sjNews);
+    feedDebug(`principal: ${mainNews.length} · san juan: ${sjNews.length} · `+
+              `sj fetch: ${sjRes ? (sjRes.ok?'OK':'HTTP '+sjRes.status) : 'ERROR de red'} · `+
+              `1.ª nota SJ en posición: ${allNews.findIndex(n=>n.src==='sj')+1 || 'ninguna'}`);
 
     const resSpo=await fetch(sponsorsUrl);
     const textSpo=await resSpo.text();
